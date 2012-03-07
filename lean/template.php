@@ -4,6 +4,7 @@ namespace lean;
 
 /**
  * Template base holds all the data
+ * TODO callback naming (callback -> call) get/set Callback -> callback)
  */
 class Template_Base
 {

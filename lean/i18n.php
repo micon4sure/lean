@@ -27,6 +27,11 @@ class I18N
     private static $instance;
 
     /**
+     * @var callable callback for when a key could not be resolved
+     */
+    private $callback;
+
+    /**
      * @param $dir string
      * @param $locale string
      */
@@ -42,7 +47,11 @@ class I18N
      * @return I18N
      * @throws Exception
      */
-    public static function get() {
+    public static function instance(I18N $instance = null) {
+        if(func_num_args() == 1) {
+            self::$instance = $instance;
+            return;
+        }
         if(!self::$instance)
             throw new Exception('I18N not initialized. Create a new instance to make it happen.');
         return self::$instance;
@@ -62,11 +71,22 @@ class I18N
      */
     public function resolve($key)
     {
+        // shit key from arguments
         $args = func_get_args();
         $key = array_shift($args);
+
+        // look up the key
+        $lookup = $this->lookup($key);
+        if($lookup === null) {
+            // call the callback if the key could not be resolved
+            if($this->callback === null)
+                return $key;
+            return call_user_func($this->callback, $key, $this);
+        }
+
         return count($args)
-            ? vsprintf($this->lookup($key), $args)
-            : $this->lookup($key);
+            ? vsprintf($lookup, $args)
+            : $lookup;
     }
 
     /**
@@ -79,7 +99,7 @@ class I18N
     public static function translate($key)
     {
         if (self::$instance === null)
-            throw new Exception('no instance of ' . get_class($this) . ' initialized');
+            throw new Exception('no instance of ' . get_called_class() . ' initialized');
         return call_user_func_array(array(self::$instance, 'resolve'), func_get_args());
     }
 
@@ -111,6 +131,18 @@ class I18N
             $this->translations = include $file;
         }
 
+        // return null if the translation key is not present
+        if(!isset($this->translations[$key]))
+            return null;
         return $this->translations[$key];
+    }
+
+    /**
+     * Set the callable that will be used when a key could not be resolved
+     * callable should expect two parameters: translation key and i18n instance
+     * @param $callable
+     */
+    public function callback($callable) {
+        $this->callback = $callable;
     }
 }
