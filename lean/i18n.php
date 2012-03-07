@@ -39,6 +39,16 @@ class I18N
     }
 
     /**
+     * @return I18N
+     * @throws Exception
+     */
+    public function get() {
+        if(!self::$instance)
+            throw new Exception('I18N not initialized. Create a new instance to make it happen.');
+        return self::$instance;
+    }
+
+    /**
      * Resolve an i18n string by it's key
      * If additional parameters to the key are passed, they will be sprintf'd
      *
@@ -75,10 +85,12 @@ class I18N
 
     /**
      * @param $locale string
-     * @return I18N
+     * @return string|I18N
      */
-    public function setLocale($locale)
+    public function locale($locale = null)
     {
+        if(func_num_args() == 0)
+           return $this->locale;
         $this->locale = $locale;
         return $this;
     }
