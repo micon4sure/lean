@@ -42,7 +42,7 @@ class I18N
      * @return I18N
      * @throws Exception
      */
-    public function get() {
+    public static function get() {
         if(!self::$instance)
             throw new Exception('I18N not initialized. Create a new instance to make it happen.');
         return self::$instance;
