@@ -70,3 +70,9 @@ Template is a very lightweight PHP-template wrapper. You may use Template_Base i
 
     // and in the template go
     echo $this->foo; // will print bar
+
+It also supports in-template-callbacks, like this:
+
+    $template->callback('foo', function($bar) { echo $bar });
+
+Calling `$this->foo('qux');` in your template will result in the callback outputting _qux_.
