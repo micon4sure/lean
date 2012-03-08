@@ -12,10 +12,10 @@
 
 ### Why lean?
 > _lean_ was created in an effort to get away from huge monilithic frameworks that can virtually do anything but provide you with stuff you won't ever need and making you in turn need to know a whole bunch of classes, dependencies and what not.
-> _lean_ is inspired by the [Slim microframework](http://www.slimframework.com/ "Slim") and its slim outline, taking its concept and pushing them forward.
+> _lean_ is inspired by the [Slim microframework](http://www.slimframework.com/ "Slim") and its slim outline, taking its concepts and pushing them forward.
 
 ### Can I use it RIGHT NOW?!
-> Sure. go ahead and fire it up, toy with it. I would not recommend to use it in a productive environment just yet though. There are still interfaces prone to changes and components to be written. Stay tuned!
+> Sure, go ahead and fire it up, toy with it. I would not recommend using it in a productive environment just yet though. There are still interfaces prone to changes and components to be written. Stay tuned!
 
 ### Why is there no ORM included?
 > Building yet another ORM is beyond the scope of _lean_. There are plenty of good ORMs out there already, just use one of those. The philosophy of lean is that you should pick the components you like and use them when you build your application/website, this extends to the ORM.
@@ -71,7 +71,7 @@ Template is a very lightweight PHP-template wrapper. You may use Template_Base i
     // and in the template go
     echo $this->foo; // will print bar
 
-It also supports in-template-callbacks, like this:
+It also supports in-template callbacks, like this:
 
     $template->callback('foo', function($bar) { echo $bar });
 
