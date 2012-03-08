@@ -3,6 +3,7 @@ namespace lean;
 
 /**
  * Internationalization class
+ * FIXME additional arguments for callback
  */
 class I18N
 {
@@ -71,7 +72,7 @@ class I18N
      */
     public function resolve($key)
     {
-        // shit key from arguments
+        // shift key from arguments
         $args = func_get_args();
         $key = array_shift($args);
 
@@ -84,6 +85,7 @@ class I18N
             return call_user_func($this->callback, $key, $this);
         }
 
+        // vsprtintf the i18n string if there are additional arguments
         return count($args)
             ? vsprintf($lookup, $args)
             : $lookup;
