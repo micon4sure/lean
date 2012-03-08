@@ -7,12 +7,22 @@
 ### What is lean not?
 > _lean_ is not a framework. It does not put a frame around your code or limit you to do stuff in a particular way. You just include the autoloader and use the components you like.
 
+### Is lean for you?
+> _lean_ is the library for advanced PHP programmers who know what they're doing and what they need. You can build everything from a small website to a full fledged CMS or even a CMS framework with it no problem (once it's done [;))](http://xkcd.com/541/ "xkcd on smileys in paranthesis")
+
 ### Why lean?
 > _lean_ was created in an effort to get away from huge monilithic frameworks that can virtually do anything but provide you with stuff you won't ever need and making you in turn need to know a whole bunch of classes, dependencies and what not.
-> _lean_ is inspired by the Slim microframework and its slim outline, taking its concept and pushing them forward.
+> _lean_ is inspired by the [Slim microframework](http://www.slimframework.com/ "Slim") and its slim outline, taking its concept and pushing them forward.
 
 ### Can I use it RIGHT NOW?!
 > Sure. go ahead and fire it up, toy with it. I would not recommend to use it in a productive environment just yet though. There are still interfaces prone to changes and components to be written. Stay tuned!
+
+### Why is there no ORM included?
+> Building yet another ORM is beyond the scope of _lean_. There are plenty of good ORMs out there already, just use one of those. The philosophy of lean is that you should pick the components you like and use them when you build your application/website, this extends to the ORM.
+I personally am using [Paris and Idiorm](http://j4mie.github.com/idiormandparis/ "paris and idorm") right now, despite the horrendous coding style ;) YMMV.
+
+
+---
 
 ## components
 
@@ -37,10 +47,10 @@ as will foo\bar\Qux_Baz and foo\bar\Qux_Baz_Kos
 This enables you to put similar classes into one small php file instead of having to split them up.
 
 ### Application
-(Planned) Application is just in the planning phase as of now. It is intended to become a component that will lean on Slim (that's part of why it's called lean) and provide it with Controller/Action logic.
+(Planned) Application is just in the planning phase as of now. It is intended to become a component that will _lean_ on [Slim](http://www.slimframework.com/ "Slim") (that's part of why it's called _lean_) and provide it with Controller/Action logic.
 
 ### Form
-The form component is well in its early stages. Have a look if you like to see what it is intended to become but there are still vital parts missing, such as validation.
+The form component is still in its early stages. Have a look if you like to see what it is intended to become but there are still vital parts missing, such as validation.
 
 ### (Scaffolding)
 (Planned) The scaffolding will build on lean\Form and provide an easy way to create CRUD style forms out of ORM objects.
