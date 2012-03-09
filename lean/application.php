@@ -92,7 +92,8 @@ class Application {
                 if (!method_exists($controller, $action)) {
                     throw new Exception("'$action' does not exist in controller of type '$controllerClass'");
                 }
-                call_user_func_array(array($controller, $action), $params);
+
+                call_user_func(array($controller, $action), $params);
             }
         };
 
