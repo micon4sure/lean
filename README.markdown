@@ -27,7 +27,7 @@ I personally am using [Paris and Idiorm](http://j4mie.github.com/idiormandparis/
 ## components
 
 + Autoloader
-+ (Application)
++ Application
 + Form
 + (Scaffolding)
 + Dump
@@ -47,7 +47,7 @@ as will foo\bar\Qux_Baz and foo\bar\Qux_Baz_Kos
 This enables you to put similar classes into one small php file instead of having to split them up.
 
 ### Application
-(Planned) Application is just in the planning phase as of now. It is intended to become a component that will _lean_ on [Slim](http://www.slimframework.com/ "Slim") (that's part of why it's called _lean_) and provide it with Controller/Action logic.
+Application _lean_s on [Slim](http://www.slimframework.com/ "Slim") (that's part of why it's called _lean_) and provides it with Controller/Action logic.
 
 ### Form
 The form component is still in its early stages. Have a look if you like to see what it is intended to become but there are still vital parts missing, such as validation.
