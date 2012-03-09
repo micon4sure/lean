@@ -3,8 +3,7 @@ namespace lean\form;
 
 /**
  * Abstract form element base class
- */
-abstract class Element {
+ */ abstract class Element {
 
     /**
      * @var array html attributes in array form
@@ -36,43 +35,55 @@ abstract class Element {
 
     /**
      * Get or set the id
+     *
      * @param null $id string
+     *
      * @return Element|string
      */
-    public function id($id=null) {
-        if(func_num_args() == 0)
+    public function id($id = null) {
+        if (func_num_args() == 0) {
             return $this->id;
+        }
         $this->id = $id;
         return $this;
     }
 
     /**
      * Get or set the value
-     * @param $key string
+     *
+     * @param      $key   string
      * @param null $value string
+     *
      * @return Element|string
      */
-    public function attribute($key, $value=null) {
-        if(func_num_args() == 1)
-            return array_key_exists($key, $this->attributes) ? $this->attributes[$key] : null;
+    public function attribute($key, $value = null) {
+        if (func_num_args() == 1) {
+            return array_key_exists($key, $this->attributes)
+                ? $this->attributes[$key]
+                : null;
+        }
         $this->attributes[$key] = $value;
         return $this;
     }
 
     /**
      * Get or set the value
+     *
      * @param null $value
+     *
      * @return Element|string
      */
-    public function value($value=null) {
-        if(func_num_args() == 0)
+    public function value($value = null) {
+        if (func_num_args() == 0) {
             return $this->value;
+        }
         $this->value = $value;
         return $this;
     }
 
     /**
      * @param $class string
+     *
      * @return Element
      */
     public function addCssClass($class) {
@@ -83,6 +94,7 @@ abstract class Element {
     /**
      * Create a string of the attributes, fit to be display. e.g.: 'checked="checked" disabled="disabled"'
      * Includes the set css classes
+     *
      * @return string
      */
     public function getAttributeString() {
@@ -91,7 +103,7 @@ abstract class Element {
         $attributes = $this->attributes;
         $attributes['class'] = implode(' ', $this->cssClasses);
 
-        foreach($attributes as $key => $val) {
+        foreach ($attributes as $key => $val) {
             $string .= sprintf(' %s="%s"', $key, htmlspecialchars($val));
         }
         return $string;

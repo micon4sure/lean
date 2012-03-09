@@ -3,15 +3,14 @@ namespace lean\form\element;
 
 /**
  * Form submit element
- */
-class Submit extends \lean\form\Element {
+ */ class Submit extends \lean\form\Element {
     /**
      * @var the value attribute of the submit
      */
     private $label;
 
     /**
-     * @param $name string
+     * @param $name  string
      * @param $label string
      */
     public function __construct($name, $label) {

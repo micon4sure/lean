@@ -3,8 +3,7 @@ namespace lean\form\element;
 
 /**
  * Select form element
- */
-class Combobox extends \lean\form\Element {
+ */ class Combobox extends \lean\form\Element {
 
     /**
      * @var array combobox options
@@ -24,14 +23,16 @@ class Combobox extends \lean\form\Element {
      */
     private function getOptionString() {
         $string = '';
-        foreach($this->options as $key => $value) {
-            $string .= sprintf('<option %s value="%s">%s</option>', $key == $this->value() ? 'selected="selected"' : '', $key, htmlspecialchars($value));
+        foreach ($this->options as $key => $value) {
+            $string .= sprintf('<option %s value="%s">%s</option>', $key == $this->value()
+                ? 'selected="selected"'
+                : '', $key, htmlspecialchars($value));
         }
         return $string;
     }
 
     public function options(array $options = null) {
-        if($options !== null) {
+        if ($options !== null) {
             $this->options = $options;
             return $this;
         }

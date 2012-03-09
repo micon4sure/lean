@@ -5,8 +5,7 @@ namespace lean;
 /**
  * Highly configurable dumping class
  * Also works from CLI
- */
-class Dump {
+ */ class Dump {
     // constants
     /**
      * Spacing to be used to indent lines
@@ -21,41 +20,51 @@ class Dump {
     // properties
     /**
      * Recursion level
+     *
      * @var int */
     private $levels = 1;
     /**
      * Should methods be dumped too?
+     *
      * @var boolean */
     private $methods = true;
     /**
      * Should methods / properties be sorted by visibility and alphabetically?
+     *
      * @var boolean */
     private $sort = true;
     /**
      * Should parent properties be dumped too?
+     *
      * @var boolean */
     private $parent = true;
     /**
      * Should magic methods be shown if declared?
+     *
      * @var boolean */
     private $magic = false;
     /**
      * Should dumps be wrapped in HTML? Important for CLI
+     *
      * @var boolean */
     private $wrap;
     /**
      * Saves the caller of the dump so it can be shown
+     *
      * @var string */
     private $caller;
     /**
      * The prototype to be used when create()ing a new dump
+     *
      * @var lean\Dump */
     private static $prototype;
+
     //----------------------------------------------------------------------------
 
     // creation and options
     /**
      * Set a prototype that will be used when creating instances
+     *
      * @param self $prototype
      */
     public static function setPrototype(self $prototype) {
@@ -71,7 +80,9 @@ class Dump {
 
     /**
      * Create a new dump (from prototype if set)
+     *
      * @return lean\Dump
+     *
      * @param int $levels
      */
     public static function create($levels = 1) {
@@ -84,6 +95,7 @@ class Dump {
 
     /**
      * @param boolean $bool should output be wrapped into an html element?
+     *
      * @return lean\Dump
      */
     public function wrap($bool = false) {
@@ -93,6 +105,7 @@ class Dump {
 
     /**
      * @param boolean $bool show or hide methods
+     *
      * @return lean\Dump
      */
     public function methods($bool = false) {
@@ -102,6 +115,7 @@ class Dump {
 
     /**
      * @param boolean $bool sort methods and properties?
+     *
      * @return lean\Dump
      */
     public function sort($bool = false) {
@@ -111,6 +125,7 @@ class Dump {
 
     /**
      * @param boolean $bool show magic functions?
+     *
      * @return lean\Dump
      */
     public function magic($bool = true) {
@@ -120,6 +135,7 @@ class Dump {
 
     /**
      * @param boolean $bool show parent properties?
+     *
      * @return lean\Dump
      */
     public function parentProperties($bool = false) {
@@ -129,6 +145,7 @@ class Dump {
 
     /**
      * Set the caller, needed to know where the dump came from in case a shortcut method was used
+     *
      * @param array $caller_
      */
     public function caller(array $caller) {
@@ -138,6 +155,7 @@ class Dump {
 
     /**
      * Shortcut method for a flat dump
+     *
      * @return boolean
      */
     public static function flat() {
@@ -150,10 +168,10 @@ class Dump {
 
     /**
      * Shortcut method for a deep dump
+     *
      * @param $levels
      */
-    public static function deep($levels)
-    {
+    public static function deep($levels) {
         $trace = debug_backtrace();
         $args = func_get_args();
         $levels = array_shift($args);
@@ -162,6 +180,7 @@ class Dump {
 
     /**
      * Set the depth of the dump
+     *
      * @return lean\Dump
      */
     public function levels($levels) {

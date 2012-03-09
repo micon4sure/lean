@@ -1,2 +1,2 @@
 <?
-return array('test'=>'bar');
+return array('test' => 'bar');
