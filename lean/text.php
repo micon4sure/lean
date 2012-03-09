@@ -152,7 +152,7 @@ class Text {
 
     /**
      * Restore a splitted string to camelcase
-     * foo-bar-qux will become fooBarQux (with lower true)
+     * foo-bar-qux will become FooBarQux with upper true and fooBarQux with false
      *
      * @param string $input
      * @param bool   $upper true = upper, false = lower camel case
