@@ -24,7 +24,7 @@ I personally am using [Paris and Idiorm](http://j4mie.github.com/idiormandparis/
 
 ---
 
-## components
+## Components
 
 + Autoloader
 + Application

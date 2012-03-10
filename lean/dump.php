@@ -5,6 +5,7 @@ namespace lean;
 /**
  * Highly configurable dumping class
  * Also works from CLI
+ * TODO static properties
  */ class Dump {
     // constants
     /**
@@ -34,11 +35,6 @@ namespace lean;
      * @var boolean */
     private $sort = true;
     /**
-     * Should parent properties be dumped too?
-     *
-     * @var boolean */
-    private $parent = true;
-    /**
      * Should magic methods be shown if declared?
      *
      * @var boolean */
@@ -54,9 +50,14 @@ namespace lean;
      * @var string */
     private $caller;
     /**
+     * Flush OB on goes?
+     * @var bool
+     */
+    private $flush = true;
+    /**
      * The prototype to be used when create()ing a new dump
      *
-     * @var lean\Dump */
+     * @var Dump */
     private static $prototype;
 
     //----------------------------------------------------------------------------
@@ -67,8 +68,15 @@ namespace lean;
      *
      * @param self $prototype
      */
-    public static function setPrototype(self $prototype) {
+    public static function prototype(self $prototype = null) {
+        if(self::$prototype === null)
+            self::$prototype = new self;
+
+        if(func_num_args() == 0)
+            return self::$prototype;
+
         self::$prototype = $prototype;
+        return $prototype;
     }
 
     /**
@@ -81,14 +89,12 @@ namespace lean;
     /**
      * Create a new dump (from prototype if set)
      *
-     * @return lean\Dump
+     * @return Dump
      *
      * @param int $levels
      */
     public static function create($levels = 1) {
-        $instance = self::$prototype
-            ? clone self::$prototype
-            : new self;
+        $instance = clone self::prototype();
         $instance->levels($levels);
         return $instance;
     }
@@ -96,7 +102,7 @@ namespace lean;
     /**
      * @param boolean $bool should output be wrapped into an html element?
      *
-     * @return lean\Dump
+     * @return Dump
      */
     public function wrap($bool = false) {
         $this->wrap = $bool;
@@ -106,7 +112,7 @@ namespace lean;
     /**
      * @param boolean $bool show or hide methods
      *
-     * @return lean\Dump
+     * @return Dump
      */
     public function methods($bool = false) {
         $this->methods = $bool;
@@ -116,7 +122,7 @@ namespace lean;
     /**
      * @param boolean $bool sort methods and properties?
      *
-     * @return lean\Dump
+     * @return Dump
      */
     public function sort($bool = false) {
         $this->sort = $bool;
@@ -126,7 +132,7 @@ namespace lean;
     /**
      * @param boolean $bool show magic functions?
      *
-     * @return lean\Dump
+     * @return Dump
      */
     public function magic($bool = true) {
         $this->magic = $bool;
@@ -134,12 +140,11 @@ namespace lean;
     }
 
     /**
-     * @param boolean $bool show parent properties?
-     *
-     * @return lean\Dump
+     * Flush OB on goes?
+     * @param bool $bool
      */
-    public function parentProperties($bool = false) {
-        $this->parent = $bool;
+    public function flush($bool = false) {
+        $this->flush = $bool;
         return $this;
     }
 
@@ -175,13 +180,14 @@ namespace lean;
         $trace = debug_backtrace();
         $args = func_get_args();
         $levels = array_shift($args);
-        self::create($levels)->caller(reset($trace))->goes($args);
+        $instance = self::create($levels)->caller(reset($trace));
+        call_user_func_array(array($instance, 'goes'), $args);
     }
 
     /**
      * Set the depth of the dump
      *
-     * @return lean\Dump
+     * @return Dump
      */
     public function levels($levels) {
         $this->levels = $levels;
@@ -192,6 +198,13 @@ namespace lean;
      * Dump all method arguments
      */
     public function goes() {
+        if($this->flush) {
+            $ob = array();
+            $level = ob_get_level();
+            for($i = 0; $i < $level; $i++) {
+                $ob[] = ob_get_clean();
+            }
+        }
         if (!$this->caller) {
             $trace = debug_backtrace();
             $this->caller(reset($trace));
@@ -204,6 +217,16 @@ namespace lean;
             $this->printRecursively($arg);
             if ($this->wrap) {
                 printf("\n<span style=\"font-size:12px;\">%s:%s</span></pre>", $this->caller['file'], $this->caller['line']);
+            }
+            else {
+                printf("\n%s:%s\n", $this->caller['file'], $this->caller['line']);
+            }
+        }
+        if($this->flush) {
+            foreach($ob as $buffer)
+            {
+                ob_start();
+                echo $buffer;
             }
         }
         return $this;
@@ -242,27 +265,13 @@ namespace lean;
                 }
                 $values[$k] = $v;
             }
-            if ($this->parent) {
-                while (($object === null && $object = new \ReflectionObject($arg)) || ($object && $object = $object->getParentClass())) {
-                    foreach ($object->getProperties() as $property) {
-                        if (!array_key_exists($property->getName(), $values)) {
-                            continue;
-                        }
-                        else {
-                            $properties[$this->getVisibility($property) . ' ' . $property->getName()] = $values[$property->getName()];
-                        }
-                    }
+            $object = new \ReflectionObject($arg);
+            foreach ($object->getProperties() as $property) {
+                if (!array_key_exists($property->getName(), $values)) {
+                    continue;
                 }
-            }
-            else {
-                $object = new \ReflectionObject($arg);
-                foreach ($object->getProperties() as $property) {
-                    if (!array_key_exists($property->getName(), $values)) {
-                        continue;
-                    }
-                    else {
-                        $properties[$this->getVisibility($property) . ' ' . $property->getName()] = $values[$property->getName()];
-                    }
+                else {
+                    $properties[$this->getVisibility($property) . ' ' . $property->getName()] = $values[$property->getName()];
                 }
             }
             if ($this->sort) {

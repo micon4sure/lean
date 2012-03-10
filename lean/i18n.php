@@ -96,11 +96,9 @@ class I18N {
     /**
      * Shortcut resolve method
      *
-     * @static
+     * @param string $key
      *
-     * @param $key string
-     *
-     * @return mixed
+     * @return string
      * @throws Exception
      */
     public static function translate($key) {
@@ -127,7 +125,7 @@ class I18N {
      * Include the language file if not done yet.
      * Return the value to the key
      *
-     * @param $key
+     * @param string $key
      *
      * @return mixed
      * @throws Exception

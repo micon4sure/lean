@@ -160,7 +160,7 @@ class Text {
      *
      * @return string
      */
-    public static function restoreCamelCase($input, $upper = false, $seperator = '-') {
+    public static function toCamelCase($input, $upper = false, $seperator = '-') {
         $result = '';
         $start = true;
         foreach (preg_split('#-#', $input) as $part) {
