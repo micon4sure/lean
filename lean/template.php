@@ -23,10 +23,22 @@ class Template_Base {
     private $callbacks = array();
 
     /**
-     * @param $file string
+     * @var string
      */
-    public function __construct($file) {
-        $this->file = $file;
+    private static $templateRoot;
+
+    /**
+     * @param $file string
+     * @param bool $prependRootPath
+     * @throws Exception_Template_TemplatePathNotFound
+     */
+    public function __construct($file, $prependRootPath = true) {
+        $this->file = $prependRootPath
+            ? static::templateRoot() . $file
+            : $file;
+
+        if(!file_exists($this->file))
+            throw new Exception_Template_TemplatePathNotFound("Template file does not exist: '{$this->file}'");
     }
 
     /**
@@ -118,6 +130,20 @@ class Template_Base {
         ob_start();
         $this->display();
         return ob_get_clean();
+    }
+
+    /**
+     * Get or set the template root path
+     *
+     * @static
+     * @param string $path
+     * @return string
+     */
+    public static function templateRoot($path = null) {
+        if(func_num_args() == 0) {
+            return self::$templateRoot;
+        }
+        self::$templateRoot = $path;
     }
 }
 

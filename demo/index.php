@@ -2,9 +2,10 @@
 include './init.php';
 $application = new \lean\Application('demo\\controller', array('debug' => true));
 $application->registerRoute('/start(/:bleh)', array('controller' => 'Start'));
+$application->registerRoute('/', array('controller' => 'Start'));
 $application->registerControllerDefaultRoute();
 
-\lean\Dump::prototype(\lean\Dump::create()->flush());
+#\lean\Dump::prototype(\lean\Dump::create()->flush());
 
 // before output
 $application->slim()->hook('lean.application.before.dispatch', function()
@@ -54,7 +55,5 @@ $application->slim()->hook('lean.application.after.dispatch', function()
 <?
 });
 
-if ($_SERVER['REQUEST_URI'] != '/')
-    $application->run();
-
+$application->run();
 ?>

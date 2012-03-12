@@ -12,6 +12,11 @@ namespace lean;
      * Spacing to be used to indent lines
      */
     const SPACING = '    ';
+
+    const VISBILITY_PRIVATE = 0;
+    const VISBILITY_PROTECTED = 1;
+    const VISBILITY_PUBLIC = 2;
+
     /**
      * All the magic methods a class can have
      */
@@ -187,6 +192,7 @@ namespace lean;
     /**
      * Set the depth of the dump
      *
+     * @param int $levels
      * @return Dump
      */
     public function levels($levels) {
@@ -196,6 +202,8 @@ namespace lean;
 
     /**
      * Dump all method arguments
+     *
+     * @return Dump
      */
     public function goes() {
         if($this->flush) {
@@ -260,20 +268,27 @@ namespace lean;
             $object = null;
             $values = array();
             foreach ((array)$arg as $k => $v) {
-                if (preg_match(sprintf('#^%1$s.+%1$s(.+?)$#', preg_quote(chr(0))), $k, $match)) {
-                    $k = $match[1];
-                }
                 $values[$k] = $v;
             }
+
+            // gather object values
             $object = new \ReflectionObject($arg);
-            foreach ($object->getProperties() as $property) {
-                if (!array_key_exists($property->getName(), $values)) {
-                    continue;
+            do {
+                foreach ($object->getProperties() as $property) {
+                    if ($property->isPublic())
+                        $visibility = self::VISBILITY_PUBLIC;
+                    else if ($property->isProtected())
+                        $visibility = self::VISBILITY_PROTECTED;
+                    else if ($property->isPrivate())
+                        $visibility = self::VISBILITY_PRIVATE;
+                    $property->setAccessible(true);
+                    $properties[$this->getVisibility($property) . ' ' . $property->getName()] = $property->getValue($arg);
+                    if($visibility == self::VISBILITY_PROTECTED || $visibility == self::VISBILITY_PROTECTED)
+                        $property->setAccessible(false);
                 }
-                else {
-                    $properties[$this->getVisibility($property) . ' ' . $property->getName()] = $values[$property->getName()];
-                }
-            }
+            } while($object = $object->getParentClass()); // loop through class parents if there are any
+
+
             if ($this->sort) {
                 uksort($properties, array($this, 'sortCallback'));
             }

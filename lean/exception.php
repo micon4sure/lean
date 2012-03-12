@@ -6,7 +6,6 @@ namespace lean;
  * lean exception
  */
 class Exception extends \Exception {
-    function __invoke() {
-        echo "OH HAI THER!";
-    }
 }
+
+class Exception_Template_TemplatePathNotFound extends Exception {}
