@@ -52,7 +52,7 @@ class Application {
     }
 
     /**
-     * Add the default /:controller/:action default route.
+     * Add the /:controller/:action default route.
      * Action is optional
      * Additional parameters are possible: /foo/bar/qux/baz/kos/asd/wam will call FooController::barAction with params
      * {qux: baz, kos: asd, wam: true}
