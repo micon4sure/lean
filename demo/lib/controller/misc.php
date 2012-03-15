@@ -1,8 +1,9 @@
 <?php
 namespace demo\controller;
 class Misc extends \lean\Controller {
+
     public function utilArrayObjectAction($params) {
-        $this->application()->slim()->request()->headers('Content-Type', 'text/plain');
+        $this->getApplication()->slim()->request()->headers('Content-Type', 'text/plain');
         $object = new \lean\Util_ArrayObject(array('foo' => 'bar', 'data' => 'asd'));
         printf("%s\n%s", $object->foo, $object->data);
     }
@@ -15,7 +16,8 @@ class Misc extends \lean\Controller {
             ->levels(1)
             ->magic(false)
             ->sort(false)
-            ->wrap(false);
+            ->wrap(false)
+            ->flush(false);
         \lean\Dump::prototype($prototype);
 
         echo '<pre>';
@@ -36,14 +38,19 @@ class Misc extends \lean\Controller {
     }
 }
 
+
 class Misc_Foo {
+
     public $foo = 'bar';
+
     protected $bar = array('foo' => 'bar', 'qux' => array('kos', 'asd'));
+
     private $qux = 'kos';
 
     public function foo() {
 
     }
+
     public static function sfoo() {
 
     }
@@ -51,6 +58,7 @@ class Misc_Foo {
     protected function bar() {
 
     }
+
     protected static function sbar() {
 
     }
@@ -58,9 +66,11 @@ class Misc_Foo {
     private function qux() {
 
     }
+
     private static function squx() {
 
     }
+
     public function __get($key) {
 
     }

@@ -8,15 +8,15 @@ $application->registerControllerDefaultRoute();
 #\lean\Dump::prototype(\lean\Dump::create()->flush());
 
 // before output
-$application->slim()->hook('lean.application.before.dispatch', function()
-{
+$application->slim()->hook('lean.application.before.dispatch', function() {
     ?>
+<!DOCTYPE html>
 <html>
     <head>
         <style type="text/css">
             #container {
                 background: #fafafa;
-                padding:20px;
+                padding: 20px;
             }
         </style>
     </head>
@@ -46,8 +46,7 @@ $application->slim()->hook('lean.application.before.dispatch', function()
 });
 
 // after output
-$application->slim()->hook('lean.application.after.dispatch', function()
-{
+$application->slim()->hook('lean.application.after.dispatch', function() {
     ?>
         </div>
     </body>

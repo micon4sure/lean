@@ -26,16 +26,7 @@ class Controller {
     /**
      * @return Application
      */
-    protected function application() {
+    protected function getApplication() {
         return $this->application;
-    }
-
-    protected function createView() {
-        if(($template = $this->template()) === null)
-            return;
-    }
-
-    protected function template() {
-
     }
 }

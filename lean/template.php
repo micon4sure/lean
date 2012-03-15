@@ -23,22 +23,16 @@ class Template_Base {
     private $callbacks = array();
 
     /**
-     * @var string
-     */
-    private static $templateRoot;
-
-    /**
-     * @param $file string
-     * @param bool $prependRootPath
+     * @param      $file string
+     *
      * @throws Exception_Template_TemplatePathNotFound
      */
-    public function __construct($file, $prependRootPath = true) {
-        $this->file = $prependRootPath
-            ? static::templateRoot() . $file
-            : $file;
+    public function __construct($file) {
+        $this->file = $file;
 
-        if(!file_exists($this->file))
+        if (!file_exists($this->file)) {
             throw new Exception_Template_TemplatePathNotFound("Template file does not exist: '{$this->file}'");
+        }
     }
 
     /**
@@ -86,29 +80,25 @@ class Template_Base {
     }
 
     /**
-     * Register a callback
-     *
-     * @param $name     string
-     * @param $callback Callable
-     *
+     * @param $name
+     * @param $callback
      * @return Template_Base
      * @throws Exception
      */
-    public function callback($name, $callback = null) {
-        if (func_num_args() == 1) {
-            // get callback
-            if (!isset($this->callbacks[$name])) {
-                throw new Exception("Callback '$name' is not registered.");
-            }
-            return $this->callbacks[$name];
-        }
-
+    public function setCallback($name, $callback) {
         // set callback
         if (in_array($name, get_class_methods($this))) {
             throw new Exception("'$name' can not be a callback, restricted.");
         }
         $this->callbacks[$name] = $callback;
         return $this;
+    }
+
+    public function getCallback($name) {
+        if (!isset($this->callbacks[$name])) {
+            throw new Exception("Callback '$name' is not registered.");
+        }
+        return $this->callbacks[$name];
     }
 
     /**
@@ -130,20 +120,6 @@ class Template_Base {
         ob_start();
         $this->display();
         return ob_get_clean();
-    }
-
-    /**
-     * Get or set the template root path
-     *
-     * @static
-     * @param string $path
-     * @return string
-     */
-    public static function templateRoot($path = null) {
-        if(func_num_args() == 0) {
-            return self::$templateRoot;
-        }
-        self::$templateRoot = $path;
     }
 }
 

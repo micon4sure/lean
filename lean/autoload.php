@@ -9,6 +9,7 @@ namespace lean;
  * The last item in that array is
  */
 class Autoload {
+
     /**
      * @var array
      */
@@ -19,24 +20,28 @@ class Autoload {
      */
     public function __construct($loadLean = true) {
         spl_autoload_register(array($this, 'load'));
-        if($loadLean)
+        if ($loadLean) {
             $this->register('lean', __DIR__);
+        }
     }
 
     /**
      * Register a library to be automatically loaded
+     *
      * @param string $namespace
      * @param string $directory
      */
     public function register($namespace, $directory) {
         $directory = realpath($directory);
-        if(!file_exists($directory))
+        if (!file_exists($directory)) {
             throw new \Exception("Directory '$directory' does not exist");
+        }
         $this->libraries[$namespace] = $directory;
     }
 
     /**
      * Actual autoload function that is being registered with the SPL
+     *
      * @param string $name
      */
     public function load($name) {

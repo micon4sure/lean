@@ -9,18 +9,22 @@ namespace lean\form;
      * @var array html attributes in array form
      */
     private $attributes = array();
+
     /**
      * @var array css classes
      */
     private $cssClasses = array();
+
     /**
      * @var the name of the form. Also used to identify it inside of the form
      */
     private $name;
+
     /**
      * @var string
      */
     private $value;
+
     /**
      * @var string id of the element. Is set by the form after adding
      */
@@ -34,56 +38,51 @@ namespace lean\form;
     }
 
     /**
-     * Get or set the id
-     *
-     * @param null $id string
-     *
-     * @return Element|string
+     * @return string
      */
-    public function id($id = null) {
-        if (func_num_args() == 0) {
-            return $this->id;
-        }
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     * @return \lean\form\Element
+     */
+    public function setId($id) {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * Get or set the value
-     *
-     * @param      $key   string
-     * @param null $value string
-     *
-     * @return Element|string
+     * @param string $key
+     * @return null|string
      */
-    public function attribute($key, $value = null) {
-        if (func_num_args() == 1) {
-            return array_key_exists($key, $this->attributes)
-                ? $this->attributes[$key]
-                : null;
-        }
-        $this->attributes[$key] = $value;
-        return $this;
+    public function getAttribute($key) {
+        return array_key_exists($key, $this->attributes)
+            ? $this->attributes[$key]
+            : null;
     }
 
     /**
-     * Get or set the value
-     *
-     * @param null $value
-     *
-     * @return Element|string
+     * @param string $key
+     * @param string $value
+     * @internal param string $id
+     * @return \lean\form\Element
      */
-    public function value($value = null) {
-        if (func_num_args() == 0) {
-            return $this->value;
-        }
+    public function setValue($value) {
         $this->value = $value;
         return $this;
     }
 
     /**
+     * @return string
+     */
+    public function getValue() {
+        return $this->value;
+    }
+
+    /**
      * @param $class string
-     *
      * @return Element
      */
     public function addCssClass($class) {
@@ -92,8 +91,8 @@ namespace lean\form;
     }
 
     /**
-     * Create a string of the attributes, fit to be display. e.g.: 'checked="checked" disabled="disabled"'
-     * Includes the set css classes
+     * Create a string of the attributes, fit to be displayed. e.g.: 'checked="checked" disabled="disabled"'
+     * Includes the set css classes.
      *
      * @return string
      */

@@ -23,7 +23,7 @@ class Application {
     /**
      * Singleton instance
      *
-     * @var Lean
+     * @var Application
      */
     public static $instance;
 
@@ -43,12 +43,12 @@ class Application {
         $this->slim = new \Slim($slimSettings);
 
         // hook into route dispatching.
-        // this is necessary so application nows how many routes have been passed
+        // this is necessary so application knows how many routes have been passed/dispatched
         $closure = function() {
-            $this->dispatched();
+            $this->dispatchedAction();
         };
         $closure->bindTo($this);
-        $this->slim->hook('slim.before.dispatch', $closure);
+        $this->slim()->hook('slim.before.dispatch', $closure);
     }
 
     /**
@@ -56,12 +56,13 @@ class Application {
      * Action is optional
      * Additional parameters are possible: /foo/bar/qux/baz/kos/asd/wam will call FooController::barAction with params
      * {qux: baz, kos: asd, wam: true}
+     *
      * @param int $additionalParameters
      */
     public function registerControllerDefaultRoute($additionalParameters = 3, $params = array()) {
         $pattern = '/:controller(/:action)';
         $addName = 'lean_add';
-        for($i = 0; $i <= ($additionalParameters * 2); $i++) {
+        for ($i = 0; $i <= ($additionalParameters * 2); $i++) {
             $pattern .= sprintf("(/:$addName$i)");
         }
 
@@ -69,10 +70,11 @@ class Application {
         $route->setMiddleware(function() use($route, $additionalParameters, $addName) {
             $params = $route->getParams();
             // loop through the additional parameter key(/value) pairs
-            for($i = 0; $i < count($params); $i+= 2) {
+            for ($i = 0; $i < count($params); $i += 2) {
                 // break if there are no more additional params
-                if(!array_key_exists($addName . $i, $params))
+                if (!array_key_exists($addName . $i, $params)) {
                     break;
+                }
 
                 // the key is always the even one
                 $key = $params[$addName . $i];
@@ -106,18 +108,21 @@ class Application {
      * @param string $pattern the slim compatible url pattern
      * @param array  $params  params that will be passed on to the controller
      * @param array  $methods methods this controller accepts
+     *
      * @return \Slim_Route
      *
      * @throws Exception
      */
     public function registerRoute($pattern, $params = array(), $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
         // create dispatching function
-        $this->params = isset($this->params) ? $this->params : array();
+        $this->params = isset($this->params)
+            ? $this->params
+            : array();
         $dispatch = function() use($params) {
             $matched = $this->slim()->router()->getMatchedRoutes();
 
             // get the correct matched route. go back from the end of the array by n passes
-            $offset = (count($matched) - $this->dispatched(false));
+            $offset = (count($matched) - $this->dispatchedAction(false));
             $current = $matched[$offset];
 
             // merge parameters extracted from uri with hard parameters, passed to registerRoute
@@ -178,10 +183,12 @@ class Application {
 
     /**
      * Get the number of controllers, Slim has dispatched, do not call this on your own, is used internally
+     *
      * @param bool $increment
+     *
      * @return int
      */
-    public function dispatched($increment = true) {
+    public function dispatchedAction($increment = true) {
         if ($increment) {
             $this->dispatched++;
         }

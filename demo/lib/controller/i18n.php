@@ -2,13 +2,29 @@
 namespace demo\controller;
 
 class I18n extends \lean\Controller {
+
     public function dispatch() {
-        $i18n = new \lean\I18N('./', 'en');
+        $i18n = new \lean\I18N_Resolve('./', 'en');
         ?>
-        Resolving foo: <?= $i18n->translate('foo'); ?><br/>
-        Resolving qux with parameter kos: <?= $i18n->translate('qux', 'kos'); ?><br/>
-        Resolving foo statically: <?= \lean\I18n::translate('foo'); ?><br/>
-        Resolving foo via singleton: <?= \lean\I18n::instance()->resolve('foo'); ?><br/>
+    <h3>Default locale en</h3>
+    <div>
+        Resolving 'hello': <?= $i18n->resolve('hello') ?><br/>
+        Resolving 'hello_name' with parameter 'Master Splinter': <?= $i18n->resolve('hello_name', 'Master Splinter') ?>
+    </div>
+
+    <h3>Pushing locale 'de'</h3>
+    <? $i18n->pushLocale('de'); ?>
+    <div>
+        Resolving 'hello': <?= $i18n->resolve('hello') ?><br/>
+        Resolving 'hello_name' with parameter 'Meister Splinter': <?= $i18n->resolve('hello_name', 'Meister Splinter') ?>
+    </div>
+
+    <h3>Popping locale</h3>
+    <? $i18n->pushLocale('de'); ?>
+    <div>
+        Resolving 'hello': <?= $i18n->resolve('hello') ?><br/>
+        Resolving 'hello_name' with parameter 'Master Splinter': <?= $i18n->resolve('hello_name', 'Master Splinter') ?>
+    </div>
     <?
     }
 }

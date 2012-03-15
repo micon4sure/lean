@@ -9,6 +9,7 @@ namespace lean;
      * Request method get
      */
     const METHOD_GET = 'get';
+
     /**
      * Request method post
      */
@@ -18,16 +19,19 @@ namespace lean;
      * @var string name of the form
      */
     private $name;
+
     /**
      * @var array instances of form\Element
      */
     private $elements = array();
+
     /**
      * Form action attribute
      *
      * @var string
      */
     private $action = '';
+
     /**
      * Form method attribute
      *
@@ -43,32 +47,37 @@ namespace lean;
     }
 
     /**
-     * Get or set the request method
+     * Set the request method
      *
-     * @param null $method
+     * @param string $method
      *
      * @return Form
      */
-    public function method($method = null) {
-        if (func_num_args() == 1) {
-            $this->method = $method;
-            return $this;
-        }
+    public function setMethod($method) {
+        $this->method = $method;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod() {
         return $this->method;
     }
 
     /**
-     * Get or set the request method
-     *
-     * @param null $method
-     *
-     * @return Form
+     * @param string $action
+     * @return \lean\Form
      */
-    public function action($action = null) {
-        if (func_num_args() == 1) {
-            $this->action = $action;
-            return $this;
-        }
+    public function setAction($action) {
+        $this->action = $action;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction() {
         return $this->action;
     }
 

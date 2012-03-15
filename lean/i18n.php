@@ -6,7 +6,7 @@ namespace lean;
  * FIXME additional arguments for callback
  */
 
-class I18N {
+class I18N_Resolve {
 
     /**
      * @var string the root directory of the translations
@@ -14,19 +14,14 @@ class I18N {
     private $dir;
 
     /**
-     * @var string the locale to be used
+     * @var string[]
      */
-    private $locale;
+    private $locales = array();
 
     /**
-     * @var array the translations as key => value pairs
+     * @var array of arrays, [locale => {key: value, key2: value2}]
      */
-    private $translations;
-
-    /**
-     * @var I18N instance for static access
-     */
-    private static $instance;
+    private $translations = array();
 
     /**
      * @var callable callback for when a key could not be resolved
@@ -39,28 +34,32 @@ class I18N {
      */
     public function __construct($dir, $locale) {
         $this->dir = $dir;
-        $this->locale = $locale;
-
-        self::$instance = $this;
+        $this->locales[] = $locale;
     }
 
     /**
-     * @return I18N
-     * @throws Exception
+     * Push a locale onto the locale stack
+     *
+     * @param string $locale
+     * @return \lean\I18N_Resolve
      */
-    public static function instance(I18N $instance = null) {
-        if (func_num_args() == 1) {
-            self::$instance = $instance;
-            return;
-        }
-        if (!self::$instance) {
-            throw new Exception('I18N not initialized. Create a new instance to make it happen.');
-        }
-        return self::$instance;
+    public function pushLocale($locale) {
+        $this->locales[] = $locale;
+        return $this;
     }
 
     /**
-     * Resolve an i18n string by it's key
+     * Pop a locale from the locale stack
+     *
+     * @return mixed
+     */
+    public function popLocale() {
+        return array_pop($this->locales);
+    }
+
+
+    /**
+     * Resolve an i18n string by its key
      * If additional parameters to the key are passed, they will be sprintf'd
      *
      * Example:
@@ -94,34 +93,6 @@ class I18N {
     }
 
     /**
-     * Shortcut resolve method
-     *
-     * @param string $key
-     *
-     * @return string
-     * @throws Exception
-     */
-    public static function translate($key) {
-        if (self::$instance === null) {
-            throw new Exception('no instance of ' . get_called_class() . ' initialized');
-        }
-        return call_user_func_array(array(self::$instance, 'resolve'), func_get_args());
-    }
-
-    /**
-     * @param $locale string
-     *
-     * @return string|I18N
-     */
-    public function locale($locale = null) {
-        if (func_num_args() == 0) {
-            return $this->locale;
-        }
-        $this->locale = $locale;
-        return $this;
-    }
-
-    /**
      * Include the language file if not done yet.
      * Return the value to the key
      *
@@ -131,19 +102,20 @@ class I18N {
      * @throws Exception
      */
     public function lookup($key) {
-        if ($this->translations === null) {
-            $file = sprintf('%s/%s.php', $this->dir, $this->locale);
+        $locale = end($this->locales);
+        if (!array_key_exists($locale, $this->translations)) {
+            $file = sprintf('%s/%s.php', $this->dir, $locale);
             if (!file_exists($file)) {
                 throw new Exception("translation file not found: $file");
             }
-            $this->translations = include $file;
+            $this->translations[$locale] = include $file;
         }
 
         // return null if the translation key is not present
-        if (!isset($this->translations[$key])) {
+        if (!isset($this->translations[$locale][$key])) {
             return null;
         }
-        return $this->translations[$key];
+        return $this->translations[$locale][$key];
     }
 
     /**
@@ -152,7 +124,7 @@ class I18N {
      *
      * @param $callable
      */
-    public function callback($callable) {
+    public function setUnresolvedCallback($callable) {
         $this->callback = $callable;
     }
 }

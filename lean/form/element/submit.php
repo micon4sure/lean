@@ -4,6 +4,7 @@ namespace lean\form\element;
 /**
  * Form submit element
  */ class Submit extends \lean\form\Element {
+
     /**
      * @var the value attribute of the submit
      */

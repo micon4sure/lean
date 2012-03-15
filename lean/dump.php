@@ -7,6 +7,7 @@ namespace lean;
  * Also works from CLI
  * TODO static properties
  */ class Dump {
+
     // constants
     /**
      * Spacing to be used to indent lines
@@ -14,13 +15,16 @@ namespace lean;
     const SPACING = '    ';
 
     const VISBILITY_PRIVATE = 0;
+
     const VISBILITY_PROTECTED = 1;
+
     const VISBILITY_PUBLIC = 2;
 
     /**
      * All the magic methods a class can have
      */
     const MAGIC_METHODS = '__construct,__destruct,__call,__callStatic,__get,__set,__isset,__unset,__sleep,__wakeup,__toString,__invoke,__set_state,__clone';
+
     //--------------------------------------------------------------------------
 
     // properties
@@ -29,36 +33,44 @@ namespace lean;
      *
      * @var int */
     private $levels = 1;
+
     /**
      * Should methods be dumped too?
      *
      * @var boolean */
     private $methods = true;
+
     /**
      * Should methods / properties be sorted by visibility and alphabetically?
      *
      * @var boolean */
     private $sort = true;
+
     /**
      * Should magic methods be shown if declared?
      *
      * @var boolean */
     private $magic = false;
+
     /**
      * Should dumps be wrapped in HTML? Important for CLI
      *
      * @var boolean */
     private $wrap;
+
     /**
      * Saves the caller of the dump so it can be shown
      *
      * @var string */
     private $caller;
+
     /**
      * Flush OB on goes?
+     *
      * @var bool
      */
     private $flush = true;
+
     /**
      * The prototype to be used when create()ing a new dump
      *
@@ -74,11 +86,13 @@ namespace lean;
      * @param self $prototype
      */
     public static function prototype(self $prototype = null) {
-        if(self::$prototype === null)
+        if (self::$prototype === null) {
             self::$prototype = new self;
+        }
 
-        if(func_num_args() == 0)
+        if (func_num_args() == 0) {
             return self::$prototype;
+        }
 
         self::$prototype = $prototype;
         return $prototype;
@@ -146,6 +160,7 @@ namespace lean;
 
     /**
      * Flush OB on goes?
+     *
      * @param bool $bool
      */
     public function flush($bool = false) {
@@ -193,6 +208,7 @@ namespace lean;
      * Set the depth of the dump
      *
      * @param int $levels
+     *
      * @return Dump
      */
     public function levels($levels) {
@@ -206,10 +222,10 @@ namespace lean;
      * @return Dump
      */
     public function goes() {
-        if($this->flush) {
+        if ($this->flush) {
             $ob = array();
             $level = ob_get_level();
-            for($i = 0; $i < $level; $i++) {
+            for ($i = 0; $i < $level; $i++) {
                 $ob[] = ob_get_clean();
             }
         }
@@ -230,8 +246,8 @@ namespace lean;
                 printf("\n%s:%s\n", $this->caller['file'], $this->caller['line']);
             }
         }
-        if($this->flush) {
-            foreach($ob as $buffer)
+        if ($this->flush) {
+            foreach ($ob as $buffer)
             {
                 ob_start();
                 echo $buffer;
@@ -275,18 +291,22 @@ namespace lean;
             $object = new \ReflectionObject($arg);
             do {
                 foreach ($object->getProperties() as $property) {
-                    if ($property->isPublic())
+                    if ($property->isPublic()) {
                         $visibility = self::VISBILITY_PUBLIC;
-                    else if ($property->isProtected())
+                    }
+                    else if ($property->isProtected()) {
                         $visibility = self::VISBILITY_PROTECTED;
-                    else if ($property->isPrivate())
+                    }
+                    else if ($property->isPrivate()) {
                         $visibility = self::VISBILITY_PRIVATE;
+                    }
                     $property->setAccessible(true);
                     $properties[$this->getVisibility($property) . ' ' . $property->getName()] = $property->getValue($arg);
-                    if($visibility == self::VISBILITY_PROTECTED || $visibility == self::VISBILITY_PROTECTED)
+                    if ($visibility == self::VISBILITY_PROTECTED || $visibility == self::VISBILITY_PROTECTED) {
                         $property->setAccessible(false);
+                    }
                 }
-            } while($object = $object->getParentClass()); // loop through class parents if there are any
+            } while ($object = $object->getParentClass()); // loop through class parents if there are any
 
 
             if ($this->sort) {
