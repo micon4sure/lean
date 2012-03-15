@@ -20,7 +20,7 @@ class I18n extends \lean\Controller {
     </div>
 
     <h3>Popping locale</h3>
-    <? $i18n->pushLocale('de'); ?>
+    <? $i18n->popLocale(); ?>
     <div>
         Resolving 'hello': <?= $i18n->resolve('hello') ?><br/>
         Resolving 'hello_name' with parameter 'Master Splinter': <?= $i18n->resolve('hello_name', 'Master Splinter') ?>
