@@ -156,13 +156,13 @@ class Application {
                 throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
             }
 
-            $THIS->slim->applyHook('lean.application.before.dispatch');
+            $THIS->slim()->applyHook('lean.application.before.dispatch');
             call_user_func(array($controller, $action), new Util_ArrayObject($params));
-            $THIS->slim->applyHook('lean.application.after.dispatch');
+            $THIS->slim()->applyHook('lean.application.after.dispatch');
         };
 
         // register dispatch with lean
-        $route = $this->slim->router()->map($pattern, $dispatch);
+        $route = $this->slim()->router()->map($pattern, $dispatch);
         call_user_func_array(array($route, 'setHttpMethods'), $methods);
         return $route;
     }
