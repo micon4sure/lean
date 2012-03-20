@@ -44,10 +44,10 @@ class Application {
 
         // hook into route dispatching.
         // this is necessary so application knows how many routes have been passed/dispatched
-        $closure = function() {
-            $this->dispatchedAction();
+        $THIS = $this;
+        $closure = function() use ($THIS) {
+            $THIS->dispatchedAction();
         };
-        $closure->bindTo($this);
         $this->slim()->hook('slim.before.dispatch', $closure);
     }
 
@@ -118,11 +118,13 @@ class Application {
         $this->params = isset($this->params)
             ? $this->params
             : array();
-        $dispatch = function() use($params) {
-            $matched = $this->slim()->router()->getMatchedRoutes();
+
+        $THIS = $this;
+        $dispatch = function() use($THIS, $params) {
+            $matched = $THIS->slim()->router()->getMatchedRoutes();
 
             // get the correct matched route. go back from the end of the array by n passes
-            $offset = (count($matched) - $this->dispatchedAction(false));
+            $offset = (count($matched) - $THIS->dispatchedAction(false));
             $current = $matched[$offset];
 
             // merge parameters extracted from uri with hard parameters, passed to registerRoute
@@ -135,14 +137,14 @@ class Application {
                 ? Text::toCamelCase($params['action']) . 'Action'
                 : 'dispatch';
 
-            $controllerClass = $this->getControllerNamespace() . '\\'
+            $controllerClass = $THIS->getControllerNamespace() . '\\'
                 . Text::toCamelCase($params['controller'], true);
 
             // controller exists?
             if (!class_exists($controllerClass, true)) {
                 throw new Exception("Controller of type '$controllerClass' was not found");
             }
-            $controller = new $controllerClass($this);
+            $controller = new $controllerClass($THIS);
 
             // controller is of the correct type?
             if (!$controller instanceof Controller) {
@@ -154,12 +156,10 @@ class Application {
                 throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
             }
 
-            $this->slim->applyHook('lean.application.before.dispatch');
+            $THIS->slim->applyHook('lean.application.before.dispatch');
             call_user_func(array($controller, $action), new Util_ArrayObject($params));
-
-            $this->slim->applyHook('lean.application.after.dispatch');
+            $THIS->slim->applyHook('lean.application.after.dispatch');
         };
-        $dispatch->bindTo($this);
 
         // register dispatch with lean
         $route = $this->slim->router()->map($pattern, $dispatch);
