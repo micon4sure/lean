@@ -2,7 +2,7 @@
 namespace demo\controller;
 class Misc extends \lean\Controller {
 
-    public function utilArrayObjectAction($params) {
+    public function utilArrayObjectAction() {
         $this->getApplication()->slim()->request()->headers('Content-Type', 'text/plain');
         $object = new \lean\Util_ArrayObject(array('foo' => 'bar', 'data' => 'asd'));
         printf("%s\n%s", $object->foo, $object->data);

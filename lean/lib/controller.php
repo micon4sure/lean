@@ -10,6 +10,11 @@ class Controller {
     private $application;
 
     /**
+     * @var Util_ArrayObject
+     */
+    private $params;
+
+    /**
      * @param Application $application
      */
     public function __construct(Application $application) {
@@ -28,5 +33,22 @@ class Controller {
      */
     protected function getApplication() {
         return $this->application;
+    }
+
+    public function setParams(Util_ArrayObject $params) {
+        $this->params = $params;
+        return $this;
+    }
+
+    public function getParams() {
+        return $this->params;
+    }
+
+    public function getParam($key) {
+        return $this->params->{$key};
+    }
+
+    public function getAction() {
+        return $this->getParam('action') ?: 'dispatch';
     }
 }

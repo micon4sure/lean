@@ -56,6 +56,22 @@ class Template_Base {
     }
 
     /**
+     * @param array $params
+     * @return \lean\Template_Base
+     */
+    public function setData(array $data) {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData() {
+        return $this->data;
+    }
+
+    /**
      * Get a template variable
      *
      * @param $key string
@@ -94,6 +110,11 @@ class Template_Base {
         return $this;
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     * @throws Exception
+     */
     public function getCallback($name) {
         if (!isset($this->callbacks[$name])) {
             throw new Exception("Callback '$name' is not registered.");
@@ -157,7 +178,7 @@ class Template extends Template_Base {
      * @return mixed
      */
     public function __call($name, array $args) {
-        $callback = parent::callback($name);
+        $callback = parent::getCallback($name);
         return call_user_func_array($callback, $args);
     }
 

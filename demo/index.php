@@ -35,6 +35,11 @@ $application->slim()->hook('lean.application.before.dispatch', function() {
             <ul>
                 <li><a href="/misc/util-array-object">Misc::utilArrayObjectAction</a></li>
                 <li><a href="/misc/dump">Misc::dumpAction</a></li>
+                <li><a href="/misc/dump">Misc::dumpAction</a></li>
+            </ul>
+            <h2>HTMLController</h2>
+            <ul>
+                <li><a href="/html">Html::dispatch</a></li>
             </ul>
             <h2>I18N</h2>
             <ul>

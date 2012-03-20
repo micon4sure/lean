@@ -48,7 +48,7 @@ class Application {
         $closure = function() use ($THIS) {
             $THIS->dispatchedAction();
         };
-        $this->slim()->hook('slim.before.dispatch', $closure);
+        $this->slim()->hook('slim.after.dispatch', $closure);
     }
 
     /**
@@ -124,7 +124,7 @@ class Application {
             $matched = $THIS->slim()->router()->getMatchedRoutes();
 
             // get the correct matched route. go back from the end of the array by n passes
-            $offset = (count($matched) - $THIS->dispatchedAction(false));
+            $offset = $THIS->dispatchedAction(false);
             $current = $matched[$offset];
 
             // merge parameters extracted from uri with hard parameters, passed to registerRoute
@@ -157,7 +157,8 @@ class Application {
             }
 
             $THIS->slim()->applyHook('lean.application.before.dispatch');
-            call_user_func(array($controller, $action), new Util_ArrayObject($params));
+            $controller->setParams(new Util_ArrayObject($params));
+            call_user_func(array($controller, $action));
             $THIS->slim()->applyHook('lean.application.after.dispatch');
         };
 
@@ -189,10 +190,7 @@ class Application {
      * @return int
      */
     public function dispatchedAction($increment = true) {
-        if ($increment) {
-            $this->dispatched++;
-        }
-        return $this->dispatched;
+        return $increment ? $this->dispatched++ : $this->dispatched;
     }
 
     /**
