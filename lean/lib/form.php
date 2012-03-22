@@ -113,6 +113,8 @@ namespace lean;
         foreach ($this->elements as $element) {
             if (array_key_exists($element->getId(), $data)) {
                 $element->setValue($data[$element->getId()]);
+            } else {
+                $element->setValue(null);
             }
         }
     }
