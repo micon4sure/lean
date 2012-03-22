@@ -40,7 +40,7 @@ abstract class HTML extends \lean\Controller {
     /**
      * @return \lean\Document
      */
-    protected function getDocument() {
+    public function getDocument() {
         return $this->document;
     }
     /**
