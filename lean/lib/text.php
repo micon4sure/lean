@@ -133,15 +133,13 @@ class Text {
                         // there are more parts to come
                         $result .= $seperator . strtolower(self::right($part, 1));
                     }
-                    else
-                    {
+                    else {
                         // last part, just append
                         $result .= strtolower(self::right($part, 1));
                     }
                 }
             }
-            else
-            {
+            else {
                 // odd part
                 $result .= $part;
             }
@@ -168,8 +166,7 @@ class Text {
                 $result .= $part;
                 $start = false;
             }
-            else
-            {
+            else {
                 $result .= ucfirst($part);
             }
 
