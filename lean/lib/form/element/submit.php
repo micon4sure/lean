@@ -23,7 +23,7 @@ namespace lean\form\element;
      * @return Submit
      */
     public function display() {
-        printf('<input %1$s type="submit" name="%2$s" id="%2$s" value="%3$s" title="%3$s">', $this->getAttributeString(), $this->id(), $this->label);
+        printf('<input %1$s type="submit" name="%2$s" id="%2$s" value="%3$s" title="%3$s">', $this->getAttributeString(), $this->getId(), $this->label);
         return $this;
     }
 }

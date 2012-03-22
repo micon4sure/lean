@@ -43,7 +43,7 @@ namespace lean\form\element;
      * @return Combobox
      */
     public function display() {
-        printf('<select %1$s name="%2$s" id="%2$s">%3$s</select>', $this->getAttributeString(), $this->id(), $this->getOptionString());
+        printf('<select %1$s name="%2$s" id="%2$s">%3$s</select>', $this->getAttributeString(), $this->getId(), $this->getOptionString());
         return $this;
     }
 }

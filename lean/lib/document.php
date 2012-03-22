@@ -17,8 +17,14 @@ class Document extends Template {
     }
 
     public function addScript($script) {
+        // get unique key
+        $key = md5($script);
+
+        // if script already exists ignore
+        if(array_key_exists($key, $this->scripts))
+            return;
         $scripts = $this->scripts;
-        $scripts[] = $script;
+        $scripts[$key] = $script;
         $this->set('scripts', $scripts);
     }
 
