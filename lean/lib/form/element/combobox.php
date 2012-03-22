@@ -24,7 +24,7 @@ namespace lean\form\element;
     private function getOptionString() {
         $string = '';
         foreach ($this->options as $key => $value) {
-            $string .= sprintf('<option %s value="%s">%s</option>', $key == $this->value()
+            $string .= sprintf('<option %s value="%s">%s</option>', $key == $this->getValue()
                 ? 'selected="selected"'
                 : '', $key, htmlspecialchars($value));
         }

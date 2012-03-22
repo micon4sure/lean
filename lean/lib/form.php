@@ -112,7 +112,7 @@ namespace lean;
     public function populate(array $data) {
         foreach ($this->elements as $element) {
             if (array_key_exists($element->getId(), $data)) {
-                $element->value($data[$element->getId()]);
+                $element->setValue($data[$element->getId()]);
             }
         }
     }

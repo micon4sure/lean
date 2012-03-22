@@ -13,7 +13,7 @@ namespace lean\form\element;
      */
     public function getAttributeString() {
         if ($this->attribute('checked') === null) {
-            if ($this->value() !== null && $this->value() == 1) {
+            if ($this->getValue() !== null && $this->getValue() == 1) {
                 $this->attribute('checked', 'checked');
             }
         }
@@ -29,11 +29,8 @@ namespace lean\form\element;
      *
      * @return Element|string
      */
-    public function value($value = null) {
-        if (func_num_args() == 0) {
-            return parent::value();
-        }
-        return parent::value(in_array($value, array('on', 1))
+    public function setValue($value = null) {
+        return parent::setValue(in_array($value, array('on', 1))
             ? 1
             : 0);
     }
