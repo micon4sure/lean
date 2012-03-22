@@ -64,6 +64,16 @@ namespace lean\form;
     }
 
     /**
+     * @param $key
+     * @param $value
+     * @return Element
+     */
+    public function setAttribute($key, $value) {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    /**
      * @param string $key
      * @param string $value
      * @internal param string $id

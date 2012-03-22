@@ -12,9 +12,9 @@ namespace lean\form\element;
      * @return string
      */
     public function getAttributeString() {
-        if ($this->attribute('checked') === null) {
+        if ($this->getAttribute('checked') === null) {
             if ($this->getValue() !== null && $this->getValue() == 1) {
-                $this->attribute('checked', 'checked');
+                $this->setAttribute('checked', 'checked');
             }
         }
 
