@@ -8,7 +8,7 @@ $application->registerControllerDefaultRoute();
 #\lean\Dump::prototype(\lean\Dump::create()->flush());
 
 // before output
-$application->slim()->hook('lean.application.before.dispatch', function() {
+$application->slim()->hook('slim.before.dispatch', function() {
     ?>
 <!DOCTYPE html>
 <html>
@@ -45,13 +45,16 @@ $application->slim()->hook('lean.application.before.dispatch', function() {
             <ul>
                 <li><a href="/i18n">I18n::dispatch</a></li>
             </ul>
+            <h2>Form</h2>
+            <ul>
+                <li><a href="/form/validation">Form::validationAction</a></li>
+            </ul>
         </div>
         <div id="action">
     <?
 });
-
 // after output
-$application->slim()->hook('lean.application.after.dispatch', function() {
+$application->slim()->hook('slim.after.dispatch', function() {
     ?>
         </div>
     </body>
