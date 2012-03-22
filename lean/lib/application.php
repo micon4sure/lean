@@ -128,6 +128,8 @@ class Application {
             $property->setValue($route, $params);
             $property->setAccessible(false);
         });
+
+        return $route;
     }
 
     /**
