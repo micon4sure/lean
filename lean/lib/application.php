@@ -8,10 +8,12 @@ class Application {
 
     /**
      * Variable incremented by a hook. Indicates how many times slim has dispatched something
+     * Initial value is -1 because it is hooked into slim.before.dispatch.
+     * Therefore, it will be 0 once the first dispatch is being made.
      *
      * @var int
      */
-    private $dispatched = 0;
+    private $dispatched = -1;
 
     /**
      * The namespaces the application's controllers will reside in
@@ -74,7 +76,7 @@ class Application {
         $closure = function() use ($THIS) {
             $THIS->dispatchedAction();
         };
-        $this->slim()->hook('slim.after.dispatch', $closure);
+        $this->slim()->hook('slim.before.dispatch', $closure);
     }
 
     /**
@@ -157,7 +159,8 @@ class Application {
             $params = array_merge($params, $current->getParams());
 
             if (!isset($params['controller'])) {
-                throw new Exception("Route has no controller parameter");
+                Dump::flat($params);
+                throw new Exception(sprintf("Route with pattern '%s' has no controller parameter", $current->getPattern()));
             }
             $action = isset($params['action'])
                 ? Text::toCamelCase($params['action']) . 'Action'
@@ -186,11 +189,9 @@ class Application {
 
             $THIS->setRequestParams($params);
 
-            $THIS->slim()->applyHook('lean.application.before.dispatch');
             $controller->setParams(new Util_ArrayObject($params));
             $controller->init();
             call_user_func(array($controller, $action));
-            $THIS->slim()->applyHook('lean.application.after.dispatch');
         };
 
         // register dispatch with lean
