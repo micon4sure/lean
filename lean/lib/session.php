@@ -2,24 +2,28 @@
 namespace lean;
 
 class Session {
+
     const NAMESPACE_SEPERATOR = '\\';
 
     private $namespace = '';
+
     private $hasNamespace = false;
 
-    public function __construct($namespace=null) {
+    public function __construct($namespace = null) {
         $this->startSession();
         $this->setNamespace($namespace);
     }
 
     /**
      * Set a namespace
+     *
      * @param null $namespace
      */
-    public function setNamespace($namespace=null) {
-        if($namespace === null) {
+    public function setNamespace($namespace = null) {
+        if ($namespace === null) {
             $this->hasNamespace = false;
-        } else {
+        }
+        else {
             $this->hasNamespace = true;
             $this->namespace = $namespace;
         }
@@ -27,8 +31,9 @@ class Session {
 
     /**
      * Set a session value
+     *
      * @magic
-     * @param $name String
+     * @param $name  String
      * @param $value String
      */
     public function __set($name, $value) {
@@ -37,33 +42,39 @@ class Session {
 
     /**
      * Return a session value
+     *
      * @magic
      * @param $name String|null
      */
     public function __get($name) {
         $key = $this->buildSessionKey($name);
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
+        return isset($_SESSION[$key])
+            ? $_SESSION[$key]
+            : null;
     }
 
     /**
      * Unset a session value
+     *
      * @magic
      * @param $name String|null
      */
     public function __unset($name) {
         $key = $this->buildSessionKey($name);
-        if(!isset($_SESSION[$key]))
+        if (!isset($_SESSION[$key])) {
             return;
+        }
         unset($_SESSION[$key]);
     }
 
     /**
      * Build valid session array key for namespace access
+     *
      * @param $key
      * @return string
      */
     private function buildSessionKey($key) {
-        if(!$this->hasNamespace) {
+        if (!$this->hasNamespace) {
             return $key;
         }
         return $this->namespace . static::NAMESPACE_SEPERATOR . $key;
@@ -73,7 +84,7 @@ class Session {
      * Start php session if not started already
      */
     private function startSession() {
-        if(session_id() === '') {
+        if (session_id() === '') {
             session_start();
         }
     }

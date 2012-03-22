@@ -43,18 +43,27 @@ class Application {
     private $requestParams = array();
 
     /**
+     * @var Environment
+     */
+    private $environment;
+
+    /**
      * @param string $controllerNamespace
      * @param array  $slimSettings
      */
     public function __construct($controllerNamespace, $leanSettings = array(), $slimSettings = array()) {
         // check for existence of APPLICATION_ROOT constant
-        if(!defined('APPLICATION_ROOT'))
+        if (!defined('APPLICATION_ROOT')) {
             throw new Exception("'APPLICATION_ROOT' not defined!");
+        }
 
         self::$instance = $this;
 
         // set settings (arg2 is more important than arg1)
         $this->settings = array_merge($this->getDefaultSettings(), $leanSettings);
+
+        // create environment
+        $this->environment = new Environment($this->settings['lean.environment.file'], $this->settings['lean.environment.name']);
 
         $this->controllerNamespace = $controllerNamespace;
         $this->slim = new \Slim($slimSettings);
@@ -197,8 +206,9 @@ class Application {
      */
     public function getRequestParam($key) {
         $params = $this->getRequestParams();
-        if(!array_key_exists($key, $params))
+        if (!array_key_exists($key, $params)) {
             throw new Exception("Key '$key' does not exist!");
+        }
         return $params[$key];
     }
 
@@ -231,24 +241,36 @@ class Application {
 
     /**
      * get default settings
+     *
      * @return array default settings
      */
     protected function getDefaultSettings() {
         $settings = array();
         $settings['lean.view.directory'] = APPLICATION_ROOT . '/views';
         $settings['lean.partial.directory'] = APPLICATION_ROOT . '/partials';
+        $settings['lean.environment.name'] = 'development';
+        $settings['lean.environment.file'] = APPLICATION_ROOT . '/config/environment.ini';
         return $settings;
     }
 
     /**
      * get a setting
+     *
      * @param $settingName
      * @return mixed setting value
      */
     public function getSetting($settingName) {
-        if(!array_key_exists($settingName, $this->settings))
+        if (!array_key_exists($settingName, $this->settings)) {
             throw new Exception("Setting '$settingName' not set!");
+        }
         return $this->settings[$settingName];
+    }
+
+    /**
+     * @return Environment
+     */
+    public function getEnvironment() {
+        return $this->environment;
     }
 
     /**
@@ -259,7 +281,9 @@ class Application {
      * @return int
      */
     public function dispatchedAction($increment = true) {
-        return $increment ? $this->dispatched++ : $this->dispatched;
+        return $increment
+            ? $this->dispatched++
+            : $this->dispatched;
     }
 
     /**

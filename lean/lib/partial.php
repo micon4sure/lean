@@ -2,6 +2,7 @@
 namespace lean;
 
 class Partial {
+
     /**
      * @var Application
      */
@@ -18,7 +19,7 @@ class Partial {
     protected $name;
 
     /**
-     * @param $name string
+     * @param             $name string
      * @param Application $application
      */
     public function __construct(Application $application, $name = null) {
@@ -33,8 +34,9 @@ class Partial {
      *
      */
     public function display() {
-        if($this->name === null)
+        if ($this->name === null) {
             throw new Exception('Partial name is null');
+        }
         $file = $this->application->getSetting('lean.partial.directory') . '/' . strtolower($this->name) . '.php';
         $template = new Template($file);
         $template->setData($this->data->data());
@@ -43,6 +45,7 @@ class Partial {
 
     /**
      * get application
+     *
      * @return Application
      */
     protected function getApplication() {

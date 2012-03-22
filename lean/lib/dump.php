@@ -247,8 +247,7 @@ namespace lean;
             }
         }
         if ($this->flush) {
-            foreach ($ob as $buffer)
-            {
+            foreach ($ob as $buffer) {
                 ob_start();
                 echo $buffer;
             }
