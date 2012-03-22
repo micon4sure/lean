@@ -33,11 +33,28 @@ class Application {
     private $slim;
 
     /**
+     * @var array
+     */
+    private $settings = array();
+
+    /**
+     * @var array
+     */
+    private $requestParams = array();
+
+    /**
      * @param string $controllerNamespace
      * @param array  $slimSettings
      */
-    public function __construct($controllerNamespace, $slimSettings = array()) {
+    public function __construct($controllerNamespace, $leanSettings = array(), $slimSettings = array()) {
+        // check for existence of APPLICATION_ROOT constant
+        if(!defined('APPLICATION_ROOT'))
+            throw new Exception("'APPLICATION_ROOT' not defined!");
+
         self::$instance = $this;
+
+        // set settings (arg2 is more important than arg1)
+        $this->settings = array_merge($this->getDefaultSettings(), $leanSettings);
 
         $this->controllerNamespace = $controllerNamespace;
         $this->slim = new \Slim($slimSettings);
@@ -142,6 +159,7 @@ class Application {
 
             // controller exists?
             if (!class_exists($controllerClass, true)) {
+                //$this->slim()->pass();
                 throw new Exception("Controller of type '$controllerClass' was not found");
             }
             $controller = new $controllerClass($THIS);
@@ -153,11 +171,15 @@ class Application {
 
             // controller action exists?
             if (!method_exists($controller, $action)) {
+                //$this->slim()->pass();
                 throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
             }
 
+            $THIS->setRequestParams($params);
+
             $THIS->slim()->applyHook('lean.application.before.dispatch');
             $controller->setParams(new Util_ArrayObject($params));
+            $controller->init();
             call_user_func(array($controller, $action));
             $THIS->slim()->applyHook('lean.application.after.dispatch');
         };
@@ -166,6 +188,31 @@ class Application {
         $route = $this->slim()->router()->map($pattern, $dispatch);
         call_user_func_array(array($route, 'setHttpMethods'), $methods);
         return $route;
+    }
+
+    /**
+     * @param $key
+     * @throws Exception
+     * @return mixed
+     */
+    public function getRequestParam($key) {
+        $params = $this->getRequestParams();
+        if(!array_key_exists($key, $params))
+            throw new Exception("Key '$key' does not exist!");
+        return $params[$key];
+    }
+
+    /**
+     * @param array $params
+     * @return \lean\Application
+     */
+    public function setRequestParams(array $params) {
+        $this->requestParams = $params;
+        return $this;
+    }
+
+    public function getRequestParams() {
+        return $this->requestParams;
     }
 
     /**
@@ -180,6 +227,28 @@ class Application {
      */
     public function getControllerNamespace() {
         return $this->controllerNamespace;
+    }
+
+    /**
+     * get default settings
+     * @return array default settings
+     */
+    protected function getDefaultSettings() {
+        $settings = array();
+        $settings['lean.view.directory'] = APPLICATION_ROOT . '/views';
+        $settings['lean.partial.directory'] = APPLICATION_ROOT . '/partials';
+        return $settings;
+    }
+
+    /**
+     * get a setting
+     * @param $settingName
+     * @return mixed setting value
+     */
+    public function getSetting($settingName) {
+        if(!array_key_exists($settingName, $this->settings))
+            throw new Exception("Setting '$settingName' not set!");
+        return $this->settings[$settingName];
     }
 
     /**

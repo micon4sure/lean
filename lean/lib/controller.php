@@ -49,6 +49,6 @@ class Controller {
     }
 
     public function getAction() {
-        return $this->getParam('action') ?: 'dispatch';
+        return  $this->params->has('action') ? $this->getParam('action') : 'dispatch';
     }
 }

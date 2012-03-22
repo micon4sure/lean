@@ -5,7 +5,7 @@ class Util_ArrayObjectBase {
 
     private $data;
 
-    public function __construct($data) {
+    public function __construct($data = array()) {
         $this->data = $data;
     }
 
@@ -18,6 +18,10 @@ class Util_ArrayObjectBase {
         }
         $this->data[$key] = $value;
         return $this;
+    }
+
+    public function has($key) {
+        return array_key_exists($key, $this->data);
     }
 }
 

@@ -5,10 +5,26 @@ namespace lean\controller;
  * TODO DOCUMENTATION!
  */
 abstract class HTML extends \lean\Controller {
+    /**
+     * @var \lean\Document;
+     */
+    private $document;
+    /**
+     * @var \lean\Template
+     */
+    private $layout;
+    /**
+     * @var \lean\Template
+     */
     private $view;
 
     public function __construct(\lean\Application $application) {
         parent::__construct($application);
+    }
+
+    public function init() {
+        parent::init();
+
         $this->document = new \lean\Document($this->getDocumentFile());
         $this->layout = new \lean\Template($this->getLayoutFile());
         $this->view = $this->createView();
@@ -19,15 +35,23 @@ abstract class HTML extends \lean\Controller {
     }
     protected abstract function getLayoutFile();
     protected function getViewDirectory() {
-        return APPLICATION_ROOT . '/views';
+        return $this->getApplication()->getSetting('lean.view.directory');
     }
-
+    /**
+     * @return \lean\Document
+     */
     protected function getDocument() {
         return $this->document;
     }
+    /**
+     * @return \lean\Template
+     */
     protected function getLayout() {
         return $this->layout;
     }
+    /**
+     * @return \lean\Template
+     */
     protected function getView() {
         return $this->view;
     }
@@ -37,9 +61,10 @@ abstract class HTML extends \lean\Controller {
         $class = \lean\Text::offsetLeft($class, 1);
         $file = \strtolower($class);
         $file = \str_replace('\\', '/', $file);
-        $file = $file . '.php';
+        $action = $this->getAction();
+        $file = $this->getViewDirectory() . "/$file/$action.php";
         //TODO application setting
-        $view = new \lean\Template(APPLICATION_ROOT . '/views/' . $file, $file);
+        $view = new \lean\Template($file);
         return $view;
     }
 
@@ -53,10 +78,6 @@ abstract class HTML extends \lean\Controller {
         $layout->set('view', $view);
 
         $view->setData($this->getView()->getData());
-
-        // will be null if not set
-        if(!isset($document->title))
-            $document->title = '';
 
         $document->display();
     }

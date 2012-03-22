@@ -2,6 +2,8 @@
 namespace lean;
 
 class Document extends Template {
+
+
     public function __construct($file) {
         parent::__construct($file);
         $this->set('styles', array());
@@ -9,10 +11,18 @@ class Document extends Template {
     }
 
     public function addStyle($style) {
-        $this->styles[] = $style;
+        $styles = $this->styles;
+        $styles[] = $style;
+        $this->set('styles', $styles);
     }
 
     public function addScript($script) {
-        $this->scripts[] = $script;
+        $scripts = $this->scripts;
+        $scripts[] = $script;
+        $this->set('scripts', $scripts);
+    }
+
+    public function setTitle($title) {
+        $this->set('title', $title);
     }
 }

@@ -6,10 +6,10 @@
     <? // TODO meta <meta name="description" content=""> ?>
 
     <? foreach($this->styles as $style): ?>
-        <link rel="stylesheet" href="<?= $style ?>">
+        <link rel="stylesheet" type="text/css" href="<?= $style ?>">
     <? endforeach; ?>
     <? foreach($this->scripts as $script): ?>
-        <script src="$script"></script>
+        <script type="text/javascript" src="<?= $script ?>"></script>
     <? endforeach; ?>
 </head>
 <body>

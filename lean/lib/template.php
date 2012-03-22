@@ -29,10 +29,6 @@ class Template_Base {
      */
     public function __construct($file) {
         $this->file = $file;
-
-        if (!file_exists($this->file)) {
-            throw new Exception_Template_TemplatePathNotFound("Template file does not exist: '{$this->file}'");
-        }
     }
 
     /**
@@ -128,6 +124,11 @@ class Template_Base {
      * @return Template
      */
     public function display() {
+
+        if (!file_exists($this->file)) {
+            throw new Exception_Template_TemplatePathNotFound("Template file does not exist: '{$this->file}'");
+        }
+
         include $this->getFile();
         return $this;
     }
