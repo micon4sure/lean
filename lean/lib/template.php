@@ -23,11 +23,16 @@ class Template_Base {
     private $callbacks = array();
 
     /**
-     * @param      $file string
-     *
-     * @throws Exception_Template_TemplatePathNotFound
+     * @param $file string
      */
     public function __construct($file) {
+        $this->setFile($file);
+    }
+
+    /**
+     * @param $file string
+     */
+    public function setFile($file) {
         $this->file = $file;
     }
 
