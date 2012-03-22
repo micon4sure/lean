@@ -31,6 +31,11 @@ namespace lean\form;
     private $id;
 
     /**
+     * @var array
+     */
+    private $validators = array();
+
+    /**
      * @param $name
      */
     public function __construct($name) {
@@ -120,6 +125,22 @@ namespace lean\form;
      * Display the form element
      */
     public abstract function display();
+
+    public function addValidator(Validator $validator) {
+        $this->validators[] = $validator;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid() {
+        foreach ($this->validators as $validator) {
+            if (!$validator->isValid($this->getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * @return string the captured display output

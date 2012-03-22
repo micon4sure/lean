@@ -24,7 +24,7 @@ class Controller {
     /**
      * Called upon construction
      */
-    protected function init() {
+    public function init() {
     }
 
     /**

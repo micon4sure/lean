@@ -142,4 +142,16 @@ namespace lean;
     public function displayLabel($name, $label) {
         printf('<label for="%s">%s</label>', $this->getElement($name)->getId(), $label);
     }
+
+    public function isValid(&$errors = array()) {
+        $valid = true;
+        foreach($this->elements as $name => $element) {
+            $elementErrors = array();
+            if(!$element->isValid($elementErrors)) {
+                $errors[$name] = $elementErrors;
+                $valid = false;
+            }
+        }
+        return $valid;
+    }
 }
