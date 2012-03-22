@@ -5,14 +5,14 @@
     <title><?= $this->title ?></title>
     <? // TODO meta <meta name="description" content=""> ?>
 
-    <? foreach($this->styles as $style): ?>
-        <link rel="stylesheet" type="text/css" href="<?= $style ?>">
+    <? foreach ($this->styles as $style): ?>
+    <link rel="stylesheet" type="text/css" href="<?= $style ?>">
     <? endforeach; ?>
-    <? foreach($this->scripts as $script): ?>
-        <script type="text/javascript" src="<?= $script ?>"></script>
+    <? foreach ($this->scripts as $script): ?>
+    <script type="text/javascript" src="<?= $script ?>"></script>
     <? endforeach; ?>
 </head>
 <body>
-    <? $this->layout->display() ?>
+<? $this->layout->display() ?>
 </body>
 </html>
