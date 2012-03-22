@@ -19,7 +19,6 @@ class Controller {
      */
     public function __construct(Application $application) {
         $this->application = $application;
-        $this->init();
     }
 
     /**
