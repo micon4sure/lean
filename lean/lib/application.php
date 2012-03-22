@@ -154,7 +154,7 @@ class Application {
             $current = $matched[$offset];
 
             // merge parameters extracted from uri with hard parameters, passed to registerRoute
-            $params = array_merge($current->getParams(), $params);
+            $params = array_merge($params, $current->getParams());
 
             if (!isset($params['controller'])) {
                 throw new Exception("Route has no controller parameter");
