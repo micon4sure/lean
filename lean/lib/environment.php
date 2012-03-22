@@ -49,20 +49,11 @@ class Environment {
      * @param $key
      * @return mixed
      * @throws Exception
-     * @magic environment settings getter
      */
-    public function __get($key) {
+    public function get($key) {
         if (!array_key_exists($key, $this->settings)) {
             throw new Exception("Environment settings '$key' not found'");
         }
         return $this->settings[$key];
-    }
-
-    /**
-     * @param $key
-     * @return bool
-     */
-    public function __isset($key) {
-        return array_key_exists($key, $this->settings);
     }
 }
