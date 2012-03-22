@@ -88,7 +88,7 @@ namespace lean;
      */
     public function addElement(form\Element $element) {
         $this->elements[$element->getName()] = $element;
-        $element->id($this->name . '_' . $element->getName());
+        $element->setId($this->name . '_' . $element->getName());
     }
 
     /**
@@ -111,8 +111,8 @@ namespace lean;
      */
     public function populate(array $data) {
         foreach ($this->elements as $element) {
-            if (array_key_exists($element->id(), $data)) {
-                $element->value($data[$element->id()]);
+            if (array_key_exists($element->getId(), $data)) {
+                $element->value($data[$element->getId()]);
             }
         }
     }
@@ -140,6 +140,6 @@ namespace lean;
      * @param $name string
      */
     public function displayLabel($name, $label) {
-        printf('<label for="%s">%s</label>', $this->getElement($name)->id(), $label);
+        printf('<label for="%s">%s</label>', $this->getElement($name)->getId(), $label);
     }
 }
