@@ -12,6 +12,8 @@ class Session {
 
     public function __construct($namespace = null) {
         $this->startSession();
+        if(!isset($_SESSION[$namespace]))
+            $_SESSION[$namespace] = array();
         $this->link =& $_SESSION[$namespace];
     }
 
@@ -19,7 +21,7 @@ class Session {
      * Set a session value
      *
      * @magic
-     * @param $key  String
+     * @param $key   String
      * @param $value String
      */
     public function __set($key, $value) {
@@ -70,6 +72,10 @@ class Session {
             return;
         }
         unset($this->link[$key]);
+    }
+
+    public function __isset($key) {
+        return isset($this->link[$key]);
     }
 
     /**

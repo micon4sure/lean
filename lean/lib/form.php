@@ -93,6 +93,13 @@ namespace lean;
     }
 
     /**
+     * @return array
+     */
+    public function getElements() {
+        return $this->elements;
+    }
+
+    /**
      * Get an element or null if not existent
      *
      * @param $name
