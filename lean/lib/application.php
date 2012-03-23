@@ -293,4 +293,11 @@ class Application {
     public function run() {
         $this->slim->run();
     }
+
+    /**
+     * reload current page
+     */
+    public function reload() {
+        $this->slim()->redirect($_SERVER['REQUEST_URI']);
+    }
 }
