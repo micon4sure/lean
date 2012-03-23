@@ -84,6 +84,14 @@ class Template_Base {
     }
 
     /**
+     * @param $key
+     * @return bool
+     */
+    public function has($key) {
+        return array_key_exists($key, $this->data);
+    }
+
+    /**
      * Call back
      *
      * @param $name string
@@ -174,6 +182,15 @@ class Template extends Template_Base {
      */
     public function __get($key) {
         return $this->get($key);
+    }
+
+    /**
+     * @magic has
+     * @param string $key
+     * @return bool
+     */
+    public function __isset($key) {
+        return $this->has($key);
     }
 
     /**

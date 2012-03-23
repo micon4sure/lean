@@ -146,6 +146,12 @@ namespace lean;
         printf('<label for="%s">%s</label>', $this->getElement($name)->getId(), $label);
     }
 
+    /**
+     * Return if every element of the form is valid
+     * Fill errors array with element's errors
+     * @param array $errors
+     * @return bool
+     */
     public function isValid(&$errors = array()) {
         $valid = true;
         foreach($this->elements as $name => $element) {
@@ -156,5 +162,17 @@ namespace lean;
             }
         }
         return $valid;
+    }
+
+    /**
+     * Get values of all elements
+     * @return array
+     */
+    public function getData() {
+       $data = array();
+        foreach($this->elements as $element) {
+            $data[$element->getId()] = $element->getValue();
+        }
+        return $data;
     }
 }

@@ -5,51 +5,56 @@ class Session {
 
     const NAMESPACE_SEPERATOR = '\\';
 
-    private $namespace = '';
-
-    private $hasNamespace = false;
+    /**
+     * @var null
+     */
+    private $link = null;
 
     public function __construct($namespace = null) {
         $this->startSession();
-        $this->setNamespace($namespace);
-    }
-
-    /**
-     * Set a namespace
-     *
-     * @param null $namespace
-     */
-    public function setNamespace($namespace = null) {
-        if ($namespace === null) {
-            $this->hasNamespace = false;
-        }
-        else {
-            $this->hasNamespace = true;
-            $this->namespace = $namespace;
-        }
+        $this->link =& $_SESSION[$namespace];
     }
 
     /**
      * Set a session value
      *
      * @magic
-     * @param $name  String
+     * @param $key  String
      * @param $value String
      */
-    public function __set($name, $value) {
-        $_SESSION[$this->buildSessionKey($name)] = $value;
+    public function __set($key, $value) {
+        $this->set($key, $value);
+    }
+
+    /**
+     * @param String $key
+     * @param        $value String
+     * @internal param String $key
+     */
+    public function set($key, $value) {
+        $this->link[$key] = $value;
     }
 
     /**
      * Return a session value
      *
      * @magic
-     * @param $name String|null
+     * @param $key String|null
+     * @return mixed
      */
-    public function __get($name) {
-        $key = $this->buildSessionKey($name);
-        return isset($_SESSION[$key])
-            ? $_SESSION[$key]
+    public function __get($key) {
+        return $this->get($key);
+    }
+
+    /**
+     * Return a session value
+     *
+     * @param $key String|null
+     * @return mixed
+     */
+    public function get($key) {
+        return isset($this->link[$key])
+            ? $this->link[$key]
             : null;
     }
 
@@ -57,27 +62,14 @@ class Session {
      * Unset a session value
      *
      * @magic
-     * @param $name String|null
+     * @param $key
+     * @internal param null|String $name
      */
-    public function __unset($name) {
-        $key = $this->buildSessionKey($name);
-        if (!isset($_SESSION[$key])) {
+    public function __unset($key) {
+        if (!isset($this->link[$key])) {
             return;
         }
-        unset($_SESSION[$key]);
-    }
-
-    /**
-     * Build valid session array key for namespace access
-     *
-     * @param $key
-     * @return string
-     */
-    private function buildSessionKey($key) {
-        if (!$this->hasNamespace) {
-            return $key;
-        }
-        return $this->namespace . static::NAMESPACE_SEPERATOR . $key;
+        unset($this->link[$key]);
     }
 
     /**
