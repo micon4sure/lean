@@ -6,6 +6,8 @@ namespace lean;
  */
 class Application {
 
+    const DEFAULT_ROUTE_NAME = 'lean_default_action_contronller_route';
+
     /**
      * Variable incremented by a hook. Indicates how many times slim has dispatched something
      * Initial value is -1 because it is hooked into slim.before.dispatch.
@@ -94,7 +96,7 @@ class Application {
             $pattern .= sprintf("(/:$addName$i)");
         }
 
-        $route = $this->registerRoute($pattern, $params);
+        $route = $this->registerRoute(self::DEFAULT_ROUTE_NAME, $pattern, $params);
         $route->setMiddleware(function() use($route, $additionalParameters, $addName) {
             $params = $route->getParams();
             // loop through the additional parameter key(/value) pairs
@@ -135,15 +137,15 @@ class Application {
     /**
      * Register a route with the application
      *
+     * @param        $name
      * @param string $pattern the slim compatible url pattern
      * @param array  $params  params that will be passed on to the controller
      * @param array  $methods methods this controller accepts
      *
-     * @return \Slim_Route
-     *
      * @throws Exception
+     * @return \Slim_Route
      */
-    public function registerRoute($pattern, $params = array(), $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
+    public function registerRoute($name, $pattern, $params = array(), $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
         // create dispatching function
         $this->params = isset($this->params)
             ? $this->params
@@ -198,6 +200,7 @@ class Application {
 
         // register dispatch with lean
         $route = $this->slim()->router()->map($pattern, $dispatch);
+        $route->name($name);
         call_user_func_array(array($route, 'setHttpMethods'), $methods);
         return $route;
     }
