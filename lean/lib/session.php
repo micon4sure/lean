@@ -3,8 +3,6 @@ namespace lean;
 
 class Session {
 
-    const NAMESPACE_SEPERATOR = '\\';
-
     /**
      * @var null
      */

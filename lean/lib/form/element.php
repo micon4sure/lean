@@ -141,11 +141,12 @@ namespace lean\form;
     }
 
     /**
+     * @param $errorMessages
      * @return bool
      */
-    public function isValid() {
+    public function isValid(&$errorMessages = array()) {
         foreach ($this->validators as $validator) {
-            if (!$validator->isValid($this->getValue())) {
+            if (!$validator->isValid($this->getValue(), $errorMessages)) {
                 return false;
             }
         }

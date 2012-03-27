@@ -82,3 +82,32 @@ class Validator_Equal extends Validator_Abstract {
         return true;
     }
 }
+
+class Validator_Custom extends Validator_Abstract {
+
+    const ERR_NOT_VALID = 'not_valid';
+
+    private $callback;
+
+    public function __construct($messages, $callable) {
+        parent::__construct($messages);
+        $this->callback = $callable;
+        if(!is_callable($callable))
+            throw new \lean\Exception('Second argument has to be a valid callback!');
+    }
+
+    /**
+     * @param mixed  $value
+     * @param array  $messages
+     * @internal param string $message
+     * @return boolean
+     */
+    public function isValid($value, &$messages = array()) {
+        if(!$this->callback($value)) {
+            $messages[] = $this->getErrorMessage(self::ERR_NOT_VALID);
+            return false;
+        }
+
+        return true;
+    }
+}
