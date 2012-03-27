@@ -50,7 +50,7 @@ namespace lean;
      * Should magic methods be shown if declared?
      *
      * @var boolean */
-    private $magic = false;
+    private $magic = true;
 
     /**
      * Should dumps be wrapped in HTML? Important for CLI
@@ -153,7 +153,7 @@ namespace lean;
      *
      * @return Dump
      */
-    public function magic($bool = true) {
+    public function magic($bool = false) {
         $this->magic = $bool;
         return $this;
     }

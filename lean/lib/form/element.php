@@ -136,8 +136,27 @@ namespace lean\form;
      */
     public abstract function display();
 
+    /**
+     * @param $label
+     */
+    public function displayLabel($label) {
+        printf('<label for="%s">%s</label>', $this->getId(), $label);
+    }
+
+    /**
+     * @param Validator $validator
+     */
     public function addValidator(Validator $validator) {
         $this->validators[] = $validator;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors() {
+        $errors = array();
+        $this->isValid($errors);
+        return $errors;
     }
 
     /**

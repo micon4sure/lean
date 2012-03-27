@@ -41,7 +41,7 @@ class Validator_Mandatory extends Validator_Abstract {
      */
     public function isValid($value, &$messages = array()) {
         if($value === null || is_string($value) && !strlen($value)) {
-            $messages[self::ERR_NO_VALUE] = $this->getErrorMessage(self::ERR_NO_VALUE);
+            $messages[] = $this->getErrorMessage(self::ERR_NO_VALUE);
             return false;
         }
 
@@ -62,8 +62,8 @@ class Validator_Equal extends Validator_Abstract {
      * @param array $messages
      * @param \lean\form\Element $compareElement
      */
-    public function __construct($msg, Element $compareElement) {
-        parent::__construct(array(self::ERR_NOT_EQUAL => $msg));
+    public function __construct($messages = array(), Element $compareElement) {
+        parent::__construct($messages);
 
         $this->compare = $compareElement;
     }
@@ -75,7 +75,7 @@ class Validator_Equal extends Validator_Abstract {
      */
     public function isValid($value, &$messages = array()) {
         if($value != $this->compare->getValue()) {
-            $messages[self::ERR_NOT_EQUAL] = $this->getErrorMessage(self::ERR_NOT_EQUAL);
+            $messages[] = $this->getErrorMessage(self::ERR_NOT_EQUAL);
             return false;
         }
 
@@ -89,8 +89,8 @@ class Validator_Custom extends Validator_Abstract {
 
     private $callback;
 
-    public function __construct($msg, $callable) {
-        parent::__construct(array(self::ERR_NOT_VALID => $msg));
+    public function __construct($messages, $callable) {
+        parent::__construct($messages);
         $this->callback = $callable;
         if(!is_callable($callable))
             throw new \lean\Exception('Second argument has to be a valid callback!');
@@ -103,8 +103,8 @@ class Validator_Custom extends Validator_Abstract {
      * @return boolean
      */
     public function isValid($value, &$messages = array()) {
-        if(!call_user_func_array($this->callback, array($value))) {
-            $messages[self::ERR_NOT_VALID] = $this->getErrorMessage(self::ERR_NOT_VALID);
+        if(!$this->callback($value)) {
+            $messages[] = $this->getErrorMessage(self::ERR_NOT_VALID);
             return false;
         }
 
