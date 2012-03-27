@@ -3,7 +3,8 @@ namespace lean;
 
 /**
  * HTML form abstraction class
- */ class Form {
+ */
+class Form {
 
     /**
      * Request method get
@@ -113,6 +114,17 @@ namespace lean;
     }
 
     /**
+     * Magic form element getter
+     *
+     * @magic
+     * @param $name
+     * @return form\Element|null
+     */
+    public function __get($name) {
+        return $this->getElement($name);
+    }
+
+    /**
      * Populate an array of data to the elements
      *
      * @param array $data
@@ -150,7 +162,7 @@ namespace lean;
      * @param $name string
      */
     public function displayLabel($name, $label) {
-        printf('<label for="%s">%s</label>', $this->getElement($name)->getId(), $label);
+        $this->getElement($name)->displayLabel($label);
     }
 
     /**
