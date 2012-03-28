@@ -104,7 +104,7 @@ class Form {
      */
     public function addElement(form\Element $element) {
         $this->elements[$element->getName()] = $element;
-        $element->setId($this->name . '-' . $element->getName());
+        $element->setId($this->name . '_' . $element->getName());
         return $element;
     }
 
