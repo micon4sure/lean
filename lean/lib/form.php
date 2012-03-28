@@ -180,7 +180,9 @@ class Form {
      * @param $name string
      */
     public function display($name) {
-        $this->getElement($name)->display();
+        if(!($element = $this->getElement($name)))
+            throw new Exception("Element '$name' not found in form '{$this->name}'");
+        $element->display();
     }
 
     public function isValid() {
