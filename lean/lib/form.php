@@ -3,6 +3,9 @@ namespace lean;
 
 /**
  * HTML form abstraction class
+ *
+ * getErrors and isValid will trigger a validation once.
+ * If different data is populated after, revalidate needs to be called to get correct results
  */
 class Form {
 
@@ -39,6 +42,18 @@ class Form {
      * @var string
      */
     private $method = self::METHOD_POST;
+
+    /**
+     * @var null|bool
+     */
+    private $isValid = null;
+
+    /**
+     * Validation error messages
+     *
+     * @var array
+     */
+    private $errors = null;
 
     /**+
      * @param $name string
@@ -89,7 +104,7 @@ class Form {
      */
     public function addElement(form\Element $element) {
         $this->elements[$element->getName()] = $element;
-        $element->setId($this->name . '_' . $element->getName());
+        $element->setId($this->name . '-' . $element->getName());
         return $element;
     }
 
@@ -128,13 +143,25 @@ class Form {
      * Populate an array of data to the elements
      *
      * @param array $data
+     * @param bool  $names
      */
-    public function populate(array $data) {
+    public function populate(array $data, $names = false) {
         foreach ($this->elements as $element) {
-            if (array_key_exists($element->getId(), $data)) {
-                $element->setValue($data[$element->getId()]);
-            } else {
-                $element->setValue(null);
+            if($names) {
+                // keys by name
+                if (array_key_exists($element->getName(), $data)) {
+                    $element->setValue($data[$element->getName()]);
+                } else {
+                    $element->setValue(null);
+                }
+            }
+            else {
+                // keys by id
+                if (array_key_exists($element->getId(), $data)) {
+                    $element->setValue($data[$element->getId()]);
+                } else {
+                    $element->setValue(null);
+                }
             }
         }
     }
@@ -156,13 +183,10 @@ class Form {
         $this->getElement($name)->display();
     }
 
-    /**
-     * Display label
-     *
-     * @param $name string
-     */
-    public function displayLabel($name, $label) {
-        $this->getElement($name)->displayLabel($label);
+    public function isValid() {
+        if($this->isValid === null)
+            $this->validate();
+        return $this->isValid;
     }
 
     /**
@@ -171,8 +195,9 @@ class Form {
      * @param array $errors
      * @return bool
      */
-    public function isValid(&$errors = array()) {
+    protected function validate() {
         $valid = true;
+        $errors = array();
         foreach($this->elements as $name => $element) {
             $elementErrors = array();
             if(!$element->isValid($elementErrors)) {
@@ -180,7 +205,30 @@ class Form {
                 $valid = false;
             }
         }
-        return $valid;
+        $this->errors = $errors;
+        $this->isValid = $valid;
+        return $this->isValid();
+    }
+
+    /**
+     * Revalidate the form
+     * Must be called to get correct isValid and errors after repopulating data
+     *
+     * @return bool
+     */
+    public function revalidate() {
+        return $this->validate();
+    }
+
+    /**
+     * Get validation errors
+     *
+     * @return array
+     */
+    public function getErrors() {
+        if($this->errors === null)
+            $this->validate();
+        return $this->errors;
     }
 
     /**

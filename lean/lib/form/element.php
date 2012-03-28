@@ -23,6 +23,11 @@ namespace lean\form;
     /**
      * @var string
      */
+    private $label;
+
+    /**
+     * @var string
+     */
     private $value;
 
     /**
@@ -38,8 +43,9 @@ namespace lean\form;
     /**
      * @param $name
      */
-    public function __construct($name) {
+    public function __construct($name, $label = '') {
         $this->name = $name;
+        $this->label = $label;
     }
 
     /**
@@ -131,16 +137,45 @@ namespace lean\form;
     }
 
     /**
+     * @param $label
+     * @return Element
+     */
+    public function setLabel($label) {
+        $this->label = $label;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel() {
+        return $this->label;
+    }
+
+    /**
      * @abstract
      * Display the form element
      */
     public abstract function display();
 
     /**
-     * @param $label
+     * @param bool  $elementClasses set element css classes to label?
+     * @param array $attributes
+     * @internal param $label
      */
-    public function displayLabel($label) {
-        printf('<label for="%s">%s</label>', $this->getId(), $label);
+    public function displayLabel($elementClasses = true, $attributes = array()) {
+        $attributeStrings = array();
+        $attributes['for'] = $this->getId();
+        if ($elementClasses) {
+            $attributes['class'] = implode(' ', $this->cssClasses);
+        }
+        foreach ($attributes as $key => $value) {
+            $attributeStrings[] = "$key=\"$value\"";
+        }
+
+        printf('<label %s>%s</label>',
+            implode(' ', $attributeStrings),
+            $this->getLabel());
     }
 
     /**

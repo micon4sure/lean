@@ -11,10 +11,12 @@ namespace lean\form\element;
     private $options = array();
 
     /**
-     * @param $name
+     * @param string $name
+     * @param string $title
+     * @param array  $options
      */
-    public function __construct($name, array $options) {
-        parent::__construct($name);
+    public function __construct($name, $title, array $options) {
+        parent::__construct($name, $title);
         $this->options = $options;
     }
 
@@ -31,12 +33,23 @@ namespace lean\form\element;
         return $string;
     }
 
-    public function options(array $options = null) {
+    /**
+     * @param array|null $options
+     * @return array|Combobox
+     */
+    public function getOptions(array $options = null) {
         if ($options !== null) {
             $this->options = $options;
             return $this;
         }
         return $this->options;
+    }
+
+    /**
+     * Get the label for the currently active value
+     */
+    public function getLabelForValue() {
+        return $this->options[$this->getValue()];
     }
 
     /**
