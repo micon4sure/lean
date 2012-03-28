@@ -26,7 +26,7 @@ class Radio extends \lean\form\Element {
             }
             return $this;
         }
-        printf('<input %1$s type="radio" name="%2$s" id="%2$s" value="%3$s" %4$s />', $this->getAttributeString(), $this->getId(), $key, $key == $this->getValue() ? ' checked="checked"' : '');
+        printf('<input %1$s type="radio" name="%2$s" id="%2$s" value="%3$s" %4$s />%5$s', $this->getAttributeString(), $this->getId(), $key, $key == $this->getValue() ? ' checked="checked"' : '', $this->options[$key]);
         return $this;
     }
 }
