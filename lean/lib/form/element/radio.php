@@ -11,8 +11,8 @@ class Radio extends \lean\form\Element {
      * @param $name
      * @param array $options
      */
-    public function __construct($name, $options) {
-        parent::__construct($name);
+    public function __construct($name, $options, $label = '') {
+        parent::__construct($name, $label);
         $this->options = $options;
     }
 
