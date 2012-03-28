@@ -11,8 +11,8 @@ class Radio extends \lean\form\Element {
      * @param $name
      * @param array $options
      */
-    public function __construct($name, $options) {
-        parent::__construct($name);
+    public function __construct($name, $options, $label = '') {
+        parent::__construct($name, $label);
         $this->options = $options;
     }
 
@@ -26,7 +26,11 @@ class Radio extends \lean\form\Element {
             }
             return $this;
         }
-        printf('<input %1$s type="radio" name="%2$s" id="%2$s" value="%3$s" %4$s />', $this->getAttributeString(), $this->getId(), $key, $key == $this->getValue() ? ' checked="checked"' : '');
+        $label = '';
+        $title = $this->options[$key];
+        if(mb_strlen(trim($title)) > 0)
+            $label = sprintf('<label for="%s_%s">%s</label>', $this->getId(), $key, $title);
+        printf('<input %1$s type="radio" name="%2$s" id="%2$s_%3$s" value="%3$s" %4$s />%5$s', $this->getAttributeString(), $this->getId(), $key, $key == $this->getValue() ? ' checked="checked"' : '', $label);
         return $this;
     }
 }
