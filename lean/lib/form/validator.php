@@ -59,11 +59,11 @@ class Validator_Equal extends Validator_Abstract {
     private $compare;
 
     /**
-     * @param array $messages
+     * @param String $message
      * @param \lean\form\Element $compareElement
      */
-    public function __construct($messages = array(), Element $compareElement) {
-        parent::__construct($messages);
+    public function __construct($message, Element $compareElement) {
+        parent::__construct(array(self::ERR_NOT_EQUAL => $message));
 
         $this->compare = $compareElement;
     }
@@ -89,8 +89,12 @@ class Validator_Custom extends Validator_Abstract {
 
     private $callback;
 
-    public function __construct($messages, $callable) {
-        parent::__construct($messages);
+    /**
+     * @param String $message
+     * @param $callable
+     */
+    public function __construct($message, $callable) {
+        parent::__construct(array(self::ERR_NOT_VALID => $message));
         $this->callback = $callable;
         if(!is_callable($callable))
             throw new \lean\Exception('Second argument has to be a valid callback!');
