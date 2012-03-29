@@ -107,7 +107,7 @@ class Validator_Custom extends Validator_Abstract {
      * @return boolean
      */
     public function isValid($value, &$messages = array()) {
-        if(!$this->callback($value)) {
+        if(!call_user_func_array($this->callback, func_get_args())) {
             $messages[] = $this->getErrorMessage(self::ERR_NOT_VALID);
             return false;
         }
