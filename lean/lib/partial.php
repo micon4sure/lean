@@ -31,16 +31,23 @@ class Partial {
     }
 
     /**
-     *
+     * @throws Exception
      */
     public function display() {
         if ($this->name === null) {
             throw new Exception('Partial name is null');
         }
+        $this->getTemplate()->display();
+    }
+
+    /**
+     * @return Template
+     */
+    public function getTemplate() {
         $file = $this->application->getSetting('lean.partial.directory') . '/' . strtolower($this->name) . '.php';
         $template = new Template($file);
         $template->setData($this->data->data());
-        $template->display();
+        return $template;
     }
 
     /**

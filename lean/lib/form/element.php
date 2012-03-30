@@ -180,9 +180,11 @@ namespace lean\form;
 
     /**
      * @param Validator $validator
+     * @return \lean\form\Element
      */
     public function addValidator(Validator $validator) {
         $this->validators[] = $validator;
+        return $this;
     }
 
     /**
