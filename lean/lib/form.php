@@ -22,7 +22,7 @@ class Form {
     /**
      * @var string name of the form
      */
-    private $name;
+    protected $name;
 
     /**
      * @var array instances of form\Element
