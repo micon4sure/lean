@@ -188,6 +188,15 @@ namespace lean\form;
     }
 
     /**
+     * Remove all validators from this element
+     * @return \lean\form\Element
+     */
+    public function removeValidators() {
+        $this->validators = array();
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getErrors() {

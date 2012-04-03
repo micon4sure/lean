@@ -80,6 +80,8 @@ class Template_Base {
      * @return mixed
      */
     public function get($key) {
+        if(!array_key_exists($key, $this->data))
+            throw new Exception("Unknown template key '$key'");
         return $this->data[$key];
     }
 
@@ -190,7 +192,12 @@ class Template extends Template_Base {
      * @return bool
      */
     public function __isset($key) {
-        return $this->has($key);
+        try {
+            return $this->get($key) !==null;
+        }
+        catch(\Exception $e) {
+            return false;
+        }
     }
 
     /**

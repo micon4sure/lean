@@ -101,11 +101,22 @@ class Form {
      * Add an element to the form
      *
      * @param form\Element $element
+     * @return \lean\form\Element
      */
     public function addElement(form\Element $element) {
         $this->elements[$element->getName()] = $element;
         $element->setId($this->name . '_' . $element->getName());
         return $element;
+    }
+
+    /**
+     * Remove an element from this form
+     * @param string $name
+     * @return Form
+     */
+    public function removeElement($name) {
+        unset($this->elements[$name]);
+        return $this;
     }
 
     /**
