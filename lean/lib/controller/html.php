@@ -61,7 +61,7 @@ abstract class HTML extends \lean\Controller {
         $class = \lean\Text::offsetLeft($class, 1);
         $file = \strtolower($class);
         $file = \str_replace('\\', '/', $file);
-        $action = $this->getAction();
+        $action = \lean\Text::splitCamelCase($this->getAction());
         $file = $this->getViewDirectory() . "/$file/$action.php";
         //TODO application setting
         $view = new \lean\Template($file);

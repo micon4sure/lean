@@ -47,6 +47,7 @@ class Partial {
         $file = $this->application->getSetting('lean.partial.directory') . '/' . strtolower($this->name) . '.php';
         $template = new Template($file);
         $template->setData($this->data->data());
+        $template->setCallback('urlFor', array($this->getApplication()->slim(), 'urlFor'));
         return $template;
     }
 
