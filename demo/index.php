@@ -1,4 +1,6 @@
 <?php
+print_r($_SERVER);
+die;
 include './init.php';
 $application = new \lean\Application('demo\\controller', array('debug' => true));
 $application->registerRoute('/start(/:bleh)', array('controller' => 'Start'));
