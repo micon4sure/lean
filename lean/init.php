@@ -23,7 +23,7 @@ class Autoload {
     public function __construct($loadLean = true) {
         spl_autoload_register(array($this, 'load'));
         if ($loadLean) {
-            $this->register('lean', __DIR__ . '/lib');
+            $this->register('lean', ROOT_PATH . '/lib');
         }
     }
 
