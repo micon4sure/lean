@@ -7,8 +7,8 @@ const ROOT_PATH = __DIR__;
  * lean autoloader.
  * Loads the library item depending on its name.
  * The name will be split by backslashes first: lean\form\element\Text => [lean, form, element, Text]
- * The parts of the name will be
- * The last item in that array is
+ * The last chunk of the splitted name will be split by underscores and only the first chunk is taken into consideration:
+ * \lean\Exception_Template_TemplatePathNotFound => [lean, exception]
  */
 class Autoload {
 
