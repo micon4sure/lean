@@ -18,29 +18,85 @@ abstract class HTML extends \lean\Controller {
      */
     private $view;
 
+    /**
+     * Holds template variables
+     * @var \lean\util\Object
+     */
+    protected $data;
+
+    /**
+     * @param \lean\Application $application
+     */
     public function __construct(\lean\Application $application) {
         parent::__construct($application);
+        $this->data = new \lean\util\Object();
     }
 
+    /**
+     * Create document, view and layout
+     */
     public function init() {
         parent::init();
 
-        $this->document = new \lean\Document($this->getDocumentFile());
-        $this->layout = new \lean\Template($this->getLayoutFile());
+        $this->document = $this->createDocument();
+        $this->layout = $this->createLayout();
         $this->view = $this->createView();
     }
 
-    protected function getDocumentFile() {
-        return LEAN_ROOT . '/templates/document.php';
-    }
-    protected abstract function getLayoutFile();
-    protected function getViewDirectory() {
-        return $this->getApplication()->getSetting('lean.view.directory');
-    }
     /**
      * @return \lean\Document
      */
-    public function getDocument() {
+    protected function createDocument() {
+        $file = $this->getApplication()->getSetting('lean.templates.documents.directory') . '/default.php';
+        return new \lean\Document($file);
+    }
+
+    /**
+     * @return \lean\Template
+     */
+    protected function createLayout() {
+        $file = $this->getApplication()->getSetting('lean.template.layouts.directory') . '/default.php';
+        return new \lean\Template($file);
+    }
+
+    /**
+     * TODO exploit testing
+     * @return \lean\Template
+     */
+    protected function createView() {
+        $class = \lean\Text::offsetLeft(get_called_class(), $this->getApplication()->getControllerNamespace());
+        $class = \lean\Text::offsetLeft($class, 1);
+        $file = \strtolower($class);
+        $file = \str_replace('\\', '/', $file);
+        $action = \lean\Text::splitCamelCase($this->getAction());
+        $file = $this->getApplication()->getSetting('lean.template.views.directory') . "/$file/$action.php";
+        $view = new \lean\Template($file);
+        return $view;
+    }
+
+    /**
+     * Display hirarchy
+     * controller
+     *  -> document
+     *      -> layout
+     *          -> view
+     */
+    protected function display() {
+        $document = $this->getDocument();
+        $layout = $this->getLayout();
+        $view = $this->getView();
+
+        // stack
+        $document->set('layout', $layout);
+        $layout->set('view', $view);
+
+        $document->display();
+    }
+
+    /**
+     * @return \lean\Document
+     */
+    protected function getDocument() {
         return $this->document;
     }
     /**
@@ -54,39 +110,5 @@ abstract class HTML extends \lean\Controller {
      */
     protected function getView() {
         return $this->view;
-    }
-
-    protected function createView() {
-        $class = \lean\Text::offsetLeft(get_called_class(), $this->getApplication()->getControllerNamespace());
-        $class = \lean\Text::offsetLeft($class, 1);
-        $file = \strtolower($class);
-        $file = \str_replace('\\', '/', $file);
-        $action = \lean\Text::splitCamelCase($this->getAction());
-        $file = $this->getViewDirectory() . "/$file/$action.php";
-        //TODO application setting
-        $view = new \lean\Template($file);
-        return $view;
-    }
-
-    protected function display() {
-        $document = $this->getDocument();
-        $layout = $this->getLayout();
-        $view = $this->getView();
-
-        // stack
-        $document->set('layout', $layout);
-        $layout->set('view', $view);
-
-        $view->setData($this->getView()->getData());
-
-        $document->display();
-    }
-
-    protected function set($key, $val) {
-        $this->getView()->set($key, $val);
-        return $this;
-    }
-    protected function get($key) {
-        return $this->getView()->get($key);
     }
 }

@@ -3,7 +3,8 @@
 namespace lean;
 
 /**
- * Template base holds all the data
+ * Template vars will be accessed from inside the object context
+ * -> Template_Base holds all the data to avoid naming clashes (i. e. template var with name file or data)
  */
 class Template_Base {
 
@@ -210,15 +211,5 @@ class Template extends Template_Base {
     public function __call($name, array $args) {
         $callback = parent::getCallback($name);
         return call_user_func_array($callback, $args);
-    }
-
-    /**
-     * Display the template
-     *
-     * @return Template
-     */
-    public function display() {
-        include $this->getFile();
-        return $this;
     }
 }

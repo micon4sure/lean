@@ -9,7 +9,7 @@ class Partial {
     private $application;
 
     /**
-     * @var Util_ArrayObject
+     * @var util\Object
      */
     protected $data;
 
@@ -19,13 +19,13 @@ class Partial {
     protected $name;
 
     /**
-     * @param             $name string
+     * @param string      $name
      * @param Application $application
      */
     public function __construct(Application $application, $name = null) {
         $this->name = $name;
         $this->application = $application;
-        $this->data = new Util_ArrayObject();
+        $this->data = new util\Object();
 
         $this->init();
     }
@@ -37,23 +37,21 @@ class Partial {
         if ($this->name === null) {
             throw new Exception('Partial name is null');
         }
-        $this->getTemplate()->display();
+        $this->createView()->display();
     }
 
     /**
      * @return Template
      */
-    public function getTemplate() {
+    public function createView() {
         $file = $this->application->getSetting('lean.partial.directory') . '/' . strtolower($this->name) . '.php';
         $template = new Template($file);
-        $template->setData($this->data->data());
+        $template->setData($this->data->toArray());
         $template->setCallback('urlFor', array($this->getApplication()->slim(), 'urlFor'));
         return $template;
     }
 
     /**
-     * get application
-     *
      * @return Application
      */
     protected function getApplication() {
@@ -61,7 +59,7 @@ class Partial {
     }
 
     /**
-     *
+     * Set up the partial
      */
     public function init() {
 

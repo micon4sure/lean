@@ -74,9 +74,76 @@ class Application {
         // this is necessary so application knows how many routes have been passed/dispatched
         $THIS = $this;
         $closure = function() use ($THIS) {
-            $THIS->dispatchedAction();
+            $THIS->dispatchedRoute();
         };
         $this->slim()->hook('slim.before.dispatch', $closure);
+    }
+
+    /**
+     * Register a route with the application
+     *
+     * @param        $name
+     * @param string $pattern the slim compatible url pattern
+     * @param array  $params  params that will be passed on to the controller
+     * @param array  $methods methods this controller accepts
+     *
+     * @throws Exception
+     * @return \Slim_Route
+     */
+    public function registerRoute($name, $pattern, $params = array(), $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
+        // create dispatching function
+        $this->params = isset($this->params)
+            ? $this->params
+            : array();
+
+        $THIS = $this;
+        $dispatch = function() use($THIS, $params) {
+            $matched = $THIS->slim()->router()->getMatchedRoutes();
+
+            // get the correct matched route. go back from the end of the array by n passes
+            $offset = $THIS->dispatchedRoute(false);
+            $current = $matched[$offset];
+
+            // merge parameters extracted from uri with hard parameters, passed to registerRoute
+            $params = array_merge($params, $current->getParams());
+
+            if (!isset($params['controller'])) {
+                throw new Exception(sprintf("Route with pattern '%s' has no controller parameter", $current->getPattern()));
+            }
+            $action = isset($params['action'])
+                ? Text::toCamelCase($params['action']) . 'Action'
+                : 'dispatch';
+
+            $controllerClass = Text::toCamelCase($params['controller'], true);
+
+            // controller exists?
+            if (!class_exists($controllerClass, true)) {
+                //$this->slim()->pass();
+                throw new Exception("Controller of type '$controllerClass' was not found");
+            }
+            $controller = new $controllerClass($THIS);
+
+            // controller is of the correct type?
+            if (!$controller instanceof Controller) {
+                throw new Exception("Controller of type '$controllerClass' is not of type lean\\Controller'");
+            }
+
+            // controller action exists?
+            if (!method_exists($controller, $action)) {
+                //$this->slim()->pass();
+                throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
+            }
+
+            $controller->setParams(new \lean\util\Object($params));
+            $controller->init();
+            call_user_func(array($controller, $action));
+        };
+
+        // register dispatch with lean
+        $route = $this->slim()->router()->map($pattern, $dispatch);
+        $route->name($name);
+        call_user_func_array(array($route, 'setHttpMethods'), $methods);
+        return $route;
     }
 
     /**
@@ -140,73 +207,6 @@ class Application {
     }
 
     /**
-     * Register a route with the application
-     *
-     * @param        $name
-     * @param string $pattern the slim compatible url pattern
-     * @param array  $params  params that will be passed on to the controller
-     * @param array  $methods methods this controller accepts
-     *
-     * @throws Exception
-     * @return \Slim_Route
-     */
-    public function registerRoute($name, $pattern, $params = array(), $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
-        // create dispatching function
-        $this->params = isset($this->params)
-            ? $this->params
-            : array();
-
-        $THIS = $this;
-        $dispatch = function() use($THIS, $params) {
-            $matched = $THIS->slim()->router()->getMatchedRoutes();
-
-            // get the correct matched route. go back from the end of the array by n passes
-            $offset = $THIS->dispatchedAction(false);
-            $current = $matched[$offset];
-
-            // merge parameters extracted from uri with hard parameters, passed to registerRoute
-            $params = array_merge($params, $current->getParams());
-
-            if (!isset($params['controller'])) {
-                throw new Exception(sprintf("Route with pattern '%s' has no controller parameter", $current->getPattern()));
-            }
-            $action = isset($params['action'])
-                ? Text::toCamelCase($params['action']) . 'Action'
-                : 'dispatch';
-
-            $controllerClass = Text::toCamelCase($params['controller'], true);
-
-            // controller exists?
-            if (!class_exists($controllerClass, true)) {
-                //$this->slim()->pass();
-                throw new Exception("Controller of type '$controllerClass' was not found");
-            }
-            $controller = new $controllerClass($THIS);
-
-            // controller is of the correct type?
-            if (!$controller instanceof Controller) {
-                throw new Exception("Controller of type '$controllerClass' is not of type lean\\Controller'");
-            }
-
-            // controller action exists?
-            if (!method_exists($controller, $action)) {
-                //$this->slim()->pass();
-                throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
-            }
-
-            $controller->setParams(new \lean\util\Object($params));
-            $controller->init();
-            call_user_func(array($controller, $action));
-        };
-
-        // register dispatch with lean
-        $route = $this->slim()->router()->map($pattern, $dispatch);
-        $route->name($name);
-        call_user_func_array(array($route, 'setHttpMethods'), $methods);
-        return $route;
-    }
-
-    /**
      * @return \Slim
      */
     public function slim() {
@@ -220,10 +220,15 @@ class Application {
      */
     protected function getDefaultSettings() {
         $settings = array();
-        $settings['lean.view.directory'] = APPLICATION_ROOT . '/views';
-        $settings['lean.partial.directory'] = APPLICATION_ROOT . '/partials';
+        // environment
         $settings['lean.environment.name'] = 'development';
         $settings['lean.environment.file'] = APPLICATION_ROOT . '/config/environment.ini';
+        // templates
+        $settings['lean.templates.directory'] = APPLICATION_ROOT . '/templates';
+        $settings['lean.templates.documents.directory'] = APPLICATION_ROOT . '/templates/documents';
+        $settings['lean.templates.layouts.directory'] = APPLICATION_ROOT . '/templates/layouts';
+        $settings['lean.templates.views.directory'] = APPLICATION_ROOT . '/templates/views';
+        $settings['lean.templates.partials.directory'] = APPLICATION_ROOT . '/templates/partials';
         return $settings;
     }
 
@@ -248,13 +253,15 @@ class Application {
     }
 
     /**
-     * Get the number of controllers, Slim has dispatched, do not call this on your own, is used internally
+     * Get the number of routes, Slim has dispatched.
+     * Do not call unless you know about the implications
+     * TODO private with 5.4 and closure binding
      *
      * @param bool $increment
      *
      * @return int
      */
-    public function dispatchedAction($increment = true) {
+    public function dispatchedRoute($increment = true) {
         return $increment
             ? $this->dispatched++
             : $this->dispatched;

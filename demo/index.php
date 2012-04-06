@@ -13,7 +13,6 @@ $autoload = new \lean\Autoload();
 $autoload->register('demo', __DIR__ . '/lib');
 
 $application = new \lean\Application(array('debug' => true));
-#$application->registerRoute('start', '/start', array('controller' => '\demo\controller\Start'));
 $application->registerControllerDefaultRoute('\\demo\\controller');
 $application->run();
 ?>
