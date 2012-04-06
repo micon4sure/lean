@@ -6,7 +6,7 @@ namespace lean;
  */
 class Application {
 
-    const DEFAULT_ROUTE_NAME = 'lean_default_action_contronller_route';
+    const DEFAULT_ROUTE_NAME = 'lean_default_action_controller_route';
 
     /**
      * Variable incremented by a hook. Indicates how many times slim has dispatched something
@@ -55,7 +55,7 @@ class Application {
      * @param string $controllerNamespace
      * @param array  $slimSettings
      */
-    public function __construct($controllerNamespace, $leanSettings = array(), $slimSettings = array()) {
+    public function __construct($leanSettings = array(), $slimSettings = array()) {
         // check for existence of APPLICATION_ROOT constant
         if (!defined('APPLICATION_ROOT')) {
             throw new Exception("'APPLICATION_ROOT' not defined!");
@@ -66,10 +66,8 @@ class Application {
         // set settings (arg2 is more important than arg1)
         $this->settings = array_merge($this->getDefaultSettings(), $leanSettings);
 
-        // create environment
+        // create environment and slim
         $this->environment = new Environment($this->settings['lean.environment.file'], $this->settings['lean.environment.name']);
-
-        $this->controllerNamespace = $controllerNamespace;
         $this->slim = new \Slim($slimSettings);
 
         // hook into route dispatching.
@@ -87,9 +85,11 @@ class Application {
      * Additional parameters are possible: /foo/bar/qux/baz/kos/asd/wam will call FooController::barAction with params
      * {qux: baz, kos: asd, wam: true}
      *
+     * @param string $controllerNamespace
      * @param int $additionalParameters
+     * @return \Slim_Route
      */
-    public function registerControllerDefaultRoute($additionalParameters = 3, $params = array()) {
+    public function registerControllerDefaultRoute($controllerNamespace, $additionalParameters = 3, $params = array()) {
         $pattern = '/:controller(/:action)';
         $addName = 'lean_add';
         for ($i = 0; $i <= ($additionalParameters * 2); $i++) {
@@ -97,7 +97,7 @@ class Application {
         }
 
         $route = $this->registerRoute(self::DEFAULT_ROUTE_NAME, $pattern, $params);
-        $route->setMiddleware(function() use($route, $additionalParameters, $addName) {
+        $route->setMiddleware(function() use($route, $additionalParameters, $addName, $controllerNamespace) {
             $params = $route->getParams();
             // loop through the additional parameter key(/value) pairs
             for ($i = 0; $i < count($params); $i += 2) {
@@ -122,6 +122,11 @@ class Application {
                     $params[$key] = true;
                 }
             }
+
+            // prepend controler namespace to controller name
+            // and camelcase + ucfirst
+            $params['controller'] = $controllerNamespace . '\\'
+                . \lean\Text::toCamelCase($params['controller'], true);
 
             // dirty reflection workaround: params is protected
             $reflection = new \ReflectionObject($route);
@@ -163,15 +168,13 @@ class Application {
             $params = array_merge($params, $current->getParams());
 
             if (!isset($params['controller'])) {
-                Dump::flat($params);
                 throw new Exception(sprintf("Route with pattern '%s' has no controller parameter", $current->getPattern()));
             }
             $action = isset($params['action'])
                 ? Text::toCamelCase($params['action']) . 'Action'
                 : 'dispatch';
 
-            $controllerClass = $THIS->getControllerNamespace() . '\\'
-                . Text::toCamelCase($params['controller'], true);
+            $controllerClass = Text::toCamelCase($params['controller'], true);
 
             // controller exists?
             if (!class_exists($controllerClass, true)) {
@@ -191,9 +194,7 @@ class Application {
                 throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
             }
 
-            $THIS->setRequestParams($params);
-
-            $controller->setParams(new Util_ArrayObject($params));
+            $controller->setParams(new \lean\util\Object($params));
             $controller->init();
             call_user_func(array($controller, $action));
         };
@@ -206,43 +207,10 @@ class Application {
     }
 
     /**
-     * @param $key
-     * @throws Exception
-     * @return mixed
-     */
-    public function getRequestParam($key) {
-        $params = $this->getRequestParams();
-        if (!array_key_exists($key, $params)) {
-            throw new Exception("Key '$key' does not exist!");
-        }
-        return $params[$key];
-    }
-
-    /**
-     * @param array $params
-     * @return \lean\Application
-     */
-    public function setRequestParams(array $params) {
-        $this->requestParams = $params;
-        return $this;
-    }
-
-    public function getRequestParams() {
-        return $this->requestParams;
-    }
-
-    /**
      * @return \Slim
      */
     public function slim() {
         return $this->slim;
-    }
-
-    /**
-     * @return string
-     */
-    public function getControllerNamespace() {
-        return $this->controllerNamespace;
     }
 
     /**

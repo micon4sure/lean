@@ -34,7 +34,7 @@ class Controller {
         return $this->application;
     }
 
-    public function setParams(Util_ArrayObject $params) {
+    public function setParams(util\Object $params) {
         $this->params = $params;
         return $this;
     }
