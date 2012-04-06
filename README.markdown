@@ -19,7 +19,8 @@
 
 ### Why is there no ORM included?
 > Building yet another ORM is beyond the scope of _lean_. There are plenty of good ORMs out there already, just use one of those. The philosophy of lean is that you should pick the components you like and use them when you build your application/website, this extends to the ORM.
-I personally am using [Paris and Idiorm](http://j4mie.github.com/idiormandparis/ "paris and idorm") right now, despite the horrendous coding style.
+I personally am using [Paris and Idiorm](http://j4mie.github.com/idiormandparis/ "paris and idorm") right now, despite its using python coding style.
+> (I forked it already and planning am planning on picking up the torch, it seems to be abandonded anyway)
 
 
 ---

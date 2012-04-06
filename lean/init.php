@@ -1,7 +1,7 @@
 <?
 namespace lean;
 
-define('ROOT_PATH', __DIR__);
+const ROOT_PATH = __DIR__;
 
 /**
  * lean autoloader.

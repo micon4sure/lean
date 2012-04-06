@@ -47,7 +47,7 @@ abstract class HTML extends \lean\Controller {
      * @return \lean\Document
      */
     protected function createDocument() {
-        $file = $this->getApplication()->getSetting('lean.templates.documents.directory') . '/default.php';
+        $file = \lean\ROOT_PATH . '/templates/document.php';
         return new \lean\Document($file);
     }
 

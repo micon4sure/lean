@@ -1,34 +1,56 @@
 <?php
 namespace lean;
 
+/**
+ * Representst the document
+ * TODO do not extend template anymore and delegate?
+ */
 class Document extends Template {
 
+    /**
+     * @var string
+     */
+    protected $title = '';
+    /**
+     * @var array
+     */
+    protected $scripts = array();
+    /**
+     * @var array
+     */
+    protected $styles = array();
 
+    /**
+     * @param string $file
+     */
     public function __construct($file) {
         parent::__construct($file);
-        $this->set('styles', array());
-        $this->set('scripts', array());
     }
 
+    /**
+     * @param string $style
+     */
     public function addStyle($style) {
-        $styles = $this->styles;
-        $styles[] = $style;
-        $this->set('styles', $styles);
+        $this->styles[] = $style;
     }
 
+    /**
+     * @param string $script
+     */
     public function addScript($script) {
-        // get unique key
-        $key = md5($script);
-
-        // if script already exists ignore
-        if(array_key_exists($key, $this->scripts))
-            return;
-        $scripts = $this->scripts;
-        $scripts[$key] = $script;
-        $this->set('scripts', $scripts);
+        $this->scripts[] = $script;
     }
 
+    /**
+     * @return string
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+    /**
+     * @param string $title
+     */
     public function setTitle($title) {
-        $this->set('title', $title);
+        $this->title = $title;
     }
 }
