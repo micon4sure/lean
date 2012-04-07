@@ -22,6 +22,11 @@
     <span id="teaser_bottom"></span>
     <? $this->view->display(); ?>
     <footer>
+        <p>
         <a href="http://github.com/klawd-prime/lean">lean µlib</a>, <a href="http://github.com/klawd-prime">Michael Saller</a>, <a href="http://time.is">2012</a>
+        </p>
+        <p>
+            <a href="#container">to the top you go!</a>
+        </p>
     </footer>
 </div>
