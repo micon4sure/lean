@@ -1,11 +1,11 @@
 @main: #002999;
 @background: #f0efda;
-@gradient_blue_top: #0093de;
-@gradient_blue_bottom: #0034d4;
-@teaser_top_shadow: #005ec2;
-@teaser_bottom_shadow: #0022a6;
+@gradient_teaser_top: #0093de;
+@gradient_teaser_bottom: #0034d4;
+@teaser_top_shadow: darken(@gradient_teaser_top, 10%);
+@teaser_bottom_shadow: darken(@gradient_teaser_bottom, 10%);
 @neon: #002999;
-@footer_background: #e2ebcd;
+@footer_background: #e9ebd0;
 @footer_color: #333;
 @footer_link_color: #48555e;
 @footer_shadow: #bbb;
@@ -16,7 +16,8 @@ html {
     margin:0;
     padding:0;
     min-height: 100%;
-    font-family: DejaVuMono;
+    font-family: 'Open Sans';
+    font-size: 14px;
 }
 
 body {
@@ -58,21 +59,18 @@ html[xmlns] .clearfix {
 
 /* header */
 h1 {
-  color: #aaa;
-  margin-top: 0;
-  #lean {
-    font-size: 150%;
-    color: #333;
-  }
-  .left;
+    font-family: 'Poiret One', sans-serif;
+    color: #aaa;
+    margin-top: 0;
+    #lean {
+        font-size: 150%;
+        color: #333;
+    }
+    .left;
 }
 h2 {
   color: @main;
   margin-bottom:0px;
-}
-h1, h2 {
-    font-family: DejaVuSansLight;
-    letter-spacing: -.1em;
 }
 h3, h4 {
     color: @main;
@@ -82,7 +80,6 @@ h3, h4 {
 a {
     color: #009900;
     text-decoration: none;
-    font-weight:bold;
 }
 a:hover {
     text-decoration: underline;
@@ -100,6 +97,7 @@ code {
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
+    font-family: 'DejaVuMono';
 }
 
 .inline code {
@@ -111,7 +109,6 @@ code {
     width: 1000px;
     margin: 0px auto;
     padding: 15px;
-    padding-bottom: 0;
     background-color: #fafafa;
     box-shadow: -5px 0px 10px #999, 5px 0px 10px #999 ;
     min-height: 100%;
@@ -182,7 +179,7 @@ code {
 
 /* teaser */
 #teaser {
-    .gradient(@gradient_blue_top, @gradient_blue_bottom);
+    .gradient(@gradient_teaser_top, @gradient_teaser_bottom);
     -moz-box-shadow:
         inset 0 5px 5px @teaser_top_shadow,
         inset 0 -5px 5px @teaser_bottom_shadow;
@@ -230,7 +227,7 @@ code {
 
 /* footer */
 footer {
-    margin: 15px -15px 0px -15px;
+    margin: 0px;
     display: block;
     background-color: @footer_background;
     color: white;

@@ -10,6 +10,7 @@ class Html extends \lean\controller\HTML {
         $this->getDocument()->addScript('/js/less.js', true);
         $this->getDocument()->addScript('/js/jquery.js', true);
         $this->getDocument()->addScript('/js/global.js', true);
+        $this->getDocument()->addCSSheet('http://fonts.googleapis.com/css?family=Poiret+One|Open+Sans:400');
     }
 
     public function dispatch() {
