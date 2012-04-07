@@ -25,13 +25,6 @@ class Application {
     private $controllerNamespace;
 
     /**
-     * Singleton instance
-     *
-     * @var Application
-     */
-    private static $instance;
-
-    /**
      * @var \Slim
      */
     private $slim;
@@ -60,8 +53,6 @@ class Application {
         if (!defined('APPLICATION_ROOT')) {
             throw new Exception("'APPLICATION_ROOT' not defined!");
         }
-
-        self::$instance = $this;
 
         // set settings (arg2 is more important than arg1)
         $this->settings = array_merge($this->getDefaultSettings(), $leanSettings);
