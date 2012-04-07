@@ -8,8 +8,13 @@ class Session {
      */
     private $link = null;
 
+    /**
+     * @param string $namespace
+     */
     public function __construct($namespace = null) {
-        $this->startSession();
+        if (session_id() === '') {
+            session_start();
+        }
         if(!isset($_SESSION[$namespace]))
             $_SESSION[$namespace] = array();
         $this->link =& $_SESSION[$namespace];
@@ -72,16 +77,12 @@ class Session {
         unset($this->link[$key]);
     }
 
+    /**
+     * @magic
+     * @param $key
+     * @return bool
+     */
     public function __isset($key) {
         return isset($this->link[$key]);
-    }
-
-    /**
-     * Start php session if not started already
-     */
-    private function startSession() {
-        if (session_id() === '') {
-            session_start();
-        }
     }
 }

@@ -10,7 +10,7 @@ class Controller {
     private $application;
 
     /**
-     * @var Util_ArrayObject
+     * @var util\Object
      */
     private $params;
 
@@ -28,28 +28,71 @@ class Controller {
     }
 
     /**
+     * @param util\Object $params
+     * @return Controller
+     */
+    public function setParams(util\Object $params) {
+        $this->params = $params;
+        return $this;
+    }
+
+    /**
+     * @return util\Object
+     */
+    public function getParams() {
+        return $this->params;
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    public function getParam($key) {
+        return $this->params->{$key};
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction() {
+        return $this->params->has('action')
+            ? $this->getParam('action')
+            : 'dispatch';
+    }
+
+    /**
      * @return Application
      */
     protected function getApplication() {
         return $this->application;
     }
 
-    public function setParams(util\Object $params) {
-        $this->params = $params;
-        return $this;
+    /**
+     * @return \Slim
+     */
+    public function getSlim() {
+        return $this->getApplication()->slim();
     }
 
-    public function getParams() {
-        return $this->params;
+    /**
+     * @return \Slim_Http_Request
+     */
+    public function getRequest() {
+        return $this->getSlim()->request();
     }
 
-    public function getParam($key) {
-        return $this->params->{$key};
+    /**
+     * @return \Slim_Http_Response
+     */
+    public function getResponse() {
+        return $this->getSlim()->response();
     }
 
-    public function getAction() {
-        return $this->params->has('action')
-            ? $this->getParam('action')
-            : 'dispatch';
+    /**
+     * @param string $url
+     * @param int $status
+     */
+    public function redirect($url, $status = 302) {
+        $this->getSlim()->redirect($url, $status);
     }
 }

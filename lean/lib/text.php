@@ -173,4 +173,16 @@ class Text {
         }
         return $result;
     }
+
+    /**
+     * @param array $attributes
+     * @return string
+     */
+    public function createAttributeString(array $attributes) {
+        $parts = array();
+        foreach ($attributes as $key => $val) {
+            $parts[] = sprintf(' %s="%s"', $key, htmlspecialchars($val));
+        }
+        return implode(' ', $parts);
+    }
 }

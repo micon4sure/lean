@@ -18,7 +18,7 @@ class Document extends Template {
     /**
      * @var array
      */
-    protected $styles = array();
+    protected $styles = array('css' => array(), 'less' => array());
 
     /**
      * @param string $file
@@ -30,8 +30,15 @@ class Document extends Template {
     /**
      * @param string $style
      */
-    public function addStyle($style) {
-        $this->styles[] = $style;
+    public function addCssSheet($style) {
+        $this->styles['css'][] = $style;
+    }
+
+    /**
+     * @param string $style
+     */
+    public function addLessSheet($style) {
+        $this->styles['less'][] = $style;
     }
 
     /**

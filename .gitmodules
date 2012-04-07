@@ -1,3 +1,9 @@
 [submodule "external/slim"]
 	path = external/slim
 	url = https://github.com/klawd-prime/Slim.git
+[submodule "external/less.js"]
+	path = external/less.js
+	url = https://github.com/cloudhead/less.js.git
+[submodule "external/php-markdown"]
+	path = external/php-markdown
+	url = https://github.com/wolfie/php-markdown

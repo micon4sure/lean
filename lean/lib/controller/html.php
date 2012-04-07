@@ -44,6 +44,26 @@ abstract class HTML extends \lean\Controller {
     }
 
     /**
+     * Display hirarchy
+     * controller
+     *  -> document
+     *      -> layout
+     *          -> view
+     */
+    protected function display() {
+        $document = $this->getDocument();
+        $layout = $this->getLayout();
+        $view = $this->getView();
+        $view->setData($this->data->toArray());
+
+        // stack
+        $document->set('layout', $layout);
+        $layout->set('view', $view);
+
+        $document->display();
+    }
+
+    /**
      * @return \lean\Document
      */
     protected function createDocument() {
@@ -72,25 +92,6 @@ abstract class HTML extends \lean\Controller {
         $file = $this->getApplication()->getSetting('lean.templates.views.directory') . "/$file/$action.php";
         $view = new \lean\Template($file);
         return $view;
-    }
-
-    /**
-     * Display hirarchy
-     * controller
-     *  -> document
-     *      -> layout
-     *          -> view
-     */
-    protected function display() {
-        $document = $this->getDocument();
-        $layout = $this->getLayout();
-        $view = $this->getView();
-
-        // stack
-        $document->set('layout', $layout);
-        $layout->set('view', $view);
-
-        $document->display();
     }
 
     /**

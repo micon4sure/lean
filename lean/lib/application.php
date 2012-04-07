@@ -90,7 +90,13 @@ class Application {
      * @throws Exception
      * @return \Slim_Route
      */
-    public function registerRoute($name, $pattern, $params = array(), $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
+    public function registerRoute($name, $pattern, array $params = array(), array $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
+        // ensure argument validity
+        if(!is_string($name))
+            throw new \InvalidArgumentException("Argument 'name' needs to be a string");
+        if(!is_string($pattern))
+            throw new \InvalidArgumentException("Argument 'pattern' needs to be a string");
+
         // create dispatching function
         $this->params = isset($this->params)
             ? $this->params
@@ -233,10 +239,11 @@ class Application {
     }
 
     /**
-     * get a setting
+     * Get an application setting
      *
      * @param $settingName
      * @return mixed setting value
+     * @throws Exception
      */
     public function getSetting($settingName) {
         if (!array_key_exists($settingName, $this->settings)) {
@@ -271,11 +278,11 @@ class Application {
      * Run the application
      */
     public function run() {
-        $this->slim->run();
+        $this->slim()->run();
     }
 
     /**
-     * reload current page
+     * Reload current page
      */
     public function reload() {
         $this->slim()->redirect($_SERVER['REQUEST_URI']);
