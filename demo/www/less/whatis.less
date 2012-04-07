@@ -1,0 +1,27 @@
+.outer_shadow(@left, @top, @blur, @color) {
+    -moz-box-shadow: @left @top @blur @color;
+    webkit-box-shadow: @left @top @blur @color;
+    box-shadow: @left @top @blur @color;
+}
+
+#features {
+ vertical-align: top;
+ width: 40%;
+}
+.features li {
+    padding:3px;
+}
+
+
+#features h2 {
+    margin-top: 20px;
+}
+
+#woman {
+    text-align: center;
+}
+#woman img {
+    margin-top: 20px;
+    width: 235px;
+    .outer_shadow(0, 1px, 3px, #333);
+}

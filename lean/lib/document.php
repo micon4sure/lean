@@ -30,14 +30,14 @@ class Document extends Template {
     /**
      * @param string $style
      */
-    public function addCssSheet($style) {
+    public function addCSSheet($style) {
         $this->styles['css'][] = $style;
     }
 
     /**
      * @param string $style
      */
-    public function addLessSheet($style) {
+    public function addLESSheet($style) {
         $this->styles['less'][] = $style;
     }
 

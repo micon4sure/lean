@@ -12,8 +12,12 @@ $autoload->register('demo', APPLICATION_ROOT . '/lib');
 
 $application = new \lean\Application(array('debug' => true));
 
-$application->registerRoute('css', '/css/:action(/:file)', array('controller' => '\\demo\\controller\\CSS'));
+$application->slim()->get('/', function() use($application) {
+    $application->slim()->redirect('/whatis');
+});
 
 $application->registerControllerDefaultRoute('\\demo\\controller');
+
+
 $application->run();
 ?>

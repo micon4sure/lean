@@ -16,13 +16,13 @@ class Partial {
     /**
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * @param string      $name
      * @param Application $application
      */
-    public function __construct(Application $application, $name = null) {
+    public function __construct($name, Application $application) {
         $this->name = $name;
         $this->application = $application;
         $this->data = new util\Object();
@@ -30,13 +30,14 @@ class Partial {
         $this->init();
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
     /**
      * @throws Exception
      */
     public function display() {
-        if ($this->name === null) {
-            throw new Exception('Partial name is null');
-        }
         $this->createView()->display();
     }
 
@@ -44,10 +45,10 @@ class Partial {
      * @return Template
      */
     public function createView() {
-        $file = $this->application->getSetting('lean.partial.directory') . '/' . strtolower($this->name) . '.php';
+        $file = $this->application->getSetting('lean.templates.partials.directory') . '/' . strtolower($this->name) . '.php';
         $template = new Template($file);
         $template->setData($this->data->toArray());
-        $template->setCallback('urlFor', array($this->getApplication()->slim(), 'urlFor'));
+        $template->setCallback('urlFor', array($this->getSlim(), 'urlFor'));
         return $template;
     }
 

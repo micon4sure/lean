@@ -95,6 +95,13 @@ abstract class HTML extends \lean\Controller {
     }
 
     /**
+     * @param \lean\Partial $partial
+     */
+    protected function addPartial(\lean\Partial $partial) {
+        $this->getView()->setCallback($partial->getName(), $partial);
+    }
+
+    /**
      * @return \lean\Document
      */
     protected function getDocument() {

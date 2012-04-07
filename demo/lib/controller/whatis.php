@@ -1,8 +1,9 @@
 <?php
 namespace demo\controller;
 
-class Start extends HTML {
+class Whatis extends HTML {
     public function dispatch() {
+        $this->getDocument()->addLESSheet('/less/whatis.less');
         $this->display();
     }
 
