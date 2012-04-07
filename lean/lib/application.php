@@ -29,7 +29,7 @@ class Application {
      *
      * @var Application
      */
-    public static $instance;
+    private static $instance;
 
     /**
      * @var \Slim
