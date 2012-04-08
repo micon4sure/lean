@@ -47,10 +47,10 @@ namespace lean;
     private $sort = true;
 
     /**
-     * Should magic methods be shown if declared?
+     * Should the string representation of a class be shown if __toString is present?
      *
      * @var boolean */
-    private $magic = true;
+    private $showString = true;
 
     /**
      * Should dumps be wrapped in HTML? Important for CLI
@@ -149,12 +149,12 @@ namespace lean;
     }
 
     /**
-     * @param boolean $bool show magic functions?
+     * @param boolean $bool should the string representation of a class be shown if __toString is present?
      *
      * @return Dump
      */
-    public function magic($bool = false) {
-        $this->magic = $bool;
+    public function showString($bool = false) {
+        $this->showString = $bool;
         return $this;
     }
 
@@ -365,22 +365,9 @@ namespace lean;
                     echo str_repeat(self::SPACING, $levels) . "$method\n";
                 }
             }
-            if ($this->magic) {
-                $magic = array();
-                foreach (explode(',', self::MAGIC_METHODS) as $method) {
-                    if (method_exists($arg, $method)) {
-                        if ($method == '__toString') {
-                            $magic[] = str_repeat(self::SPACING, $levels) . '__toString: ' . (string)$arg . "\n";
-                        }
-                        else {
-                            $magic[] = str_repeat(self::SPACING, $levels) . $method . "\n";
-                        }
-                    }
-                }
-                if ($magic) {
-                    echo "\n" . str_repeat(self::SPACING, $levels) . "---! ::: MAGIC METHODS ::: !---\n";
-                    echo implode('', $magic);
-                }
+            if ($this->showString && method_exists($arg, '__toString')) {
+                $string = (string)$arg;
+                echo str_repeat(self::SPACING, $levels) . "this object to string: '$string'(string:" . strlen($string) . ")\n";
             }
             echo str_repeat(self::SPACING, $levels - 1) . "}\n";
         }

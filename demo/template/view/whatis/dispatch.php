@@ -1,18 +1,26 @@
 <h2>What is lean</h2>
+<h3>TL;DR: Some cold hard facts</h3>
+<ul>
+    <li>lean is a micro lib written in PHP5.3.</li>
+    <li>lean has everything you need to build a full fledged website, not more.</li>
+    <li>lean has an application class, utilizing <a href="http://slimframework.com">Slim's</a> Routing and dispatching</a></li>
+    <li>lean is fun.</li>
+</ul>
+<h3>In depth</h3>
 <p>
-    What began as the idea to bring Controller/Action functionality to the <a href="http://slimframework.com">Slim micro
-    framework</a>,
-    is now a simple yet powerful PHP5.3 micro lib to create full fledged web applications on top of Slim.
+lean is a small and lightweight library in PHP 5.3 and should be included in every project! It gives you easy and small components for templating, I18N, etc. along with some powerful utility classes such as <em>lean\Dump</em> 
 </p>
 <p>
-    lean has lots of components that will help you on your way to a great website even without using slim or the lean
-    Application class, have a look!
+    On top of that, it brings /:controller/:action functionality to the  <a href="http://slimframework.com">Slim</a> micro framework, complete with layout and partials!
+</p>
+<p>
+    Here's a feature complete feature list!
 </p>
 
 <table>
     <tr>
         <td id="features">
-            <h2>Features</h2>
+            <h4>Features</h4>
             <ul class="features">
                 <li>Controller/Action routing</li>
                 <li>Small but powerful template system</li>
@@ -25,7 +33,7 @@
                 <li>Text manipulation</li>
                 <li>Powerful data dump class</li>
             </ul>
-            <h2>Planned features</h2>
+            <h4>Planned features</h4>
             <ul class="features">
                 <li>Migration management</li>
                 <li>Full fledged I18N</li>
