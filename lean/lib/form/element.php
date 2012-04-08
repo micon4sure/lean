@@ -3,7 +3,8 @@ namespace lean\form;
 
 /**
  * Abstract form element base class
- */ abstract class Element {
+ */
+abstract class Element {
 
     /**
      * @var array html attributes in array form
