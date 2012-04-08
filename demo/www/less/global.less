@@ -1,25 +1,26 @@
 /* variables */
 @main: #333;
-@background: #fff;
-@container_background: #fcfcfc;
+@background: #fafafa;
 @gradient_teaser_top: #333;
-@gradient_teaser_bottom: #000;
+@gradient_teaser_bottom: #00060d;
 @teaser_top_shadow: darken(@gradient_teaser_top, 10%);
 @teaser_bottom_shadow: darken(@gradient_teaser_bottom, 10%);
 @neon: #fff;
-@footer_background: #efefef;
+@footer_background: #F2F2F2;
 @footer_color: #333;
 @footer_link_color: #333;
 @footer_shadow: darken(@footer_background, 10%);
 @space_container: 60px;
-@link_color: #555;
+@link_color: #153252;
+@link_hilite_color: #034AA6;
 @lean_color: #333;
 @lib_color: #aaa;
 @code_background: #f0f0f0;
 @code_border: darken(@code_background, 50%);
-@download_color: #333;
-@download_gradient_top: #fff;
-@download_gradient_bottom: #eee;
+@download_color: #fff;
+/*#036CA1, #003551*/
+@download_gradient_top: #036CA1;
+@download_gradient_bottom: #003551;
 
 /* html, body */
 html {
@@ -93,7 +94,7 @@ h1 a:hover {
     text-decoration: none;
 }
 h2 {
-  color: @main;
+  color: #003551;
 }
 h3, h4 {
     color: @main;
@@ -105,6 +106,7 @@ a {
     text-decoration: none;
 }
 a:hover {
+    color: @link_hilite_color;
     text-decoration: underline;
 }
 li {
@@ -117,7 +119,7 @@ code {
     padding: 20px;
     margin: 10px 0;
     border-radius: 5px;
-    font-family: 'DejaVuMono', monospace;
+    font-family: monospace;
     line-height: 130%;
 }
 
@@ -130,7 +132,6 @@ code {
     margin: 0px auto;
     padding: @space_container;
     padding-top: @space_container/2;
-    background-color: @container_background;
     min-height: 100%;
     position: relative
 }
@@ -226,10 +227,10 @@ code {
     }
 
     #praise {
-        color: #ddd;
+        color: rgba(255, 255, 255, .5);
         position:absolute;
-        background: rgba(255, 255, 255, .05);
-        border: 1px solid rgba(255, 255, 255, .3);
+        background: rgba(255, 255, 255, .01);
+        border: 1px solid rgba(255, 255, 255, .05);
         border-radius: 5px;
         text-align: right;
         top:25px;
@@ -254,7 +255,6 @@ code {
 /* footer */
 footer {
     margin: 0px;
-    margin-top:35px;
     display: block;
     background-color: @footer_background;
     color: white;

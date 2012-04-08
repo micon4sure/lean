@@ -1,3 +1,4 @@
 <?php
 require_once realpath('../lean/init.php');
-new \lean\Autoload();
+$autoload = new \lean\Autoload();
+$autoload->register('test', __DIR__ . '/lib');

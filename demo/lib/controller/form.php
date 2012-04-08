@@ -5,8 +5,8 @@ class Form extends \lean\Controller {
 
     public function validationAction() {
         $form = new \lean\Form('test');
-        $element = new \lean\form\element\Text('test');
-        $form->addElement($element);
+        $form->addElement(new \lean\form\element\Text('test'));
+        $form->addElement(\lean\form\element\Submit('submit'));
 
         $errors = array();
 

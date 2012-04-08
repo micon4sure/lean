@@ -1,5 +1,7 @@
 <?php
-class UtilTest extends PHPUnit_Framework_TestCase {
+namespace test;
+
+class UtilTest extends \PHPUnit_Framework_TestCase {
 
     public function testObject() {
         $object = new \lean\util\Object();
