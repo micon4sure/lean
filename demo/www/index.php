@@ -18,6 +18,5 @@ $application->slim()->get('/', function() use($application) {
 
 $application->registerControllerDefaultRoute('\\demo\\controller');
 
-
 $application->run();
 ?>

@@ -71,4 +71,5 @@ $(function() {
     var praise = new Praise();
     praise.setCitationContent(praise.getRandomCitation());
     setTimeout(function() { praise.next(); }, 30000)
+    window.praise = praise;
 });
