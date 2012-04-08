@@ -3,7 +3,7 @@
 <h3>get the controller going</h3>
 <p>
     We defined our demo lib earlier, let's say we're on /foo/bar.
-    That would be the controller 'demo\controller\Foo' and the action 'barAction'.<br/>
+    That would be the controller 'demo\controller\Foo' and the action 'barAction'.
     Since we registered our demo lib to sit at APPLICATION_ROOT . '/lib', the controller needs to be at APPLICATION_ROOT
     . '/lib/controller/foo.php';<br/>
     This is what it could look like:
@@ -36,17 +36,13 @@ highlight_string($code); ?>
         </div>
     </div>
 </div>
-<p>And this is what your controller may look like, making use of the view templating</p>
+<p>And this is what your barAction may look like, making use of the view templating</p>
     <? $code = <<<ENDCODE
 <?php
-namespace demo\controller;
-
-class Foo extends \lean\controller\HTML {
-    public function barAction() {
-        // template variables go in data
-        \$this->data->characters = array('Tyrion', 'Robb');
-        \$this->display();
-    }
+public function barAction() {
+    // template variables go in data
+    \$this->data->characters = array('Tyrion', 'Robb');
+    \$this->display();
 }
 
 

@@ -1,4 +1,4 @@
-<h2>Whatis lean</h2>
+<h2>What is lean</h2>
 <p>
     What began as the idea to bring Controller/Action functionality to the <a href="http://slimframework.com">Slim micro
     framework</a>,

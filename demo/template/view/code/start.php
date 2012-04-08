@@ -8,15 +8,6 @@
 </p>
 <? $code = <<<ENDCODE
 <?php
-// define your application path, usually one directory level above your public html folder
-define('APPLICATION_ROOT', realpath('../'));
-
-// get slim rolling
-include '/path/to/lean/external/slim/Slim/Slim.php';
-
-// get lean itself rolling
-include '/path/to/lean/lean/init.php';
-
 // fire up the autoloader and register your lib
 \$autoload = new \lean\Autoload();
 \$autoload->register('demo', APPLICATION_ROOT . '/lib');
@@ -24,11 +15,15 @@ include '/path/to/lean/lean/init.php';
 // instantiate the application
 \$application = new \lean\Application(array('debug' => true));
 
-// register the controller default route /:controller/:action(/additional/parameters)
-\$application->registerControllerDefaultRoute('\\demo\\controller');
+// register a route
+\$application->registerRoute('demo', '/demo/:id', array('controller' => '\lean\demo\Awesome', action => 'sweet'));
 
 // aaaaaand… go!
 \$application->run();
 
 ENDCODE;
 highlight_string($code); ?>
+
+<p>
+    Accessing <em>/demo/23</em> will now call the <em>sweetAction</em> in <em>\lean\demo\Awesome</em>!
+</p>
