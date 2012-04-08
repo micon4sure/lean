@@ -6,7 +6,7 @@ define('APPLICATION_ROOT', realpath('../'));
 
 include '../../external/slim/Slim/Slim.php';
 
-include '../../../lean/lean/init.php';
+include '../../lean/init.php';
 $autoload = new \lean\Autoload();
 $autoload->register('demo', APPLICATION_ROOT . '/lib');
 
