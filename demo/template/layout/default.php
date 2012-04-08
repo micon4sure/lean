@@ -8,7 +8,7 @@
             <ul id="topnav">
                 <li><a href="/whatis">whatis</a></li>
                 <li><a href="/code">code</a></li>
-                <li id="download"><a href="/download">▼ download</a></li>
+                <li id="download"><a href="/download"><span class="triforce">▼</span> download</a></li>
             </ul>
         </div>
     </header>
@@ -45,5 +45,5 @@
             </td>
         </tr>
     </table>
-    <span id="back_to_top"> ▲  - back to the top you go!</span>
+    <span id="back_to_top"> <span class="triforce">▲</span> back to the top you go!</span>
 </footer>
