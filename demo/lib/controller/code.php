@@ -18,6 +18,17 @@ class Code extends HTML {
     public function dumpAction() {
         $this->defaultAction();
     }
+    public function formAction() {
+        $form = new \lean\Form('test');
+        $form->addElement(new \lean\form\element\Text('test'));
+        $form->addElement(new \lean\form\element\Submit('submit', 'Submit'));
+
+        $errors = array();
+
+        \lean\Dump::flat('value:null, no validator', $form->isValid($errors), $element->isValid(), $errors);
+
+        $element->addValidator(new \lean\form\Validator_Mandatory(array(\lean\form\Validator_Mandatory::ERR_NO_VALUE => 'No value set!')));
+    }
     public function defaultAction() {
         $this->addPartial(new \demo\partial\CodeNavigation('navigation', $this->getApplication()));
         $this->display();

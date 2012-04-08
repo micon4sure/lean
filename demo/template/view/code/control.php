@@ -32,7 +32,7 @@ highlight_string($code); ?>
     <div id="code_control_layout">
         One layer below is the <strong>layout</strong>. You should have stuff here like the header, your navigation and footer.
         <div id="code_control_view">
-            The most inner layer is the the actual <strong>view</strong>.
+            The most inner layer is the actual <strong>view</strong>.
         </div>
     </div>
 </div>

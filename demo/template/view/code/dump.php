@@ -3,7 +3,7 @@
 
 <h3>dumping data with lean!</h3>
 <p>
-    While there are debugging tools for php, it's often easiest and fastest for a developer to just dump the data it has
+    While there are debugging tools for php, it's often easiest and fastest for a developer to just dump the data they have
     been given onto the website.
     Consider this code:
 </p>

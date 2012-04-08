@@ -16,6 +16,10 @@ $(function() {
             {
                 cite: 'Heidi Klum',
                 quote: '"I wish I could have children with lean!"'
+            },
+            {
+                cite: 'Chuck Norris',
+                quote: '"lean is the only one who ever beat me - and I liked it!"'
             }
         ];
         this.current = 0;
