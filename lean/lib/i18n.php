@@ -3,10 +3,9 @@ namespace lean;
 
 /**
  * Internationalization class
- * FIXME additional arguments for callback
  */
 
-class I18N_Resolve {
+class I18N {
 
     /**
      * @var string the root directory of the translations
@@ -101,7 +100,7 @@ class I18N_Resolve {
      * @return mixed
      * @throws Exception
      */
-    public function lookup($key) {
+    protected function lookup($key) {
         $locale = end($this->locales);
         if (!array_key_exists($locale, $this->translations)) {
             $file = sprintf('%s/%s.php', $this->dir, $locale);

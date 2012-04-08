@@ -102,7 +102,7 @@ class Text {
 
     /**
      * Split a camelcase string into a lowercase identifier
-     * fooBarQux will become foo-bar-qux, as will FooBarQux and FooBARQux
+     * fooBarQux will become foo-bar-qux, as will FooBarQux
      *
      * @param string  $input
      * @param bool    $multi (unused as of now)
@@ -115,7 +115,6 @@ class Text {
         $input = lcfirst($input);
         // split by one or many uppercase characters
         $split = preg_split('#([A-Z]+)#', $input, -1, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
-
 
         $i = 0;
         $result = '';
@@ -160,18 +159,10 @@ class Text {
      */
     public static function toCamelCase($input, $upper = false, $seperator = '-') {
         $result = '';
-        $start = true;
-        foreach (preg_split('#-#', $input) as $part) {
-            if (!$upper && $start) {
-                $result .= $part;
-                $start = false;
-            }
-            else {
-                $result .= ucfirst($part);
-            }
-
+        foreach (preg_split("#$seperator#", $input) as $part) {
+            $result .= ucfirst($part);
         }
-        return $result;
+        return $upper ? $result : lcfirst($result);
     }
 
     /**
@@ -181,7 +172,7 @@ class Text {
     public function createAttributeString(array $attributes) {
         $parts = array();
         foreach ($attributes as $key => $val) {
-            $parts[] = sprintf(' %s="%s"', $key, htmlspecialchars($val));
+            $parts[] = sprintf('%s="%s"', $key, htmlspecialchars($val));
         }
         return implode(' ', $parts);
     }
