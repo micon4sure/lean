@@ -8,7 +8,7 @@
             <ul id="topnav">
                 <li><a href="/whatis">whatis</a></li>
                 <li><a href="/code">code</a></li>
-                <li id="download"><a href="/download">download</a></li>
+                <li id="download"><a href="/download">▼ download</a></li>
             </ul>
         </div>
     </header>
@@ -31,12 +31,19 @@
     </div>
 </div>
 <footer>
-    <p>
-        <a href="http://github.com/klawd-prime/lean">lean µlib</a>, <a href="http://github.com/klawd-prime">Michael
-        Saller</a>, <a href="http://time.is">2012</a>
-    </p>
-
-    <p id="gotop">
-        <a href="#container">to the top you go!</a>
-    </p>
+    <table>
+        <tr>
+            <td id="gravatar">
+                <img src="http://gravatar.com/avatar/<?= md5('klawd+git@kamundo.de') ?>?s=150" alt="klawd-prime gravatar"/>
+            </td>
+            <td>
+                <p>This is me. <em>Michael Saller</em> aka <em>klawd prime</em>. The initial creator of lean.<br/>
+                    <small>(It's not actually me though, right? It's just a picture of me pumped into my gravatar.)</small></p>
+                <p>
+                    Visit me on <a href="http://github.com/klawd-prime">github</a> or <a href="http://github.com/klawd-prime/lean">pass GO and collect your 200$!</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+    <span id="back_to_top"> ▲  - back to the top you go!</span>
 </footer>

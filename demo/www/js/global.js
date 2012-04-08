@@ -72,4 +72,14 @@ $(function() {
     praise.setCitationContent(praise.getRandomCitation());
     setTimeout(function() { praise.next(); }, 30000)
     window.praise = praise;
+
+    // smooth scroll to the top
+    $('#back_to_top').click(function(event){
+        $('html, body').stop().animate({
+            scrollTop: 0
+        }, 'fast');
+
+        event.preventDefault();
+        return false;
+    });
 });

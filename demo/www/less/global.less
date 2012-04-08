@@ -1,26 +1,33 @@
 /* variables */
 @main: #333;
+@lib_color: #aaa;
 @background: #fafafa;
+
+@space_container: 60px;
+
+@neon: #fff;
+@link_color: #153252;
+@link_hilite_color: #034AA6;
+@code_background: #f0f0f0;
+@code_border: darken(@code_background, 50%);
+
+@download_color: #fff;
+@download_color_hover: #fff;
+@download_gradient_top: #036CA1;
+@download_gradient_bottom: #003551;
+@download_gradient_top_hover: #00a12a;
+@download_gradient_bottom_hover: #004f15;
+
 @gradient_teaser_top: #333;
 @gradient_teaser_bottom: #00060d;
+
 @teaser_top_shadow: darken(@gradient_teaser_top, 10%);
 @teaser_bottom_shadow: darken(@gradient_teaser_bottom, 10%);
-@neon: #fff;
+
 @footer_background: #F2F2F2;
 @footer_color: #333;
 @footer_link_color: #333;
 @footer_shadow: darken(@footer_background, 10%);
-@space_container: 60px;
-@link_color: #153252;
-@link_hilite_color: #034AA6;
-@lean_color: #333;
-@lib_color: #aaa;
-@code_background: #f0f0f0;
-@code_border: darken(@code_background, 50%);
-@download_color: #fff;
-/*#036CA1, #003551*/
-@download_gradient_top: #036CA1;
-@download_gradient_bottom: #003551;
 
 /* html, body */
 html {
@@ -83,7 +90,7 @@ h1 {
 
     #lean {
         font-size: 150%;
-        color: @lean_color;
+        color: @main;
     }
     #microlib {
         color: @lib_color;
@@ -136,37 +143,6 @@ code {
     position: relative
 }
 
-/* mixins */
-.neon_shadow(@start, @stop) {
-    text-shadow:
-    0 0 10px @start,
-    0 0 20px @start,
-    0 0 30px @start,
-    0 0 40px @stop,
-    0 0 70px @stop,
-    0 0 80px @stop,
-    0 0 100px @stop,
-}
-.gradient(@top, @bottom) {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(@top), to(@bottom));
-    background-image: -webkit-linear-gradient(top, @top, @bottom);
-    background-image: -moz-linear-gradient(top, @top, @bottom);
-    background-image: -ms-linear-gradient(top, @top, @bottom);
-    background-image: -o-linear-gradient(top, @top, @bottom);
-    background-image: linear-gradient(top, @top, @bottom);
-}
-
-.inner_shadow(@left, @top, @blur, @color) {
-    -moz-box-shadow: inset @left @top @blur @color;
-    webkit-box-shadow: inset @left @top @blur @color;
-    box-shadow: inset @left @top @blur @color;
-}
-.outer_shadow(@left, @top, @blur, @color) {
-    -moz-box-shadow: @left @top @blur @color;
-    webkit-box-shadow: @left @top @blur @color;
-    box-shadow: @left @top @blur @color;
-}
-
 /* navigation */
 #topnav {
     .left;
@@ -175,6 +151,16 @@ code {
         color: @download_color;
         font-weight: bold;
         .gradient(@download_gradient_top, @download_gradient_bottom);
+        transition: background-image 1s ease-out;
+        -moz-transition: background-image 1s ease-out;
+        -webkit-transition: background-image 1s ease-out;
+        -o-transition: background-image 1s ease-out;
+    }
+    #download a:hover {
+        color: @download_color_hover;
+        font-weight: bold;
+        .gradient(@download_gradient_top_hover, @download_gradient_bottom_hover);
+        text-decoration: none;
     }
     li {
         display: inline;
@@ -263,7 +249,56 @@ footer {
     min-height: 25px;
     color: @footer_color;
     a {
-        color: @footer_link_color;
-        text-decoration: none;
+        text-decoration: underline;
     }
+
+    img {
+        border-radius: 10px;
+        .outer_shadow(0px, 0px, 5px, #555);
+    }
+    table {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 1000px;
+        tr td {
+            padding: 10px;
+        }
+    }
+
+    #back_to_top {
+        display: block;
+        text-align: right;
+        cursor: pointer;
+    }
+}
+
+/* mixins */
+.neon_shadow(@start, @stop) {
+    text-shadow:
+    0 0 10px @start,
+    0 0 20px @start,
+    0 0 30px @start,
+    0 0 40px @stop,
+    0 0 70px @stop,
+    0 0 80px @stop,
+    0 0 100px @stop,
+}
+.gradient(@top, @bottom) {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(@top), to(@bottom));
+    background-image: -webkit-linear-gradient(top, @top, @bottom);
+    background-image: -moz-linear-gradient(top, @top, @bottom);
+    background-image: -ms-linear-gradient(top, @top, @bottom);
+    background-image: -o-linear-gradient(top, @top, @bottom);
+    background-image: linear-gradient(top, @top, @bottom);
+}
+
+.inner_shadow(@left, @top, @blur, @color) {
+    -moz-box-shadow: inset @left @top @blur @color;
+    webkit-box-shadow: inset @left @top @blur @color;
+    box-shadow: inset @left @top @blur @color;
+}
+.outer_shadow(@left, @top, @blur, @color) {
+    -moz-box-shadow: @left @top @blur @color;
+    webkit-box-shadow: @left @top @blur @color;
+    box-shadow: @left @top @blur @color;
 }
