@@ -1,5 +1,6 @@
 @main: #002999;
-@background: #f0efda;
+@background: #fff;
+@container_background: #fcfcfc;
 @gradient_teaser_top: #0093de;
 @gradient_teaser_bottom: #0034d4;
 @teaser_top_shadow: darken(@gradient_teaser_top, 10%);
@@ -9,7 +10,7 @@
 @footer_color: #333;
 @footer_link_color: #48555e;
 @footer_shadow: #bbb;
-
+@space_container: 60px;
 /* html, body */
 html {
     background-color: @background;
@@ -60,19 +61,26 @@ html[xmlns] .clearfix {
 /* header */
 h1 {
     font-family: 'Poiret One', sans-serif;
-    color: #aaa;
     margin-top: 0;
+
     #lean {
         font-size: 150%;
         color: #333;
     }
+    #microlib {
+        color: #aaa;
+    }
     .left;
+}
+h1 a:hover {
+    text-decoration: none;
 }
 h2 {
   color: @main;
-  margin-bottom:0px;
+  margin: 20px 0 10px 0;
 }
 h3, h4 {
+    margin: 35px 0 10px 0;
     color: @main;
 }
 
@@ -84,9 +92,6 @@ a {
 a:hover {
     text-decoration: underline;
 }
-p, ul {
-    margin: 3px 0;
-}
 li {
     list-style-type: square;
 }
@@ -94,7 +99,7 @@ code {
     background-color: #f0f0f0;
     border: 1px solid #999;
     display: block;
-    padding: 10px;
+    padding: 20px;
     margin: 10px 0;
     border-radius: 5px;
     font-family: 'DejaVuMono';
@@ -106,11 +111,11 @@ code {
 
 /* container */
 #container {
-    width: 1000px;
+    max-width: 900px;
     margin: 0px auto;
-    padding: 15px;
-    background-color: #fafafa;
-    box-shadow: -5px 0px 10px #999, 5px 0px 10px #999 ;
+    padding: @space_container;
+    background-color: @container_background;
+    box-shadow: -5px 0px 10px #ddd, 5px 0px 10px #ddd;
     min-height: 100%;
     position: relative
 }
@@ -183,10 +188,9 @@ code {
     -moz-box-shadow:
         inset 0 5px 5px @teaser_top_shadow,
         inset 0 -5px 5px @teaser_bottom_shadow;
-    /*.inner_shadow(0, 5px, 5px, @teaser_top_shadow);*/
     height:150px;
-    margin: 0 -15px;
-    margin-top: 10px;
+    margin: 0px -@space_container;
+    margin-bottom: 42px;
     padding: 0px;
 
     position:relative;
@@ -197,7 +201,7 @@ code {
         letter-spacing: -1px;
         margin-top: 0;
         line-height: 150px;
-        margin-left: 25px;
+        margin-left: @space_container;
     }
     #praise {
         color: #ddd;
@@ -207,7 +211,7 @@ code {
         border-radius: 5px;
         text-align: right;
         top:25px;
-        right: 25px;
+        right: @space_container;
         height: 105px;
         width:423px;
         blockquote {
@@ -228,6 +232,7 @@ code {
 /* footer */
 footer {
     margin: 0px;
+    margin-top:35px;
     display: block;
     background-color: @footer_background;
     color: white;

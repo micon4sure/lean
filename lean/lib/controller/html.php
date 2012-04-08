@@ -67,7 +67,7 @@ abstract class HTML extends \lean\Controller {
      * @return \lean\Document
      */
     protected function createDocument() {
-        $file = \lean\ROOT_PATH . '/templates/document.php';
+        $file = \lean\ROOT_PATH . '/template/document.php';
         return new \lean\Document($file);
     }
 
@@ -75,7 +75,7 @@ abstract class HTML extends \lean\Controller {
      * @return \lean\Template
      */
     protected function createLayout() {
-        $file = $this->getApplication()->getSetting('lean.templates.layouts.directory') . '/default.php';
+        $file = $this->getApplication()->getSetting('lean.template.layout.directory') . '/default.php';
         return new \lean\Template($file);
     }
 
@@ -89,7 +89,7 @@ abstract class HTML extends \lean\Controller {
         $file = \strtolower($class);
         $file = \str_replace('\\', '/', $file);
         $action = \lean\Text::splitCamelCase($this->getAction());
-        $file = $this->getApplication()->getSetting('lean.templates.views.directory') . "/$file/$action.php";
+        $file = $this->getApplication()->getSetting('lean.template.view.directory') . "/$file/$action.php";
         $view = new \lean\Template($file);
         return $view;
     }

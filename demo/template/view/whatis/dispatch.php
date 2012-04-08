@@ -1,4 +1,4 @@
-<h2>$ whatis lean</h2>
+<h2>Whatis lean</h2>
 <p>
     What began as the idea to bring Controller/Action functionality to the <a href="http://slimframework.com">Slim micro
     framework</a>,
@@ -12,7 +12,7 @@
 <table>
     <tr>
         <td id="features">
-            <h2>features</h2>
+            <h2>Features</h2>
             <ul class="features">
                 <li>Controller/Action routing</li>
                 <li>Small but powerful template system</li>
@@ -25,7 +25,7 @@
                 <li>Text manipulation</li>
                 <li>Powerful data dump class</li>
             </ul>
-            <h2>planned features</h2>
+            <h2>Planned features</h2>
             <ul class="features">
                 <li>Migration management</li>
                 <li>Full fledged I18N</li>

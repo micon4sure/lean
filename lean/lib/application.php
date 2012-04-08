@@ -221,11 +221,11 @@ class Application {
         $settings['lean.environment.name'] = 'development';
         $settings['lean.environment.file'] = APPLICATION_ROOT . '/config/environment.ini';
         // templates
-        $settings['lean.templates.directory'] = APPLICATION_ROOT . '/templates';
-        $settings['lean.templates.documents.directory'] = APPLICATION_ROOT . '/templates/documents';
-        $settings['lean.templates.layouts.directory'] = APPLICATION_ROOT . '/templates/layouts';
-        $settings['lean.templates.views.directory'] = APPLICATION_ROOT . '/templates/views';
-        $settings['lean.templates.partials.directory'] = APPLICATION_ROOT . '/templates/partials';
+        $settings['lean.template.directory'] = APPLICATION_ROOT . '/template';
+        $settings['lean.template.document.directory'] = APPLICATION_ROOT . '/template/document';
+        $settings['lean.template.layout.directory'] = APPLICATION_ROOT . '/template/layout';
+        $settings['lean.template.view.directory'] = APPLICATION_ROOT . '/template/view';
+        $settings['lean.template.partial.directory'] = APPLICATION_ROOT . '/template/partial';
         return $settings;
     }
 
