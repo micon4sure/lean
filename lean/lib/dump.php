@@ -311,7 +311,9 @@ namespace lean;
             if ($this->sort) {
                 uksort($properties, array($this, 'sortCallback'));
             }
-            echo str_repeat(self::SPACING, $levels) . "---! ::: PROPERTIES ::: !---\n";
+            if(count($properties)) {
+                echo str_repeat(self::SPACING, $levels) . "---! ::: PROPERTIES ::: !---\n";
+            }
             foreach ($properties as $k => $v) {
                 if (is_object($v)) {
                     if ($levels < $this->levels) {
@@ -352,7 +354,6 @@ namespace lean;
                 }
             }
             if ($this->methods) {
-                echo "\n" . str_repeat(self::SPACING, $levels) . "---! ::: METHODS ::: !---\n";
                 $methods = array();
                 $object = new \ReflectionObject($arg);
                 foreach ($object->getMethods() as $method) {
@@ -360,6 +361,9 @@ namespace lean;
                 }
                 if ($this->sort) {
                     usort($methods, array($this, 'sortCallback'));
+                }
+                if(count($methods)) {
+                    echo "\n" . str_repeat(self::SPACING, $levels) . "---! ::: METHODS ::: !---\n";
                 }
                 foreach ($methods as $method) {
                     echo str_repeat(self::SPACING, $levels) . "$method\n";
