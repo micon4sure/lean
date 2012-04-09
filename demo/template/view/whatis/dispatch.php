@@ -37,10 +37,10 @@ lean is a small and lightweight library in PHP 5.3 and should be included in eve
                 <li>Session abstraction</li>
                 <li>Text manipulation</li>
                 <li>Powerful data dump class</li>
+                <li>Migration management</li>
             </ul>
             <h4>Planned features</h4>
             <ul class="features">
-                <li>Migration management</li>
                 <li>Full fledged I18N</li>
                 <li>Scaffolding</li>
             </ul>
