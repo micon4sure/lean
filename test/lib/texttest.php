@@ -22,7 +22,7 @@ class TextTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals(3, Text::len('foo'));
         $this->assertEquals(4, Text::len('über'));
-        $this->assertEquals(4, Text::len('über', 'UTF-8'));
+        $this->assertNotEquals(4, Text::len('über', null));
 
         $this->assertEquals('foo-bar-qux', Text::splitCamelCase('FooBarQux'));
         $this->assertEquals('foo-bar-qux', Text::splitCamelCase('fooBarQux'));

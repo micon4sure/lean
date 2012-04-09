@@ -42,6 +42,9 @@
                 <p>
                     Visit me on <a href="http://github.com/klawd-prime">github</a> or <a href="http://github.com/klawd-prime/lean">pass GO and collect your 200$!</a>
                 </p>
+                <p>
+                    I also have a <a href="https://twitter.com/#!/klawd">twitter feed</a> I don't really post to! (If I do, it's usually german but you can always hit me up in english.)
+                </p>
             </td>
         </tr>
     </table>
