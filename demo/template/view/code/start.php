@@ -25,5 +25,5 @@ ENDCODE;
 highlight_string($code); ?>
 
 <p>
-    Accessing <em>/demo/23</em> will now call the <em>sweetAction</em> in <em>\lean\demo\Awesome</em>!
+    Accessing <em>/demo/23</em> will now call the <em>sweetAction</em> in <em>\lean\demo\Awesome</em> with the id parameter set to 23!
 </p>

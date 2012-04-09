@@ -3,8 +3,8 @@
 <ul>
     <li>lean is a micro lib written in PHP5.3.</li>
     <li>lean has everything you need to build a full fledged website, not more.</li>
-    <li>lean has an application class, utilizing <a href="http://slimframework.com">Slim's</a> Routing and dispatching</a></li>
-    <li>It's light weight, it's fun, it's lean!</li>
+    <li>lean has an application class, utilizing <a href="http://slimframework.com">Slim's</a> Routing and dispatching.</li>
+    <li>It's lightweight, it's fun, it's lean!</li>
 </ul>
 <h3>In depth</h3>
 <p>

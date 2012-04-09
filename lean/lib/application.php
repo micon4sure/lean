@@ -30,35 +30,25 @@ class Application {
     private $slim;
 
     /**
-     * @var array
-     */
-    private $settings = array();
-
-    /**
-     * @var array
-     */
-    private $requestParams = array();
-
-    /**
      * @var Environment
      */
     private $environment;
 
     /**
-     * @param string $controllerNamespace
+     * @param Environment $environment
      * @param array  $slimSettings
      */
-    public function __construct($leanSettings = array(), $slimSettings = array()) {
+    public function __construct(Environment $environment, $slimSettings = array()) {
         // check for existence of APPLICATION_ROOT constant
         if (!defined('APPLICATION_ROOT')) {
             throw new Exception("'APPLICATION_ROOT' not defined!");
         }
 
-        // set settings (arg2 is more important than arg1)
-        $this->settings = array_merge($this->getDefaultSettings(), $leanSettings);
+        // set environment default settings
+        $this->environment = $environment;
+        $this->environment->setDefaultSettings($this->getDefaultSettings());
 
-        // create environment and slim
-        $this->environment = new Environment($this->settings['lean.environment.file'], $this->settings['lean.environment.name']);
+        // create slim
         $this->slim = new \Slim($slimSettings);
 
         // hook into route dispatching.
@@ -232,15 +222,12 @@ class Application {
     /**
      * Get an application setting
      *
-     * @param $settingName
+     * @param string $setting
      * @return mixed setting value
      * @throws Exception
      */
-    public function getSetting($settingName) {
-        if (!array_key_exists($settingName, $this->settings)) {
-            throw new Exception("Setting '$settingName' not set!");
-        }
-        return $this->settings[$settingName];
+    public function getSetting($setting) {
+        return $this->environment->get($setting);
     }
 
     /**

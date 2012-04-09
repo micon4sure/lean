@@ -5,6 +5,7 @@ class LeanSuite {
         $suite->addTestSuite('test\UtilTest');
         $suite->addTestSuite('test\I18NTest');
         $suite->addTestSuite('test\TextTest');
+        $suite->addTestSuite('test\EnvironmentTest');
         return $suite;
     }
 }

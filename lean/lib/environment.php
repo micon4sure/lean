@@ -8,6 +8,10 @@ class Environment {
      */
     private $settings;
 
+    /**
+     * @param string $file
+     * @param string $environment
+     */
     public function __construct($file, $environment) {
         // parse file
         $raw = parse_ini_file($file, true);
@@ -43,6 +47,17 @@ class Environment {
             $current = $parent;
         }
         $this->settings = $merged;
+    }
+
+    /**
+     * @param array $settings
+     */
+    public function setDefaultSettings(array $settings) {
+        foreach($settings as $key => $value) {
+            if(!array_key_exists($key, $this->settings)) {
+                $this->settings[$key] = $value;
+            }
+        }
     }
 
     /**

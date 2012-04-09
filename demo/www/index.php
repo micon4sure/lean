@@ -7,10 +7,13 @@ define('APPLICATION_ROOT', realpath('../'));
 include '../../external/slim/Slim/Slim.php';
 
 include '../../lean/init.php';
+
+
 $autoload = new \lean\Autoload();
 $autoload->register('demo', APPLICATION_ROOT . '/lib');
 
-$application = new \lean\Application(array('debug' => true));
+$env = $_SERVER['SERVER_NAME'] == 'lean.kamundo.de' ? 'production' : 'development';
+$application = new \lean\Application(new \lean\Environment(APPLICATION_ROOT . '/config/environment.ini', $env));
 
 $application->slim()->get('/', function() use($application) {
     $application->slim()->redirect('/whatis');
