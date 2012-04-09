@@ -7,6 +7,7 @@ class LeanSuite {
         $suite->addTestSuite('test\TextTest');
         $suite->addTestSuite('test\EnvironmentTest');
         $suite->addTestSuite('test\MigrationTest');
+
         return $suite;
     }
 }
