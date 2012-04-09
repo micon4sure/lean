@@ -15,8 +15,8 @@ lean is a small and lightweight library in PHP 5.3 and should be included in eve
 </p>
 <p>
     What we mean by "lean gives you freedom" is that it does not force you to do stuff a certain way and it does not push a monolithic, overpowered, overengineered and ultimately deadweight library on you.
-    It is clear in what the components do and it does them on a barebone level. If you need something additional, go write it! We feel that this is a better approach than the huge pseudo-Java frameworks out there and if you must needs use them, at least have lean by your side to shed some light.
-    lean is the hero PHP does not deserve but need.
+    It is clear in what the components do and it does them on a barebone level. If you need something additional, go write it! We feel that this is a better approach than the huge pseudo-Java frameworks out there and if you must needs use them, at least have lean by your side to shed some light.<br/>
+    lean is the hero PHP needs, but not the one it deserves right now.
 </p>
 <p>
     So! Enough with the chitchat, here's a feature complete feature list!
