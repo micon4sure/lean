@@ -87,6 +87,9 @@ header, #content {
 h1 {
     font-family: 'Poiret One', sans-serif;
     margin-top: 0;
+    a {
+        text-decoration: none;
+    }
 
     #lean {
         font-size: 150%;
@@ -107,11 +110,9 @@ h2, h3, h4 {
 /* a, p, ul, li, code */
 a {
     color: @link_color;
-    text-decoration: none;
 }
 a:hover {
     color: @link_hilite_color;
-    text-decoration: underline;
 }
 li {
     list-style-type: square;
@@ -252,9 +253,6 @@ footer {
     padding: @space_container;
     min-height: 25px;
     color: @footer_color;
-    a {
-        text-decoration: underline;
-    }
 
     img {
         border-radius: 10px;
