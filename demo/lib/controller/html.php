@@ -9,7 +9,6 @@ class Html extends \lean\controller\HTML {
         $this->getDocument()->addLESSheet('/less/global.less');
 
         $this->getDocument()->addScript('/js/less.min.js');
-        $this->getDocument()->addScript('/js/less.min.js');
         $this->getDocument()->addScript('/js/jquery.min.js');
         $this->getDocument()->addScript('/js/global.js');
     }
