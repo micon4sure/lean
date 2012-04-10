@@ -17,14 +17,14 @@ class Autoload {
      */
     protected $libraries = array();
 
+    protected $initSlim = false;
+    protected $initLean = false;
+
     /**
      * @param bool $loadLean
      */
-    public function __construct($loadLean = true) {
+    public function __construct() {
         spl_autoload_register(array($this, 'load'));
-        if ($loadLean) {
-            $this->register('lean', ROOT_PATH . '/lib');
-        }
     }
 
     /**
@@ -65,5 +65,19 @@ class Autoload {
                 require_once($path);
             }
         }
+    }
+
+    /**
+     * Add the lean library to autoloading
+     */
+    public function loadLean() {
+        $this->register('lean', ROOT_PATH . '/lib');
+    }
+
+    /**
+     * Initialize Slim
+     */
+    public function loadSlim() {
+        include __DIR__ . '/../external/slim/Slim/Slim.php';
     }
 }
