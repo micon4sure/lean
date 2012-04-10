@@ -60,6 +60,14 @@ class Form {
      */
     public function __construct($name) {
         $this->name = $name;
+        $this->init();
+    }
+
+    /**
+     * Initialize form elements in descending classes
+     */
+    protected function init() {
+
     }
 
     /**
