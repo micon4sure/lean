@@ -3,7 +3,7 @@ namespace lean\util;
 /**
  * TODO docs
  */
-class Object {
+class Object implements \IteratorAggregate {
     private $data;
 
     public function __construct($data = array()) {
@@ -32,5 +32,9 @@ class Object {
     }
     public function __isset($key) {
         return isset($this->data[$key]);
+    }
+
+    public function getIterator() {
+        return new \ArrayIterator($this->data);
     }
 }

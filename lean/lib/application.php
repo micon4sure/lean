@@ -123,7 +123,7 @@ class Application {
 
             $params = new \lean\util\Object($params);
 
-            $this->setParams($params);
+            $THIS->setParams($params);
             $controller->init();
             call_user_func(array($controller, $action));
         };
