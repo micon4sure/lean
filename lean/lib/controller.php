@@ -37,10 +37,10 @@ class Controller {
     }
 
     /**
-     * @return util\Object
+     * @return \lean\util\Object
      */
     public function getParams() {
-        return $this->params;
+        return $this->getApplication()->getParams();
     }
 
     /**
@@ -48,14 +48,14 @@ class Controller {
      * @return string
      */
     public function getParam($key) {
-        return $this->params->{$key};
+        return $this->getApplication()->getParam($key);
     }
 
     /**
      * @return string
      */
     public function getAction() {
-        return $this->params->has('action')
+        return $this->getParams()->has('action')
             ? $this->getParam('action')
             : 'dispatch';
     }

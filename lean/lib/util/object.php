@@ -1,6 +1,8 @@
 <?php
 namespace lean\util;
-
+/**
+ * TODO docs
+ */
 class Object {
     private $data;
 
@@ -15,12 +17,18 @@ class Object {
     public function has($key) {
         return array_key_exists($key, $this->data);
     }
-    public function __set($key, $value) {
+    public function set($key, $value) {
         $this->data[$key] = $value;
     }
+    public function __set($key, $value) {
+        $this->set($key, $value);
+    }
 
-    public function __get($key) {
+    public function get($key) {
         return $this->data[$key];
+    }
+    public function __get($key) {
+        return $this->get($key);
     }
     public function __isset($key) {
         return isset($this->data[$key]);

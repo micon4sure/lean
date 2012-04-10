@@ -30,6 +30,10 @@ class Partial {
         $this->init();
     }
 
+    /**
+     * Get the name of this partial
+     * @return string
+     */
     public function getName() {
         return $this->name;
     }
