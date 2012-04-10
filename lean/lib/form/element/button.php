@@ -4,7 +4,7 @@ namespace lean\form\element;
 /**
  * Form submit element
  */
-class Submit extends \lean\form\Element {
+class Button extends \lean\form\Element {
 
     /**
      * @var the value attribute of the submit
@@ -24,7 +24,7 @@ class Submit extends \lean\form\Element {
      * @return Submit
      */
     public function display() {
-        printf('<input %1$s type="submit" name="%2$s" id="%2$s" value="%3$s" title="%3$s"/>', $this->getAttributeString(), $this->getId(), $this->label);
+        printf('<button %1$s name="%2$s" id="%2$s" title="%3$s">%3$s</button>', $this->getAttributeString(), $this->getId(), $this->label);
         return $this;
     }
 }

@@ -147,6 +147,13 @@ class Text {
         return $result;
     }
 
+    /*
+     * Shorten a string to a max of $length chars
+     */
+    public static function shorten($content, $length) {
+        return preg_replace(sprintf('#^(.{%d}).{3,}#', $length - 3), '$1...', $content);
+    }
+
     /**
      * Restore a splitted string to camelcase
      * foo-bar-qux will become FooBarQux with upper true and fooBarQux with false

@@ -18,13 +18,6 @@ class Application {
     private $dispatched = -1;
 
     /**
-     * The namespaces the application's controllers will reside in
-     *
-     * @var string
-     */
-    private $controllerNamespace;
-
-    /**
      * @var \Slim
      */
     private $slim;
@@ -33,6 +26,12 @@ class Application {
      * @var Environment
      */
     private $environment;
+
+    /**
+     * Request parameters extracted from the path
+     * @var array
+     */
+    private $params;
 
     /**
      * @param Environment $environment
@@ -44,6 +43,7 @@ class Application {
             throw new Exception("'APPLICATION_ROOT' not defined!");
         }
 
+        //TODO default settings to build environment
         // set environment default settings
         $this->environment = $environment;
         $this->environment->setDefaultSettings($this->getDefaultSettings());
@@ -121,7 +121,9 @@ class Application {
                 throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
             }
 
-            $controller->setParams(new \lean\util\Object($params));
+            $params = new \lean\util\Object($params);
+
+            $THIS->setParams($params);
             $controller->init();
             call_user_func(array($controller, $action));
         };
@@ -191,6 +193,25 @@ class Application {
         });
 
         return $route;
+    }
+
+    /**
+     * Set request parameters, remove with 5.4 and closure binding or set private
+     * @param Object $params
+     */
+    public function setParams(util\Object $params) {
+        $this->params = $params;
+    }
+
+    /**
+     * @return Object
+     */
+    public function getParams() {
+        return $this->params;
+    }
+
+    public function getParam($key) {
+        return $this->getParams()->get($key);
     }
 
     /**
