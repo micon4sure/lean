@@ -71,13 +71,16 @@ class Migration_Manager {
         $this->init = true;
         $history = $this->directory . '/' . self::HISTORY_FILENAME;
 
-        // check for history file existence
+        // check for history file existence and writability
         if (!file_exists($history)) {
             if (!is_writable(dirname($history))) {
                 throw new Exception("History file '$history' does not exist and can't write to directory " . dirname($history));
             }
             // history file not found, write it
             touch($history);
+        }
+        if(!is_writable($history)) {
+            throw new Exception("History file '$history' is not writable");
         }
 
         // read history file, avoid empty entries in history array
@@ -129,15 +132,16 @@ class Migration_Manager {
      */
     public function migrateTo($level) {
         $this->init();
+
         if(!array_key_exists("$level", $this->available))
             throw new Exception("Migration level '$level' is not available!");
 
         $done = array();
+
+
         if(in_array("$level", $this->history)) {
             // downgrade until at desired level
-            $keys = array_keys($this->history);
-            while(count($keys) && end($keys) != "$level") {
-                $keys = array_keys($this->history);
+            while(count($this->history) && end($this->history) != "$level") {
                 $done = array_merge($done, $this->downgrade());
             }
         } else {
