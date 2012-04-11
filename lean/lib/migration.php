@@ -105,12 +105,48 @@ class Migration_Manager {
     }
 
     /**
+     * Get available migration levels
+     * @return array
+     */
+    public function getAvailable() {
+        $this->init();
+        return array_keys($this->available);
+    }
+
+    /**
+     * Get pending migration levels
      * @param null $levels
      * @return array
      */
     public function getPending($levels = null) {
         $this->init();
         return array_keys(array_slice($this->available, count($this->history), $levels));
+    }
+
+    /**
+     * Migrate to a specific level
+     * @param $level
+     */
+    public function migrateTo($level) {
+        $this->init();
+        if(!array_key_exists("$level", $this->available))
+            throw new Exception("Migration level '$level' is not available!");
+
+        $done = array();
+        if(in_array("$level", $this->history)) {
+            // downgrade until at desired level
+            $keys = array_keys($this->history);
+            while(count($keys) && end($keys) != "$level") {
+                $keys = array_keys($this->history);
+                $done = array_merge($done, $this->downgrade());
+            }
+        } else {
+            // upgrade until at desired level
+            while(!in_array("$level", $this->history)) {
+                $done = array_merge($done, $this->upgrade());
+            }
+        }
+        return $done;
     }
 
     /**
@@ -147,10 +183,13 @@ class Migration_Manager {
             $steps = 1;
         }
 
+        // downgrade as far as $steps or level 0
         $done = array();
         for ($i = 0; $i < $steps; $i++) {
+            if(!count($this->history))
+                return $done;
             // remove level from history, get the migration and run it.
-            $level = $done[] = array_pop($this->history);
+            $done[] = $level = array_pop($this->history);
             $migration = $this->available[$level];
             $migration->down();
             $this->writeHistory();
@@ -160,11 +199,25 @@ class Migration_Manager {
     }
 
     /**
+     * Reset to zero
+     * @return array
+     */
+    public function reset() {
+        $this->init();
+        $done = array();
+        while(count($this->history)) {
+            $done = array_merge($done, $this->downgrade());
+        }
+        return $done;
+    }
+
+    /**
      * Get the history as an array of executed levels
      *
      * @return array
      */
     public function getHistory() {
+        $this->init();
         return $this->history;
     }
 
