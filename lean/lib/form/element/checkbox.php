@@ -30,7 +30,7 @@ namespace lean\form\element;
      * @return Element|string
      */
     public function setValue($value = null) {
-        return parent::setValue(in_array($value, array('on', 1))
+        return parent::setValue(($value && in_array($value, array('on', 1)))
             ? 1
             : 0);
     }
