@@ -190,6 +190,7 @@ abstract class Element {
 
     /**
      * Remove all validators from this element
+     *
      * @return \lean\form\Element
      */
     public function removeValidators() {

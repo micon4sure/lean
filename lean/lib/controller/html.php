@@ -5,14 +5,17 @@ namespace lean\controller;
  * TODO DOCUMENTATION!
  */
 abstract class HTML extends \lean\Controller {
+
     /**
      * @var \lean\Document;
      */
     private $document;
+
     /**
      * @var \lean\Template
      */
     private $layout;
+
     /**
      * @var \lean\Template
      */
@@ -20,6 +23,7 @@ abstract class HTML extends \lean\Controller {
 
     /**
      * Holds template variables
+     *
      * @var \lean\util\Object
      */
     protected $data;
@@ -81,6 +85,7 @@ abstract class HTML extends \lean\Controller {
 
     /**
      * TODO exploit testing
+     *
      * @return \lean\Template
      */
     protected function createView() {
@@ -107,12 +112,14 @@ abstract class HTML extends \lean\Controller {
     public function getDocument() {
         return $this->document;
     }
+
     /**
      * @return \lean\Template
      */
     protected function getLayout() {
         return $this->layout;
     }
+
     /**
      * @return \lean\Template
      */

@@ -11,10 +11,12 @@ class Document extends Template {
      * @var string
      */
     protected $title = '';
+
     /**
      * @var array
      */
     protected $scripts = array();
+
     /**
      * @var array
      */
@@ -54,6 +56,7 @@ class Document extends Template {
     public function getTitle() {
         return $this->title;
     }
+
     /**
      * @param string $title
      */

@@ -147,11 +147,16 @@ class Text {
         return $result;
     }
 
-    /*
+    /**
      * Shorten a string to a max of $length chars
+     *
+     * @static
+     * @param string $content
+     * @param int    $length
+     * @return string
      */
     public static function shorten($content, $length) {
-        return preg_replace(sprintf('#^(.{%d}).{3,}#', $length - 3), '$1...', $content);
+        return preg_replace(sprintf('#^(.{%d}).{4,}#', $length - 3), '$1...', $content);
     }
 
     /**
@@ -169,7 +174,9 @@ class Text {
         foreach (preg_split("#$seperator#", $input) as $part) {
             $result .= ucfirst($part);
         }
-        return $upper ? $result : lcfirst($result);
+        return $upper
+            ? $result
+            : lcfirst($result);
     }
 
     /**

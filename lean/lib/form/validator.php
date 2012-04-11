@@ -13,18 +13,23 @@ interface Validator {
     public function isValid($value, &$messages = array());
 }
 
+
 abstract class Validator_Abstract implements Validator {
+
     private $messages;
+
     public function __construct($messages = array()) {
         $this->messages = $messages;
     }
 
     public function getErrorMessage($error) {
-        if(!array_key_exists($error, $this->messages))
+        if (!array_key_exists($error, $this->messages)) {
             throw new \lean\Exception("Error message not found for key '$error'");
+        }
         return $this->messages[$error];
     }
 }
+
 
 class Validator_Mandatory extends Validator_Abstract {
 
@@ -40,7 +45,7 @@ class Validator_Mandatory extends Validator_Abstract {
      * @return boolean
      */
     public function isValid($value, &$messages = array()) {
-        if($value === null || is_string($value) && !strlen($value)) {
+        if ($value === null || is_string($value) && !strlen($value)) {
             $messages[] = $this->getErrorMessage(self::ERR_NO_VALUE);
             return false;
         }
@@ -48,6 +53,7 @@ class Validator_Mandatory extends Validator_Abstract {
         return true;
     }
 }
+
 
 class Validator_Equal extends Validator_Abstract {
 
@@ -59,7 +65,7 @@ class Validator_Equal extends Validator_Abstract {
     private $compare;
 
     /**
-     * @param String $message
+     * @param String             $message
      * @param \lean\form\Element $compareElement
      */
     public function __construct($message, Element $compareElement) {
@@ -74,7 +80,7 @@ class Validator_Equal extends Validator_Abstract {
      * @return boolean
      */
     public function isValid($value, &$messages = array()) {
-        if($value != $this->compare->getValue()) {
+        if ($value != $this->compare->getValue()) {
             $messages[] = $this->getErrorMessage(self::ERR_NOT_EQUAL);
             return false;
         }
@@ -82,6 +88,7 @@ class Validator_Equal extends Validator_Abstract {
         return true;
     }
 }
+
 
 class Validator_Custom extends Validator_Abstract {
 
@@ -91,13 +98,14 @@ class Validator_Custom extends Validator_Abstract {
 
     /**
      * @param String $message
-     * @param $callable
+     * @param        $callable
      */
     public function __construct($message, $callable) {
         parent::__construct(array(self::ERR_NOT_VALID => $message));
         $this->callback = $callable;
-        if(!is_callable($callable))
+        if (!is_callable($callable)) {
             throw new \lean\Exception('Second argument has to be a valid callback!');
+        }
     }
 
     /**
@@ -107,7 +115,7 @@ class Validator_Custom extends Validator_Abstract {
      * @return boolean
      */
     public function isValid($value, &$messages = array()) {
-        if(!call_user_func_array($this->callback, func_get_args())) {
+        if (!call_user_func_array($this->callback, func_get_args())) {
             $messages[] = $this->getErrorMessage(self::ERR_NOT_VALID);
             return false;
         }

@@ -15,8 +15,9 @@ class Session {
         if (session_id() === '') {
             session_start();
         }
-        if(!isset($_SESSION[$namespace]))
+        if (!isset($_SESSION[$namespace])) {
             $_SESSION[$namespace] = array();
+        }
         $this->link =& $_SESSION[$namespace];
     }
 

@@ -5,9 +5,12 @@ namespace lean;
  * Self explanatory?
  */
 interface Migration {
+
     public function up();
+
     public function down();
 }
+
 
 /**
  * Migration manager executes migrations and keeps track of the migration level.
@@ -15,6 +18,7 @@ interface Migration {
 class Migration_Manager {
 
     const HISTORY_FILENAME = 'history.dat';
+
     const HISTORY_SEPERATOR = ':::';
 
     /**
@@ -47,7 +51,7 @@ class Migration_Manager {
      */
     public function __construct($directory) {
         $this->directory = $directory;
-        if(in_array($directory, self::$directories)) {
+        if (in_array($directory, self::$directories)) {
             throw new Exception('This directory has alread been initialized!');
         }
 
@@ -57,18 +61,20 @@ class Migration_Manager {
     /**
      * Read the migration directory.
      * Get available migrations and parse the history file.
+     *
      * @throws Exception
      */
     public function init() {
         // do not initialize the directory twice
-        if($this->init)
+        if ($this->init) {
             return;
+        }
         $this->init = true;
         $history = $this->directory . '/' . self::HISTORY_FILENAME;
 
         // check for history file existence
-        if(!file_exists($history)) {
-            if(!is_writable(dirname($history))) {
+        if (!file_exists($history)) {
+            if (!is_writable(dirname($history))) {
                 throw new Exception("History file '$history' does not exist and can't write to directory " . dirname($history));
             }
             // history file not found, write it
@@ -82,14 +88,14 @@ class Migration_Manager {
             : array();
 
         // read available migrations
-        foreach(new \DirectoryIterator($this->directory) as $migrationFile) {
-            if(!preg_match('#^(\d+).+\.m\.php$#', $migrationFile->getFilename(), $match)) {
+        foreach (new \DirectoryIterator($this->directory) as $migrationFile) {
+            if (!preg_match('#^(\d+).+\.m\.php$#', $migrationFile->getFilename(), $match)) {
                 continue;
             }
 
             // check for validity and add to available migrations
             $migration = include $migrationFile->getPathname();
-            if(!$migration instanceof Migration) {
+            if (!$migration instanceof Migration) {
                 throw new Exception("Migration file '$migrationFile' matched the filename pattern but return result is not a valid migration");
             }
             $this->available[$match[1]] = $migration;
@@ -102,12 +108,13 @@ class Migration_Manager {
     /**
      * Upgrade the application by n steps.
      * If step is null, the application will be upgraded the most recent level
+     *
      * @param int $steps
      */
     public function upgrade($steps = null) {
         $this->init();
 
-        if(!$steps) {
+        if (!$steps) {
             $upgrade = $this->available;
         }
         else {
@@ -115,7 +122,7 @@ class Migration_Manager {
         }
 
         // run the migrations and save execution in history
-        foreach($upgrade as $level => $migration) {
+        foreach ($upgrade as $level => $migration) {
             $migration->up();
             $this->history[] = $level;
             $this->writeHistory();
@@ -125,15 +132,16 @@ class Migration_Manager {
     /**
      * Downgrade the application by n steps.
      * If step is null, the application will be downgraded by one level.
+     *
      * @param int $steps
      */
     public function downgrade($steps = null) {
         $this->init();
-        if($steps === null) {
+        if ($steps === null) {
             $steps = 1;
         }
 
-        for($i = 0; $i < $steps; $i++) {
+        for ($i = 0; $i < $steps; $i++) {
             // remove level from history, get the migration and run it.
             $level = array_pop($this->history);
             $migration = $this->available[$level];
@@ -144,6 +152,7 @@ class Migration_Manager {
 
     /**
      * Get the history as an array of executed levels
+     *
      * @return array
      */
     public function getHistory() {

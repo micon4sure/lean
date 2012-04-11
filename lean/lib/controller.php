@@ -90,7 +90,7 @@ class Controller {
 
     /**
      * @param string $url
-     * @param int $status
+     * @param int    $status
      */
     public function redirect($url, $status = 302) {
         $this->getSlim()->redirect($url, $status);

@@ -18,6 +18,7 @@ class Autoload {
     protected $libraries = array();
 
     protected $initSlim = false;
+
     protected $initLean = false;
 
     /**
