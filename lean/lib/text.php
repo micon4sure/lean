@@ -1,7 +1,6 @@
 <?php
 namespace lean;
 class Text {
-
     /**
      * Get the first n characters from the left of a string.
      * Text::left('foobar', 3) and Text::left('foobar', 'foo') both return 'foo'
