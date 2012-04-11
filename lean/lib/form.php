@@ -119,6 +119,7 @@ class Form {
 
     /**
      * Remove an element from this form
+     *
      * @param string $name
      * @return Form
      */
@@ -166,11 +167,12 @@ class Form {
      */
     public function populate(array $data, $names = false) {
         foreach ($this->elements as $element) {
-            if($names) {
+            if ($names) {
                 // keys by name
                 if (array_key_exists($element->getName(), $data)) {
                     $element->setValue($data[$element->getName()]);
-                } else {
+                }
+                else {
                     $element->setValue(null);
                 }
             }
@@ -178,7 +180,8 @@ class Form {
                 // keys by id
                 if (array_key_exists($element->getId(), $data)) {
                     $element->setValue($data[$element->getId()]);
-                } else {
+                }
+                else {
                     $element->setValue(null);
                 }
             }
@@ -199,29 +202,32 @@ class Form {
      * @param $name string
      */
     public function display($name) {
-        if(!($element = $this->getElement($name)))
+        if (!($element = $this->getElement($name))) {
             throw new Exception("Element '$name' not found in form '{$this->name}'");
+        }
         $element->display();
     }
 
     public function isValid() {
-        if($this->isValid === null)
+        if ($this->isValid === null) {
             $this->validate();
+        }
         return $this->isValid;
     }
 
     /**
      * Return if every element of the form is valid
      * Fill errors array with element's errors
+     *
      * @param array $errors
      * @return bool
      */
     protected function validate() {
         $valid = true;
         $errors = array();
-        foreach($this->elements as $name => $element) {
+        foreach ($this->elements as $name => $element) {
             $elementErrors = array();
-            if(!$element->isValid($elementErrors)) {
+            if (!$element->isValid($elementErrors)) {
                 $errors[$name] = $elementErrors;
                 $valid = false;
             }
@@ -247,18 +253,20 @@ class Form {
      * @return array
      */
     public function getErrors() {
-        if($this->errors === null)
+        if ($this->errors === null) {
             $this->validate();
+        }
         return $this->errors;
     }
 
     /**
      * Get values of all elements
+     *
      * @return array
      */
     public function getData() {
-       $data = array();
-        foreach($this->elements as $element) {
+        $data = array();
+        foreach ($this->elements as $element) {
             $data[$element->getId()] = $element->getValue();
         }
         return $data;

@@ -179,6 +179,18 @@ namespace lean;
     }
 
     /**
+     * Dump waaaaay deep.
+     *
+     * @static
+     */
+    public static function all() {
+        $trace = debug_backtrace();
+        $args = func_get_args();
+        $instance = self::create(9999)->caller(reset($trace));
+        call_user_func_array(array($instance, 'goes'), $args);
+    }
+
+    /**
      * Shortcut method for a flat dump
      *
      * @return boolean
@@ -311,7 +323,7 @@ namespace lean;
             if ($this->sort) {
                 uksort($properties, array($this, 'sortCallback'));
             }
-            if(count($properties)) {
+            if (count($properties)) {
                 echo str_repeat(self::SPACING, $levels) . "---! ::: PROPERTIES ::: !---\n";
             }
             foreach ($properties as $k => $v) {
@@ -362,7 +374,7 @@ namespace lean;
                 if ($this->sort) {
                     usort($methods, array($this, 'sortCallback'));
                 }
-                if(count($methods)) {
+                if (count($methods)) {
                     echo "\n" . str_repeat(self::SPACING, $levels) . "---! ::: METHODS ::: !---\n";
                 }
                 foreach ($methods as $method) {

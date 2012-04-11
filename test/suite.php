@@ -1,4 +1,12 @@
 <?php
+
+// bootstrap
+require_once realpath('../lean/init.php');
+$autoload = new \lean\Autoload();
+$autoload->loadLean();
+$autoload->register('test', __DIR__ . '/lib');
+
+
 class LeanSuite {
     public static function suite() {
         $suite = new \PHPUnit_Framework_TestSuite('lean');

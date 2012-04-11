@@ -35,5 +35,15 @@ class TextTest extends \PHPUnit_Framework_TestCase {
             'qux' => 'baz',
             'asd' => 'kos'
         )));
+
+        for($i = 5; $i <= 10; $i++) {
+            $string = str_repeat('x', $i);
+            $this->assertEquals($string, Text::shorten($string, 10));
+        }
+
+        for($i = 11; $i <= 15; $i++) {
+            $string = str_repeat('x', $i);
+            $this->assertEquals(10, Text::len(Text::shorten($string, 10)));
+        }
     }
 }
