@@ -183,7 +183,7 @@ class Text {
      * @param array $attributes
      * @return string
      */
-    public function createAttributeString(array $attributes) {
+    public static function createAttributeString(array $attributes) {
         $parts = array();
         foreach ($attributes as $key => $val) {
             $parts[] = sprintf('%s="%s"', $key, htmlspecialchars($val));

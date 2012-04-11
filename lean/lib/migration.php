@@ -18,7 +18,6 @@ interface Migration {
 class Migration_Manager {
 
     const HISTORY_FILENAME = 'history.dat';
-
     const HISTORY_SEPERATOR = ':::';
 
     /**
@@ -106,34 +105,41 @@ class Migration_Manager {
     }
 
     /**
+     * @param null $levels
+     * @return array
+     */
+    public function getPending($levels = null) {
+        $this->init();
+        return array_keys(array_slice($this->available, count($this->history), $levels));
+    }
+
+    /**
      * Upgrade the application by n steps.
      * If step is null, the application will be upgraded the most recent level
      *
-     * @param int $steps
+     * @param int  $levels
+     * @return array
      */
-    public function upgrade($steps = null) {
+    public function upgrade($levels = null) {
         $this->init();
 
-        if (!$steps) {
-            $upgrade = $this->available;
-        }
-        else {
-            $upgrade = array_slice($this->available, count($this->history), $steps);
-        }
-
         // run the migrations and save execution in history
+        $upgrade = array_slice($this->available, count($this->history), $levels);
+        $done = array();
         foreach ($upgrade as $level => $migration) {
             $migration->up();
-            $this->history[] = $level;
+            $this->history[] = $done[] = $level;
             $this->writeHistory();
         }
+        return $done;
     }
 
     /**
      * Downgrade the application by n steps.
      * If step is null, the application will be downgraded by one level.
      *
-     * @param int $steps
+     * @param int  $steps
+     * @return array
      */
     public function downgrade($steps = null) {
         $this->init();
@@ -141,13 +147,16 @@ class Migration_Manager {
             $steps = 1;
         }
 
+        $done = array();
         for ($i = 0; $i < $steps; $i++) {
             // remove level from history, get the migration and run it.
-            $level = array_pop($this->history);
+            $level = $done[] = array_pop($this->history);
             $migration = $this->available[$level];
             $migration->down();
             $this->writeHistory();
         }
+
+        return $done;
     }
 
     /**

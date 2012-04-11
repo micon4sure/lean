@@ -179,6 +179,18 @@ namespace lean;
     }
 
     /**
+     * Dump waaaaay deep.
+     *
+     * @static
+     */
+    public static function all() {
+        $trace = debug_backtrace();
+        $args = func_get_args();
+        $instance = self::create(9999)->caller(reset($trace));
+        call_user_func_array(array($instance, 'goes'), $args);
+    }
+
+    /**
      * Shortcut method for a flat dump
      *
      * @return boolean
