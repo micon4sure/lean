@@ -157,7 +157,7 @@ class Text {
      */
     public static function shorten($content, $length) {
         $maxlength = $length - 3;
-        return preg_replace("#^(.{$maxlength}).{4,}#", '$1...', $content);
+        return preg_replace('#^(.{' . $maxlength . '}).{4,}#', '$1...', $content);
     }
 
     /**
