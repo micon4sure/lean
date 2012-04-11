@@ -53,8 +53,8 @@ class Environment {
      * @param array $settings
      */
     public function setDefaultSettings(array $settings) {
-        foreach($settings as $key => $value) {
-            if(!array_key_exists($key, $this->settings)) {
+        foreach ($settings as $key => $value) {
+            if (!array_key_exists($key, $this->settings)) {
                 $this->settings[$key] = $value;
             }
         }

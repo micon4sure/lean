@@ -32,6 +32,7 @@ class Partial {
 
     /**
      * Get the name of this partial
+     *
      * @return string
      */
     public function getName() {

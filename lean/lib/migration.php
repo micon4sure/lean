@@ -5,9 +5,12 @@ namespace lean;
  * Self explanatory?
  */
 interface Migration {
+
     public function up();
+
     public function down();
 }
+
 
 /**
  * Migration manager executes migrations and keeps track of the migration level.
@@ -47,7 +50,7 @@ class Migration_Manager {
      */
     public function __construct($directory) {
         $this->directory = $directory;
-        if(in_array($directory, self::$directories)) {
+        if (in_array($directory, self::$directories)) {
             throw new Exception('This directory has alread been initialized!');
         }
 
@@ -57,18 +60,20 @@ class Migration_Manager {
     /**
      * Read the migration directory.
      * Get available migrations and parse the history file.
+     *
      * @throws Exception
      */
     public function init() {
         // do not initialize the directory twice
-        if($this->init)
+        if ($this->init) {
             return;
+        }
         $this->init = true;
         $history = $this->directory . '/' . self::HISTORY_FILENAME;
 
         // check for history file existence
-        if(!file_exists($history)) {
-            if(!is_writable(dirname($history))) {
+        if (!file_exists($history)) {
+            if (!is_writable(dirname($history))) {
                 throw new Exception("History file '$history' does not exist and can't write to directory " . dirname($history));
             }
             // history file not found, write it
@@ -82,14 +87,14 @@ class Migration_Manager {
             : array();
 
         // read available migrations
-        foreach(new \DirectoryIterator($this->directory) as $migrationFile) {
-            if(!preg_match('#^(\d+).+\.m\.php$#', $migrationFile->getFilename(), $match)) {
+        foreach (new \DirectoryIterator($this->directory) as $migrationFile) {
+            if (!preg_match('#^(\d+).+\.m\.php$#', $migrationFile->getFilename(), $match)) {
                 continue;
             }
 
             // check for validity and add to available migrations
             $migration = include $migrationFile->getPathname();
-            if(!$migration instanceof Migration) {
+            if (!$migration instanceof Migration) {
                 throw new Exception("Migration file '$migrationFile' matched the filename pattern but return result is not a valid migration");
             }
             $this->available[$match[1]] = $migration;
@@ -100,53 +105,119 @@ class Migration_Manager {
     }
 
     /**
+     * Get available migration levels
+     * @return array
+     */
+    public function getAvailable() {
+        $this->init();
+        return array_keys($this->available);
+    }
+
+    /**
+     * Get pending migration levels
+     * @param null $levels
+     * @return array
+     */
+    public function getPending($levels = null) {
+        $this->init();
+        return array_keys(array_slice($this->available, count($this->history), $levels));
+    }
+
+    /**
+     * Migrate to a specific level
+     * @param $level
+     */
+    public function migrateTo($level) {
+        $this->init();
+        if(!array_key_exists("$level", $this->available))
+            throw new Exception("Migration level '$level' is not available!");
+
+        $done = array();
+        if(in_array("$level", $this->history)) {
+            // downgrade until at desired level
+            $keys = array_keys($this->history);
+            while(count($keys) && end($keys) != "$level") {
+                $keys = array_keys($this->history);
+                $done = array_merge($done, $this->downgrade());
+            }
+        } else {
+            // upgrade until at desired level
+            while(!in_array("$level", $this->history)) {
+                $done = array_merge($done, $this->upgrade());
+            }
+        }
+        return $done;
+    }
+
+    /**
      * Upgrade the application by n steps.
      * If step is null, the application will be upgraded the most recent level
-     * @param int $steps
+     *
+     * @param int  $levels
+     * @return array
      */
-    public function upgrade($steps = null) {
+    public function upgrade($levels = null) {
         $this->init();
 
-        if(!$steps) {
-            $upgrade = $this->available;
-        }
-        else {
-            $upgrade = array_slice($this->available, count($this->history), $steps);
-        }
-
         // run the migrations and save execution in history
-        foreach($upgrade as $level => $migration) {
+        $upgrade = array_slice($this->available, count($this->history), $levels);
+        $done = array();
+        foreach ($upgrade as $level => $migration) {
             $migration->up();
-            $this->history[] = $level;
+            $this->history[] = $done[] = $level;
             $this->writeHistory();
         }
+        return $done;
     }
 
     /**
      * Downgrade the application by n steps.
      * If step is null, the application will be downgraded by one level.
-     * @param int $steps
+     *
+     * @param int  $steps
+     * @return array
      */
     public function downgrade($steps = null) {
         $this->init();
-        if($steps === null) {
+        if ($steps === null) {
             $steps = 1;
         }
 
-        for($i = 0; $i < $steps; $i++) {
+        // downgrade as far as $steps or level 0
+        $done = array();
+        for ($i = 0; $i < $steps; $i++) {
+            if(!count($this->history))
+                return $done;
             // remove level from history, get the migration and run it.
-            $level = array_pop($this->history);
+            $done[] = $level = array_pop($this->history);
             $migration = $this->available[$level];
             $migration->down();
             $this->writeHistory();
         }
+
+        return $done;
+    }
+
+    /**
+     * Reset to zero
+     * @return array
+     */
+    public function reset() {
+        $this->init();
+        $done = array();
+        while(count($this->history)) {
+            $done = array_merge($done, $this->downgrade());
+        }
+        return $done;
     }
 
     /**
      * Get the history as an array of executed levels
+     *
      * @return array
      */
     public function getHistory() {
+        $this->init();
         return $this->history;
     }
 

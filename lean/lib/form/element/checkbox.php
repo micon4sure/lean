@@ -22,15 +22,14 @@ namespace lean\form\element;
     }
 
     /**
-     * Get or set the value
-     * on results to 1
+     * Get or set the value on results to 1
      *
      * @param null $value
      *
      * @return Element|string
      */
     public function setValue($value = null) {
-        return parent::setValue(in_array($value, array('on', 1))
+        return parent::setValue(in_array((string)$value, array('on', 1))
             ? 1
             : 0);
     }

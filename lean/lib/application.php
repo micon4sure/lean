@@ -29,13 +29,14 @@ class Application {
 
     /**
      * Request parameters extracted from the path
+     *
      * @var array
      */
     private $params;
 
     /**
      * @param Environment $environment
-     * @param array  $slimSettings
+     * @param array       $slimSettings
      */
     public function __construct(Environment $environment, $slimSettings = array()) {
         // check for existence of APPLICATION_ROOT constant
@@ -73,10 +74,12 @@ class Application {
      */
     public function registerRoute($name, $pattern, array $params = array(), array $methods = array(\Slim_Http_Request::METHOD_GET, \Slim_Http_Request::METHOD_POST)) {
         // ensure argument validity
-        if(!is_string($name))
+        if (!is_string($name)) {
             throw new \InvalidArgumentException("Argument 'name' needs to be a string");
-        if(!is_string($pattern))
+        }
+        if (!is_string($pattern)) {
             throw new \InvalidArgumentException("Argument 'pattern' needs to be a string");
+        }
 
         // create dispatching function
         $this->params = isset($this->params)
@@ -142,7 +145,7 @@ class Application {
      * {qux: baz, kos: asd, wam: true}
      *
      * @param string $controllerNamespace
-     * @param int $additionalParameters
+     * @param int    $additionalParameters
      * @return \Slim_Route
      */
     public function registerControllerDefaultRoute($controllerNamespace, $additionalParameters = 3, $params = array()) {
@@ -197,6 +200,7 @@ class Application {
 
     /**
      * Set request parameters, remove with 5.4 and closure binding or set private
+     *
      * @param Object $params
      */
     public function setParams(util\Object $params) {
