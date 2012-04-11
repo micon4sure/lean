@@ -156,7 +156,8 @@ class Text {
      * @return string
      */
     public static function shorten($content, $length) {
-        return preg_replace(sprintf('#^(.{%d}).{4,}#', $length - 3), '$1...', $content);
+        $maxlength = $length - 3;
+        return preg_replace("#^(.{$maxlength}).{4,}#", '$1...', $content);
     }
 
     /**
