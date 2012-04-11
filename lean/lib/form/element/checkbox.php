@@ -22,8 +22,7 @@ namespace lean\form\element;
     }
 
     /**
-     * Get or set the value
-     * on results to 1
+     * Get or set the value on results to 1
      *
      * @param null $value
      *
