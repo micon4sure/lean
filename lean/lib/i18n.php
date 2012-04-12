@@ -127,3 +127,71 @@ class I18N {
         $this->callback = $callable;
     }
 }
+
+#use IntlDateFormatter, NumberFormatter;
+
+Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+
+class I18N_Formatter{
+
+    public function __construct() {
+        $this->datetimeFormatter = new IntlDateFormatter(
+            NULL,
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::SHORT,
+            'Europe/Berlin',
+            IntlDateFormatter::GREGORIAN
+        );
+        $this->dateFormatter = new IntlDateFormatter(
+            NULL,
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::NONE,
+            'Europe/Berlin',
+            IntlDateFormatter::GREGORIAN
+        );
+        $this->timeFormatter = new IntlDateFormatter(
+            NULL,
+            IntlDateFormatter::NONE,
+            IntlDateFormatter::SHORT,
+            'Europe/Berlin',
+            IntlDateFormatter::GREGORIAN
+        );
+        $this->numberFormatter = new NumberFormatter(
+            NULL,
+            NumberFormatter::DECIMAL
+        );
+        $this->currencyFormatter = new NumberFormatter(
+            'de_DE',
+            NumberFormatter::CURRENCY
+        );
+        // Sonst werden Preise in der Währung der jeweiligen Locale angezeigt.
+        $this->currencyFormatter->setSymbol(NumberFormatter::CURRENCY_SYMBOL, '€');
+
+    }
+
+    public function formatDateTime($datetime) {
+        return $this->datetimeFormatter->format($datetime);
+    }
+
+    public function formatDate($datetime) {
+        return $this->dateFormatter->format($datetime);
+    }
+
+    public function formatTime($datetime) {
+        return $this->timeFormatter->format($datetime);
+    }
+
+    public function formatNumber($number) {
+        return $this->numberFormatter->format($number);
+    }
+
+    public function formatCurrency($currency) {
+        return $this->currencyFormatter->format($currency);
+    }
+
+}
+
+
+class I18N_Format {
+
+}
