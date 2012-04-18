@@ -1,12 +1,13 @@
 <?php
 
-namespace lean;
+namespace lean\util;
 
 /**
  * Highly configurable dumping class
  * Also works from CLI
  * TODO static properties
- */ class Dump {
+ */
+class Dump {
 
     // constants
     /**
