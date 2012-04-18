@@ -1,6 +1,6 @@
 <?php
 
-namespace lean;
+namespace lean\application;
 
 class Controller {
 
