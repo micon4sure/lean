@@ -115,6 +115,7 @@ class Text {
         // split by one or many uppercase characters
         $split = preg_split('#([A-Z]+)#', $input, -1, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
+
         $i = 0;
         $result = '';
         foreach ($split as $part) {
