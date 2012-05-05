@@ -20,6 +20,7 @@ class Environment {
         // split sections into metadata and settings
         foreach ($raw as $name => $settings) {
             if (strpos($name, ':') === false) {
+                $name = trim($name);
                 $parsed[$name] = array('settings' => $settings, 'parent' => null);
                 continue;
             }
