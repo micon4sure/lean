@@ -32,7 +32,7 @@ class Environment {
 
 
         if (!array_key_exists($environment, $parsed)) {
-            throw new Exception("Unknown environment '$environment'");
+            throw new \lean\Exception("Unknown environment '$environment'");
         }
 
         // merge settings with possible parents
@@ -40,7 +40,7 @@ class Environment {
         $merged = $current['settings'];
         while ($current['parent'] !== null) {
             if (!array_key_exists($current['parent'], $parsed)) {
-                throw new Exception("Invalid parent environment '{$current['parent']}' for environment '{$current['name']}'");
+                throw new \lean\Exception("Invalid parent environment '{$current['parent']}' for environment '{$current['name']}'");
             }
 
             $parent = $parsed[$current['parent']];
@@ -68,7 +68,8 @@ class Environment {
      */
     public function get($key) {
         if (!array_key_exists($key, $this->settings)) {
-            throw new Exception("Environment settings '$key' not found'");
+            \lean\util\Dump::flat($this->settings);
+            throw new \lean\Exception("Environment setting '$key' not found'");
         }
         return $this->settings[$key];
     }
