@@ -301,7 +301,7 @@ class Dump {
             foreach($this->registry as $item) {
                 // check for recursion
                 if($item === $arg) {
-                    echo " ::: AS MENTIONED ELSEWHERE. :::\n";
+                    echo " ::: AS SEEN ELSEWHERE. :::\n";
                     return;
                 }
             }
