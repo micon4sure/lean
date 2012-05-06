@@ -1,5 +1,5 @@
 <?php
-namespace lean\application;
+namespace lean;
 
 class Environment {
 
