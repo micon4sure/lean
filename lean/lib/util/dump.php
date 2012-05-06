@@ -78,6 +78,13 @@ class Dump {
      * @var Dump */
     private static $prototype;
 
+    /**
+     * The registry for dumped object to avoid recursion
+     *
+     * @var array
+     */
+    private $registry = array();
+
     //----------------------------------------------------------------------------
 
     // creation and options
@@ -187,7 +194,7 @@ class Dump {
     public static function all() {
         $trace = debug_backtrace();
         $args = func_get_args();
-        $instance = self::create(9999)->caller(reset($trace));
+        $instance = self::create(10)->caller(reset($trace));
         call_user_func_array(array($instance, 'goes'), $args);
     }
 
@@ -265,6 +272,7 @@ class Dump {
                 echo $buffer;
             }
         }
+        unset($this->registry);
         return $this;
     }
 
@@ -290,6 +298,14 @@ class Dump {
             printf('%s(%s)', $arg, gettype($arg));
         }
         elseif (is_object($arg)) {
+            foreach($this->registry as $item) {
+                // check for recursion
+                if($item === $arg) {
+                    echo " ::: AS MENTIONED ELSEWHERE. :::\n";
+                    return;
+                }
+            }
+            $this->registry[] = $arg;
             printf("Object(%s)\n%s{\n", get_class($arg), str_repeat(self::SPACING, $levels - 1));
             // prepare properties
             $properties = array();
