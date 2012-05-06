@@ -15,7 +15,21 @@ namespace lean;
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-class Registry {
+/**
+ *
+ */
+class Registry extends Registry_State {
+    private static $instance;
+
+    public static function instance() {
+        return self::$instance ?: self::$instance = new self();
+    }
+}
+
+/**
+ * Provides the actual registration state
+ */
+class Registry_State {
     /**
      * @var array
      */
@@ -29,12 +43,5 @@ class Registry {
     }
     public function get($name) {
         return $this->components[$name];
-    }
-}
-class Registry_Stateless extends Registry {
-    private static $instance;
-
-    public static function instance() {
-        return self::$instance ?: self::$instance = new static();
     }
 }
