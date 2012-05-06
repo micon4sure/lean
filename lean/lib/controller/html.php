@@ -84,8 +84,6 @@ abstract class HTML extends \lean\Controller {
     }
 
     /**
-     * TODO exploit testing
-     *
      * @return \lean\Template
      */
     protected function createView() {
