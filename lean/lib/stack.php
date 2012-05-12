@@ -5,7 +5,7 @@ namespace lean;
  * Classic stack. Just with pull instead of push (you are free to override this)
  */
 class Stack extends Stack_Private {
-    private $items = array();
+    protected $items = array();
 
     /**
      * Push something onto the stack
@@ -13,8 +13,8 @@ class Stack extends Stack_Private {
      * @param string $key
      * @param mixed $item
      */
-    public function push($key, $item) {
-        $this->items[$key] = $item;
+    public function push($item) {
+        $this->items[] = $item;
     }
 
     /**
