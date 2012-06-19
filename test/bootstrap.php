@@ -4,4 +4,4 @@ $autoload = new \lean\Autoload();
 $autoload->loadLean();
 $autoload->register('test', __DIR__ . '/lib');
 
-define('APPLICATION_ROOT', __DIR__);
+define('STACK_APPLICATION_ROOT', __DIR__);

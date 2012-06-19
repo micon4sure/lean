@@ -4,17 +4,23 @@ namespace lean;
 /**
  * Classic stack. Just with pull instead of push (you are free to override this)
  */
-class Stack extends Stack_Private {
+class Stack {
     protected $items = array();
 
     /**
      * Push something onto the stack
      *
-     * @param string $key
      * @param mixed $item
      */
     public function push($item) {
         $this->items[] = $item;
+    }
+
+    /**
+     * @return int
+     */
+    public function count() {
+        return count($this->items);
     }
 
     /**
@@ -23,7 +29,7 @@ class Stack extends Stack_Private {
      * @return mixed
      */
     public function current() {
-        return parent::current();
+        return end($this->items);
     }
 
     /**
@@ -33,19 +39,5 @@ class Stack extends Stack_Private {
      */
     public function pull() {
         return array_pop($this->items);
-    }
-}
-
-/**
- * Private access to current() - version of the stack
- */
-class Stack_Private {
-    /**
-     * Get the topmost element of the stack
-     *
-     * @return mixed
-     */
-    protected function current() {
-        return end($this->items);
     }
 }
