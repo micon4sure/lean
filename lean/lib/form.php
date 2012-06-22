@@ -189,7 +189,7 @@ class Form {
     }
 
     public function open() {
-        printf('<form action="%s" method="%s"/>', $this->action, $this->method);
+        printf('<form action="%s" method="%s">', $this->action, $this->method);
     }
 
     public function close() {
