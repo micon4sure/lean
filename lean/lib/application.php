@@ -226,7 +226,7 @@ class Application {
     }
 
     /**
-     * get default settings
+     * Get default settings
      *
      * @return array default settings
      */
