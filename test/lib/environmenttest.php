@@ -3,7 +3,7 @@ namespace test;
 
 class EnvironmentTest extends \PHPUnit_Framework_TestCase {
 
-    public function testSimpleEnvironment() {
+    public function testLocalEnvironment() {
         $environment = new \lean\Environment_Local('./config/environment.ini');
         $debug = $environment->get('debug');
         $this->assertFalse((bool)$debug);
