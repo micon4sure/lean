@@ -1,7 +1,7 @@
 <?php
 namespace lean;
 
-class Partial {
+abstract class Partial {
 
     /**
      * @var Application
@@ -22,10 +22,9 @@ class Partial {
      * @param string      $name
      * @param Application $application
      */
-    public function __construct($name, Application $application) {
+    public function __construct($name) {
         $this->name = $name;
-        $this->application = $application;
-        $this->data = new util\Object();
+        $this->data = new \ArrayObject([], \ArrayObject::ARRAY_AS_PROPS);
 
         $this->init();
     }
@@ -49,20 +48,7 @@ class Partial {
     /**
      * @return Template
      */
-    public function createView() {
-        $file = $this->application->getSetting('lean.template.partial.directory') . '/' . strtolower($this->name) . '.php';
-        $template = new Template($file);
-        $template->setData($this->data->toArray());
-        $template->setCallback('urlFor', array($this->getApplication()->slim(), 'urlFor'));
-        return $template;
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApplication() {
-        return $this->application;
-    }
+    public abstract function createView();
 
     /**
      * Set up the partial
