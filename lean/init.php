@@ -22,7 +22,7 @@ class Autoload {
     protected $initLean = false;
 
     /**
-     * @param bool $loadLean
+     *
      */
     public function __construct() {
         spl_autoload_register(array($this, 'load'));
@@ -33,9 +33,16 @@ class Autoload {
      *
      * @param string $namespace
      * @param string $directory
+     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function register($namespace, $directory) {
-        $directory = realpath($directory);
+        // check for directory validity
+        $realDirectory = realpath($directory);
+        if(!strlen($directory) || !strlen($realDirectory))
+            throw new \InvalidArgumentException("Directory '$directory' is invalid.");
+        $directory = $realDirectory;
+
         if (!file_exists($directory)) {
             throw new \Exception("Directory '$directory' does not exist");
         }

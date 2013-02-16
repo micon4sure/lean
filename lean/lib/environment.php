@@ -102,29 +102,3 @@ class Environment {
         return $this->settings[$key];
     }
 }
-
-class Environment_Local extends Environment {
-    /**
-     * Set local as the environment
-     *
-     * @param string $file
-     * @param null $environment
-     */
-    public function __construct($file, $environment = null) {
-        parent::__construct($file, 'local');
-    }
-
-    /**
-     * Add environment local to parsed environments
-     *
-     * @param array $raw
-     * @return array
-     */
-    protected function parseSettings(array $raw) {
-        $settings = parent::parseSettings($raw);
-        // parse file
-        $rawLocal = $this->loadIni(APPLICATION_ROOT . '/config/local.ini');
-        $local = parent::parseSettings($rawLocal);
-        return array_merge($local, $settings);
-    }
-}
