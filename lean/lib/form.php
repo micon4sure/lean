@@ -7,6 +7,8 @@ namespace lean;
  * getErrors and isValid will trigger a validation once.
  * If different data is populated after, revalidate needs to be called to get correct results
  */
+use vitamin\util\Dump;
+
 class Form {
 
     /**
@@ -49,11 +51,32 @@ class Form {
     private $isValid = null;
 
     /**
+     * Default. Everything is encoded
+     */
+    const ENCTYPE_URLENCODED = 'application/x-www-form-urlencoded';
+    /**
+     * Like default but with file upload possibility
+     */
+    const ENCTYPE_FORM = 'multipart/form-data';
+    /**
+     * Plain text, only spaces are encoded
+     */
+    const ENCTYPE_PLAIN = 'text/plain';
+    const ENCTYPE_DEFAULT = self::ENCTYPE_URLENCODED;
+
+    /**
      * Validation error messages
      *
      * @var array
      */
     private $errors = null;
+
+    /**
+     * Encoding type for the form
+     *
+     * @var string
+     */
+    private $enctype = 'application/x-www-form-urlencoded';
 
     /**+
      * @param $name string
@@ -68,6 +91,20 @@ class Form {
      */
     protected function init() {
 
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId() {
+        return 'form_' . $this->getName();
     }
 
     /**
@@ -189,7 +226,7 @@ class Form {
     }
 
     public function open() {
-        printf('<form action="%s" method="%s">', $this->action, $this->method);
+        printf('<form id="%s" action="%s" method="%s" enctype="%s">', $this->getId(), $this->action, $this->method, $this->enctype);
     }
 
     public function close() {
@@ -208,9 +245,21 @@ class Form {
         $element->display();
     }
 
+    public function displayLabel($name, $elementClasses = true, $attributes = array()) {
+        if (!($element = $this->getElement($name))) {
+            throw new Exception("Element '$name' not found in form '{$this->name}'");
+        }
+        $element->displayLabel($elementClasses, $attributes);
+    }
+
+    /**
+     * Tell if the form is valid. Validate if not done before
+     *
+     * @return bool|null
+     */
     public function isValid() {
         if ($this->isValid === null) {
-            $this->validate();
+            $this->isValid = $this->validate();
         }
         return $this->isValid;
     }
@@ -224,17 +273,22 @@ class Form {
      */
     protected function validate() {
         $valid = true;
-        $errors = array();
         foreach ($this->elements as $name => $element) {
             $elementErrors = array();
             if (!$element->isValid($elementErrors)) {
-                $errors[$name] = $elementErrors;
+                $this->setErrors($name, $elementErrors);
                 $valid = false;
             }
         }
-        $this->errors = $errors;
-        $this->isValid = $valid;
-        return $this->isValid();
+        return $valid;
+    }
+
+    /**
+     * @param       $element
+     * @param array $elementErrors
+     */
+    protected function setErrors($element, array $elementErrors) {
+        $this->errors[$element] = $elementErrors;
     }
 
     /**
@@ -245,6 +299,22 @@ class Form {
      */
     public function revalidate() {
         return $this->validate();
+    }
+
+    /**
+     * Set the encoding type for the form
+     *
+     * @param $type
+     */
+    public function setEnctype($type) {
+        $this->enctype = $type;
+    }
+
+    /**
+     * Get the encoding type for the form
+     */
+    public function getEnctype() {
+        return $this->enctype;
     }
 
     /**
@@ -264,10 +334,12 @@ class Form {
      *
      * @return array
      */
-    public function getData() {
+    public function getData($prefix = true) {
         $data = array();
+        $name = $this->getName();
         foreach ($this->elements as $element) {
-            $data[$element->getId()] = $element->getValue();
+            $key = $prefix ? $element->getId() : $element->getName();
+            $data[$key] = $element->getValue();
         }
         return $data;
     }

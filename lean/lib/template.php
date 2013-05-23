@@ -62,7 +62,7 @@ class Template_Base {
      * @return \lean\Template_Base
      */
     public function setData(array $data) {
-        $this->data = $data;
+        $this->data = array_merge($this->data, $data);
         return $this;
     }
 

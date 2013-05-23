@@ -47,4 +47,11 @@ class DateTime extends \DateTime {
     public function getSecond() {
         return $this->format('s');
     }
+
+    /**
+     * @return string
+     */
+    public function getWeek() {
+        return $this->format('W');
+    }
 }

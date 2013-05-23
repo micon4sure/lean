@@ -207,8 +207,12 @@ class Migration_Manager {
      * @return array
      */
     public function reset() {
-        $this->history = array();
-        $this->writeHistory();
+        $this->init();
+        $done = array();
+        while(count($this->history)) {
+            $done = array_merge($done, $this->downgrade());
+        }
+        return $done;
     }
 
     /**

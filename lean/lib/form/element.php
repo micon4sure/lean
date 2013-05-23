@@ -4,6 +4,8 @@ namespace lean\form;
 /**
  * Abstract form element base class
  */
+use lean\util\Dump;
+
 abstract class Element {
 
     /**
@@ -167,9 +169,6 @@ abstract class Element {
     public function displayLabel($elementClasses = true, $attributes = array()) {
         $attributeStrings = array();
         $attributes['for'] = $this->getId();
-        if ($elementClasses) {
-            $attributes['class'] = implode(' ', $this->cssClasses);
-        }
         foreach ($attributes as $key => $value) {
             $attributeStrings[] = "$key=\"$value\"";
         }
@@ -212,12 +211,13 @@ abstract class Element {
      * @return bool
      */
     public function isValid(&$errorMessages = array()) {
+        $valid = true;
         foreach ($this->validators as $validator) {
             if (!$validator->isValid($this->getValue(), $errorMessages)) {
-                return false;
+                $valid = false;
             }
         }
-        return true;
+        return $valid;
     }
 
     /**

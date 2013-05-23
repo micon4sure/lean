@@ -9,6 +9,11 @@ class Environment {
     private $settings;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * Parse $file ini-style, split the names of the headers at ":" (name : parent)
      * Load the $environment
      *
@@ -17,6 +22,9 @@ class Environment {
      * @throws Exception
      */
     public function __construct($file, $environment = null) {
+        // remember name
+        $this->name = $environment;
+
         // parse file
         $raw = $this->loadIni($file);
         $parsed = $this->parseSettings($raw);
@@ -99,6 +107,26 @@ class Environment {
         if (!array_key_exists($key, $this->settings)) {
             throw new \lean\Exception("Environment setting '$key' not found'");
         }
+
         return $this->settings[$key];
+    }
+
+    /**
+     * get environment name
+     * @return null|string
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * override settings
+     *
+     * @param $override
+     */
+    public function override($override) {
+        foreach($override as $key => $value) {
+            $this->settings[$key] = $value;
+        }
     }
 }

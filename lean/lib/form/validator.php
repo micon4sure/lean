@@ -49,7 +49,6 @@ class Validator_Mandatory extends Validator_Abstract {
             $messages[] = $this->getErrorMessage(self::ERR_NO_VALUE);
             return false;
         }
-
         return true;
     }
 }
@@ -89,7 +88,6 @@ class Validator_Equal extends Validator_Abstract {
     }
 }
 
-
 class Validator_Custom extends Validator_Abstract {
 
     const ERR_NOT_VALID = 'not_valid';
@@ -117,6 +115,39 @@ class Validator_Custom extends Validator_Abstract {
     public function isValid($value, &$messages = array()) {
         if (!call_user_func_array($this->callback, func_get_args())) {
             $messages[] = $this->getErrorMessage(self::ERR_NOT_VALID);
+            return false;
+        }
+
+        return true;
+    }
+}
+
+class Validator_Custom_Messaged extends Validator_Abstract {
+
+    private $callback;
+
+    /**
+     * @param array $callable
+     * @throws \lean\Exception
+     */
+    public function __construct($callable) {
+        parent::__construct();
+        $this->callback = $callable;
+        if (!is_callable($callable)) {
+            throw new \lean\Exception('First argument has to be a valid callback!');
+        }
+    }
+
+    /**
+     * @param mixed  $value
+     * @param array  $messages
+     * @internal param string $message
+     * @return boolean
+     */
+    public function isValid($value, &$messages = array()) {
+        $message = call_user_func_array($this->callback, func_get_args());
+        if ($message !== true) {
+            $messages[] = $message;
             return false;
         }
 

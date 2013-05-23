@@ -1,84 +1,45 @@
 <?php
 namespace lean\util;
-
 /**
- * Wrapper class for easyfing the process of creating anonmyous objects.
+ * TODO docs
  */
 class Object implements \IteratorAggregate {
 
-    /**
-     * @var array
-     */
-    private $leanInternalData;
+    private $data;
 
-    /**
-     * Must be associative array
-     *
-     * @param array $data
-     */
     public function __construct($data = array()) {
-        $this->leanInternalData = $data;
+        $this->data = $data;
     }
 
-    /**
-     * @return array
-     */
     public function toArray() {
-        return $this->leanInternalData;
+        return $this->data;
     }
 
-    /**
-     * @param $key
-     * @return bool
-     */
     public function has($key) {
-        return array_key_exists($key, $this->leanInternalData);
+        return array_key_exists($key, $this->data);
     }
 
-    /**
-     * @param $key
-     * @param $value
-     */
     public function set($key, $value) {
-        $this->leanInternalData[$key] = $value;
+        $this->data[$key] = $value;
     }
 
-    /**
-     * @param $key
-     * @param $value
-     */
     public function __set($key, $value) {
         $this->set($key, $value);
     }
 
-    /**
-     * @param $key
-     * @return mixed
-     */
     public function get($key) {
-        return $this->leanInternalData[$key];
+        return $this->data[$key];
     }
 
-    /**
-     * @param $key
-     * @return mixed
-     */
     public function __get($key) {
         return $this->get($key);
     }
 
-    /**
-     * @param $key
-     * @return bool
-     */
     public function __isset($key) {
-        return isset($this->leanInternalData[$key]);
+        return isset($this->data[$key]);
     }
 
-    /**
-     * @return \ArrayIterator
-     */
     public function getIterator() {
-        return new \ArrayIterator($this->leanInternalData);
+        return new \ArrayIterator($this->data);
     }
 }

@@ -3,7 +3,8 @@ namespace lean\form\element;
 
 /**
  * Select form element
- */ class Combobox extends \lean\form\Element {
+ */
+class Combobox extends \lean\form\Element {
 
     /**
      * @var array combobox options

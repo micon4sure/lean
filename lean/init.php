@@ -17,12 +17,8 @@ class Autoload {
      */
     protected $libraries = array();
 
-    protected $initSlim = false;
-
-    protected $initLean = false;
-
     /**
-     *
+     * @param bool $loadLean
      */
     public function __construct() {
         spl_autoload_register(array($this, 'load'));
@@ -33,16 +29,9 @@ class Autoload {
      *
      * @param string $namespace
      * @param string $directory
-     * @throws \Exception
-     * @throws \InvalidArgumentException
      */
     public function register($namespace, $directory) {
-        // check for directory validity
-        $realDirectory = realpath($directory);
-        if(!strlen($directory) || !strlen($realDirectory))
-            throw new \InvalidArgumentException("Directory '$directory' is invalid.");
-        $directory = $realDirectory;
-
+        $directory = realpath($directory);
         if (!file_exists($directory)) {
             throw new \Exception("Directory '$directory' does not exist");
         }
@@ -86,6 +75,6 @@ class Autoload {
      * Initialize Slim
      */
     public function loadSlim() {
-        include __DIR__ . '/../external/slim/Slim/Slim.php';
+        include __DIR__ . '/../../slim/Slim/Slim.php';
     }
 }

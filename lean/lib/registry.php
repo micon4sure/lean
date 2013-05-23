@@ -19,10 +19,17 @@ namespace lean;
  *
  */
 class Registry extends Registry_State {
-    private static $instance;
+    const NAMESPACE_SEPARATOR = '\\';
 
+    private static $instances = [];
+
+    /**
+     * @return static
+     */
     public static function instance() {
-        return self::$instance ?: self::$instance = new self();
+        return isset(self::$instances[__NAMESPACE__ . self::NAMESPACE_SEPARATOR . __CLASS__])
+            ? self::$instances[__NAMESPACE__ . self::NAMESPACE_SEPARATOR . __CLASS__]
+            : self::$instances[__NAMESPACE__ . self::NAMESPACE_SEPARATOR . __CLASS__] = new self();
     }
 }
 

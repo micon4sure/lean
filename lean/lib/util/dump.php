@@ -85,17 +85,31 @@ class Dump {
      */
     private $registry = array();
 
+    /**
+     * Background color of the dump
+     *
+     * @var string
+     */
+    private $color = 'gray';
+
+    /**
+     * Names of the dump items
+     *
+     * @var array
+     */
+    private $names = array();
+
     //----------------------------------------------------------------------------
 
     // creation and options
     /**
      * Set a prototype that will be used when creating instances
      *
-     * @param self $prototype
+     * @param static $prototype
      */
     public static function prototype(self $prototype = null) {
         if (self::$prototype === null) {
-            self::$prototype = new self;
+            self::$prototype = new static;
         }
 
         if (func_num_args() == 0) {
@@ -109,7 +123,7 @@ class Dump {
     /**
      * Sets wrap if PHP_API is not cli
      */
-    private function __construct() {
+    protected function __construct() {
         $this->wrap(PHP_SAPI != 'cli');
     }
 
@@ -121,7 +135,7 @@ class Dump {
      * @param int $levels
      */
     public static function create($levels = 1) {
-        $instance = clone self::prototype();
+        $instance = clone static::prototype();
         $instance->levels($levels);
         return $instance;
     }
@@ -194,8 +208,55 @@ class Dump {
     public static function all() {
         $trace = debug_backtrace();
         $args = func_get_args();
-        $instance = self::create(10)->caller(reset($trace));
+        $instance = static::create(10)->caller(reset($trace));
         call_user_func_array(array($instance, 'goes'), $args);
+    }
+
+    /**
+     * Set Dump background color
+     *
+     * @param $color
+     *
+     * @return Dump
+     */
+    public function color($color) {
+        $this->color = $color;
+        return $this;
+    }
+
+    /**
+     * Set the names of the dump items
+     *
+     * @param $names
+     */
+    public function names($names) {
+        $this->names = $names;
+        return $this;
+    }
+
+    /**
+     * Dump with names
+     *
+     * @param $names
+     *
+     * @return mixed
+     */
+    public static function named($names) {
+        $args = func_get_args();
+        $trace = debug_backtrace();
+        $caller = reset($trace);
+        if(!is_array($names)) {
+            $name = array_shift($args);
+            array_unshift($args, array($name));
+        }
+        else if(func_num_args() == 1) {
+            $names = array_keys(func_get_arg(0));
+            $args = func_get_arg(0);
+            array_unshift($args, $names);
+        }
+        $names = array_shift($args);
+        $instance = static::create()->names($names)->caller($caller);
+        return call_user_func_array(array($instance, 'goes'), $args);
     }
 
     /**
@@ -206,7 +267,7 @@ class Dump {
     public static function flat() {
         $trace = debug_backtrace();
         foreach (func_get_args() as $arg) {
-            self::create()->caller(reset($trace))->goes($arg);
+            static::create()->caller(reset($trace))->goes($arg);
         }
         return true;
     }
@@ -220,7 +281,7 @@ class Dump {
         $trace = debug_backtrace();
         $args = func_get_args();
         $levels = array_shift($args);
-        $instance = self::create($levels)->caller(reset($trace));
+        $instance = static::create($levels)->caller(reset($trace));
         call_user_func_array(array($instance, 'goes'), $args);
     }
 
@@ -256,7 +317,10 @@ class Dump {
         $args = func_get_args();
         foreach ($args as $arg) {
             if ($this->wrap) {
-                echo '<pre style="clear:both; text-align:left;background-color:gray;border:1px solid black;margin-top:5px;color:white;font-family:monospace;padding:5px;font-size:14px;z-index:1000000000;position:relative">';
+                echo '<pre style="clear:both; text-align:left;background:' . $this->color . ';border:1px solid black;margin-top:5px;color:white;font-family:monospace;padding:5px;font-size:14px;z-index:1000000000;position:relative">' . PHP_EOL;
+            }
+            if(count($this->names)) {
+                echo array_shift($this->names) . ':' . PHP_EOL;
             }
             $this->printRecursively($arg);
             if ($this->wrap) {
@@ -272,7 +336,7 @@ class Dump {
                 echo $buffer;
             }
         }
-        unset($this->registry);
+        $this->registry = array();
         return $this;
     }
 
@@ -306,7 +370,7 @@ class Dump {
                 }
             }
             $this->registry[] = $arg;
-            printf("Object(%s)\n%s{\n", get_class($arg), str_repeat(self::SPACING, $levels - 1));
+            printf("Object(%s)\n%s{\n", get_class($arg), str_repeat(static::SPACING, $levels - 1));
             // prepare properties
             $properties = array();
             $object = null;
@@ -320,17 +384,17 @@ class Dump {
             do {
                 foreach ($object->getProperties() as $property) {
                     if ($property->isPublic()) {
-                        $visibility = self::VISBILITY_PUBLIC;
+                        $visibility = static::VISBILITY_PUBLIC;
                     }
                     else if ($property->isProtected()) {
-                        $visibility = self::VISBILITY_PROTECTED;
+                        $visibility = static::VISBILITY_PROTECTED;
                     }
                     else if ($property->isPrivate()) {
-                        $visibility = self::VISBILITY_PRIVATE;
+                        $visibility = static::VISBILITY_PRIVATE;
                     }
                     $property->setAccessible(true);
                     $properties[$this->getVisibility($property) . ' ' . $property->getName()] = $property->getValue($arg);
-                    if ($visibility == self::VISBILITY_PROTECTED || $visibility == self::VISBILITY_PROTECTED) {
+                    if ($visibility == static::VISBILITY_PROTECTED || $visibility == static::VISBILITY_PROTECTED) {
                         $property->setAccessible(false);
                     }
                 }
@@ -341,45 +405,45 @@ class Dump {
                 uksort($properties, array($this, 'sortCallback'));
             }
             if (count($properties)) {
-                echo str_repeat(self::SPACING, $levels) . "---! ::: PROPERTIES ::: !---\n";
+                echo str_repeat(static::SPACING, $levels) . "---! ::: PROPERTIES ::: !---\n";
             }
             foreach ($properties as $k => $v) {
                 if (is_object($v)) {
                     if ($levels < $this->levels) {
-                        printf(str_repeat(self::SPACING, $levels) . '%s: ', $k);
+                        printf(str_repeat(static::SPACING, $levels) . '%s: ', $k);
                         $this->printRecursively($v, $levels + 1);
                         continue;
                     }
                     if (in_array('__toString', get_class_methods($v))) {
-                        printf(str_repeat(self::SPACING, $levels) . "%s: '%s' Object(%s)\n", $k, (string)$v, get_class($v));
+                        printf(str_repeat(static::SPACING, $levels) . "%s: '%s' Object(%s)\n", $k, (string)$v, get_class($v));
                     }
                     else {
-                        printf(str_repeat(self::SPACING, $levels) . "%s: Object(%s)\n", $k, get_class($v));
+                        printf(str_repeat(static::SPACING, $levels) . "%s: Object(%s)\n", $k, get_class($v));
                     }
                 }
                 elseif (is_array($v)) {
                     if ($levels < $this->levels) {
-                        echo str_repeat(self::SPACING, $levels) . $k . ': ';
+                        echo str_repeat(static::SPACING, $levels) . $k . ': ';
                         $this->printRecursively($v, $levels + 1);
                     }
                     else {
-                        printf(str_repeat(self::SPACING, $levels) . "%s: Array(%d)\n", $k, count($v));
+                        printf(str_repeat(static::SPACING, $levels) . "%s: Array(%d)\n", $k, count($v));
                     }
                 }
                 elseif (is_string($v)) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: '%s'(string:%d)\n", $k, $v, mb_strlen($v));
+                    printf(str_repeat(static::SPACING, $levels) . "%s: '%s'(string:%d)\n", $k, $v, mb_strlen($v));
                 }
                 elseif (is_null($v)) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: NULL\n", $k);
+                    printf(str_repeat(static::SPACING, $levels) . "%s: NULL\n", $k);
                 }
                 elseif ($v === true) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: true(bool)\n", $k);
+                    printf(str_repeat(static::SPACING, $levels) . "%s: true(bool)\n", $k);
                 }
                 elseif ($v === false) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: false(bool)\n", $k);
+                    printf(str_repeat(static::SPACING, $levels) . "%s: false(bool)\n", $k);
                 }
                 else {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: %s(%s)\n", $k, $v, gettype($v));
+                    printf(str_repeat(static::SPACING, $levels) . "%s: %s(%s)\n", $k, $v, gettype($v));
                 }
             }
             if ($this->methods) {
@@ -392,20 +456,20 @@ class Dump {
                     usort($methods, array($this, 'sortCallback'));
                 }
                 if (count($methods)) {
-                    echo "\n" . str_repeat(self::SPACING, $levels) . "---! ::: METHODS ::: !---\n";
+                    echo "\n" . str_repeat(static::SPACING, $levels) . "---! ::: METHODS ::: !---\n";
                 }
                 foreach ($methods as $method) {
-                    echo str_repeat(self::SPACING, $levels) . "$method\n";
+                    echo str_repeat(static::SPACING, $levels) . "$method\n";
                 }
             }
             if ($this->showString && method_exists($arg, '__toString')) {
                 $string = (string)$arg;
-                echo str_repeat(self::SPACING, $levels) . "this object to string: '$string'(string:" . strlen($string) . ")\n";
+                echo str_repeat(static::SPACING, $levels) . "this object to string: '$string'(string:" . strlen($string) . ")\n";
             }
-            echo str_repeat(self::SPACING, $levels - 1) . "}\n";
+            echo str_repeat(static::SPACING, $levels - 1) . "}\n";
         }
         elseif (is_array($arg)) {
-            printf("Array(%s)\n%s[\n", count($arg), str_repeat(self::SPACING, $levels - 1));
+            printf("Array(%s)\n%s[\n", count($arg), str_repeat(static::SPACING, $levels - 1));
 
             foreach ($arg as $k => $v) {
                 //issue seems to be resolved in this version
@@ -415,43 +479,43 @@ class Dump {
                 //}
                 if (is_object($v)) {
                     if ($levels < $this->levels) {
-                        printf(str_repeat(self::SPACING, $levels) . '%s: ', $k);
+                        printf(str_repeat(static::SPACING, $levels) . '%s: ', $k);
                         $this->printRecursively($v, $levels + 1);
                         continue;
                     }
                     if (in_array('__toString', get_class_methods($v))) {
-                        printf(str_repeat(self::SPACING, $levels) . "%s: '%s' Object(%s)\n", $k, (string)$v, get_class($v));
+                        printf(str_repeat(static::SPACING, $levels) . "%s: '%s' Object(%s)\n", $k, (string)$v, get_class($v));
                     }
                     else {
-                        printf(str_repeat(self::SPACING, $levels) . "%s: Object(%s)\n", $k, get_class($v));
+                        printf(str_repeat(static::SPACING, $levels) . "%s: Object(%s)\n", $k, get_class($v));
                     }
                 }
                 elseif (is_array($v)) {
                     if ($levels < $this->levels) {
-                        echo str_repeat(self::SPACING, $levels) . $k . ': ';
+                        echo str_repeat(static::SPACING, $levels) . $k . ': ';
                         $this->printRecursively($v, $levels + 1);
                     }
                     else {
-                        printf(str_repeat(self::SPACING, $levels) . "%s: Array(%d)\n", $k, count($v));
+                        printf(str_repeat(static::SPACING, $levels) . "%s: Array(%d)\n", $k, count($v));
                     }
                 }
                 elseif (is_string($v)) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: '%s'(string:%d)\n", $k, $v, mb_strlen($v));
+                    printf(str_repeat(static::SPACING, $levels) . "%s: '%s'(string:%d)\n", $k, $v, mb_strlen($v));
                 }
                 elseif (is_null($v)) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: NULL\n", $k);
+                    printf(str_repeat(static::SPACING, $levels) . "%s: NULL\n", $k);
                 }
                 elseif ($v === true) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: true(bool)\n", $k);
+                    printf(str_repeat(static::SPACING, $levels) . "%s: true(bool)\n", $k);
                 }
                 elseif ($v === false) {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: false(bool)\n", $k);
+                    printf(str_repeat(static::SPACING, $levels) . "%s: false(bool)\n", $k);
                 }
                 else {
-                    printf(str_repeat(self::SPACING, $levels) . "%s: %s(%s)\n", $k, $v, gettype($v));
+                    printf(str_repeat(static::SPACING, $levels) . "%s: %s(%s)\n", $k, $v, gettype($v));
                 }
             }
-            echo str_repeat(self::SPACING, $levels - 1) . "]\n";
+            echo str_repeat(static::SPACING, $levels - 1) . "]\n";
         }
         return $this;
     }

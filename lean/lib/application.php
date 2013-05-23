@@ -1,12 +1,31 @@
 <?php
 namespace lean;
 
+use vitamin\util\Dump;
+
 /**
  * Application class, leaning on Slim
+ *
+ * default: /foo:bar/qux ::: [] ::: \crmi\controller\foo\Bar
+ * crmi.derp /datrzui/qux ::: ['controller' => \crmi\controller\Datrzui] ::: \crmi\controller\Datrzui
+ * crmi.derp /datrzui/foo:bar/qux ::: [] ::: \crmi\controller\foo\Bar
+ *
+ * controller name
+ * namespace
+ *
+ * set:
+ * \crmi\controller
+ *
+ * :controller -> foo:bar \crmi\controller\foo\Bar
+ * ['controller' => '\crmi\controller\foo\Bar'] \crmi\controller\foo\Bar
+ * ['controller' => '\migration\controller\Derp'] Derp
+ *
+ *
  */
 class Application {
 
     const DEFAULT_ROUTE_NAME = 'lean_default_action_controller_route';
+    const CONTROLLER_NAMESPACE_KEY = '__lean.application.controller.namespace__';
 
     /**
      * Variable incremented by a hook. Indicates how many times slim has dispatched something
@@ -34,6 +53,15 @@ class Application {
      */
     private $params;
 
+    private $controllerNamespace;
+
+    /**
+     * @param $controllerNamespace
+     */
+    public function setControllerNamespace($controllerNamespace) {
+        $this->controllerNamespace = $controllerNamespace;
+    }
+
     /**
      * @param Environment $environment
      * @param array       $slimSettings
@@ -52,14 +80,19 @@ class Application {
         // create slim
         $this->slim = new \Slim($slimSettings);
 
+        $this->init();
+
         // hook into route dispatching.
         // this is necessary so application knows how many routes have been passed/dispatched
-        $THIS = $this;
-        $closure = function() use ($THIS) {
-            $THIS->dispatchedRoute();
-        };
-        $this->slim()->hook('slim.before.dispatch', $closure);
+        $this->slim()->hook('slim.before.dispatch', function() {
+            $this->dispatchedRoute();
+        });
     }
+
+    /**
+     * Gives applications the possibility to set up things like  routes, middleware, etc
+     */
+    protected function init() {}
 
     /**
      * Register a route with the application
@@ -69,6 +102,8 @@ class Application {
      * @param array  $params  params that will be passed on to the controller
      * @param array  $methods methods this controller accepts
      *
+     * @throws Exception_UnknownControllerClass
+     * @throws \InvalidArgumentException
      * @throws Exception
      * @return \Slim_Route
      */
@@ -86,12 +121,12 @@ class Application {
             ? $this->params
             : array();
 
-        $THIS = $this;
-        $dispatch = function() use($THIS, $params) {
-            $matched = $THIS->slim()->router()->getMatchedRoutes();
+        $request = $this->slim()->request();
+        $dispatch = function() use($params, $request) {
+            $matched = $this->slim()->router()->getMatchedRoutes($request->getMethod(), $request->getResourceUri());
 
             // get the correct matched route. go back from the end of the array by n passes
-            $offset = $THIS->dispatchedRoute(false);
+            $offset = $this->dispatchedRoute(false);
             $current = $matched[$offset];
 
             // merge parameters extracted from uri with hard parameters, passed to registerRoute
@@ -100,35 +135,60 @@ class Application {
             if (!isset($params['controller'])) {
                 throw new Exception(sprintf("Route with pattern '%s' has no controller parameter", $current->getPattern()));
             }
-            $action = isset($params['action'])
-                ? Text::toCamelCase($params['action']) . 'Action'
-                : 'dispatch';
 
-            $controllerClass = Text::toCamelCase($params['controller'], true);
+            // assemble action
+            $action = isset($params['action']) ? $params['action'] : 'dispatch';
+            // - force lowercase action names
+            if($action != strtolower($action)) {
+                throw new Exception('Action parameter needs to be lowercase. Camel cased action names need to be hyphenated (fooBar -> foo-bar)');
+            }
+            $action = Text::toCamelCase($action) . 'Action';
+
+            // equalize controller names
+            // foo:bar -> default\namespace\foo:bar
+            $class = $params['controller'];
+            $namespace = $this->controllerNamespace;
+            if(isset($params[self::CONTROLLER_NAMESPACE_KEY])) {
+                $class =  $params[self::CONTROLLER_NAMESPACE_KEY].'\\'.$params['controller'];
+                $namespace = $params[self::CONTROLLER_NAMESPACE_KEY];
+            } else {
+                if(Text::left($class, $namespace) != $namespace) {
+                    $parts = explode('\\', $class);
+                    array_pop($parts);
+                    $namespace = implode('\\', $parts);
+                }
+                $class = str_replace('\\', ':', $class);
+            }
+            $controller = strtolower(Text::offsetLeft($class, Text::len($namespace) + 1));
+
+            // possibility for sub controllers
+            // sub controllers are seperated by colons in the url: foo:bar:qux will resolve into the controller foo\bar\Qux
+            $exploded = $origin = explode(':', $controller);
+            $controllerClassName = Text::toCamelCase(array_pop($exploded), true);
+            if(count($exploded) > 0) {
+                $controllerClass = $namespace . '\\' . implode('\\', $exploded) . '\\' . $controllerClassName;
+            } else {
+                $controllerClass = $namespace . '\\' . $controllerClassName;
+            }
 
             // controller exists?
             if (!class_exists($controllerClass, true)) {
-                //$this->slim()->pass();
-                throw new Exception("Controller of type '$controllerClass' was not found");
+                throw new Exception_UnknownControllerClass("Controller of type '$controllerClass' was not found");
             }
-            $controller = new $controllerClass($THIS);
+            $controller = new $controllerClass($this);
+            $controller->setOrigin($origin);
 
             // controller is of the correct type?
             if (!$controller instanceof Controller) {
                 throw new Exception("Controller of type '$controllerClass' is not of type lean\\Controller'");
             }
 
-            // controller action exists?
-            if (!method_exists($controller, $action)) {
-                //$this->slim()->pass();
-                throw new Exception("Action '$action' does not exist in controller of type '$controllerClass'");
-            }
-
             $params = new \lean\util\Object($params);
 
-            $THIS->setParams($params);
+            $this->setParams($params);
             $controller->init();
-            call_user_func(array($controller, $action));
+
+            $this->dispatchAction($controller, $action);
         };
 
         // register dispatch with lean
@@ -139,69 +199,52 @@ class Application {
     }
 
     /**
+     * dispatch action
+     *
+     * @param Controller $controller
+     * @param            $action
+     *
+     * @throws Exception_UnknownControllerAction
+     * @throws \Exception
+     */
+    public function dispatchAction(Controller $controller, $action) {
+        try {
+            // controller action exists?
+            if (!method_exists($controller, $action)) {
+                //$this->slim()->pass();
+                throw new Exception_UnknownControllerAction("Action '$action' does not exist in controller of type '".get_class($controller)."'");
+            }
+            try {
+                call_user_func(array($controller, $action));
+            } catch(\Exception $e) {
+                // don't print controller output in case of an exception
+                ob_end_clean();
+                throw $e;
+            }
+        } catch(Exception_Forward $e) {
+            $this->dispatchAction($controller, $e->getDestination().'Action');
+        }
+    }
+
+    /**
      * Add the /:controller/:action default route.
      * Action is optional
-     * Additional parameters are possible: /foo/bar/qux/baz/kos/asd/wam will call FooController::barAction with params
-     * {qux: baz, kos: asd, wam: true}
      *
-     * @param string $controllerNamespace
-     * @param int    $additionalParameters
+     * @param string $namespace
+     * @param array  $params
+     *
      * @return \Slim_Route
      */
-    public function registerControllerDefaultRoute($controllerNamespace, $additionalParameters = 3, $params = array()) {
-        $pattern = '/:controller(/:action)';
-        $addName = 'lean_add';
-        for ($i = 0; $i <= ($additionalParameters * 2); $i++) {
-            $pattern .= sprintf("(/:$addName$i)");
-        }
-
-        $route = $this->registerRoute(self::DEFAULT_ROUTE_NAME, $pattern, $params);
-        $route->setMiddleware(function() use($route, $additionalParameters, $addName, $controllerNamespace) {
-            $params = $route->getParams();
-            // loop through the additional parameter key(/value) pairs
-            for ($i = 0; $i < count($params); $i += 2) {
-                // break if there are no more additional params
-                if (!array_key_exists($addName . $i, $params)) {
-                    break;
-                }
-
-                // the key is always the even one
-                $key = $params[$addName . $i];
-                unset($params[$addName . $i]);
-
-                // get the value
-                $valueKey = $addName . ($i + 1);
-                if (array_key_exists($valueKey, $params)) {
-                    // a value does exist, assign it
-                    $params[$key] = $params[$valueKey];
-                    unset($params[$valueKey]);
-                }
-                else {
-                    // key has no value, assign true
-                    $params[$key] = true;
-                }
-            }
-
-            // prepend controler namespace to controller name
-            // and camelcase + ucfirst
-            $params['controller'] = $controllerNamespace . '\\'
-                . \lean\Text::toCamelCase($params['controller'], true);
-
-            // dirty reflection workaround: params is protected
-            $reflection = new \ReflectionObject($route);
-            $property = $reflection->getProperty('params');
-            $property->setAccessible(true);
-            $property->setValue($route, $params);
-            $property->setAccessible(false);
-        });
-
+    public function registerControllerDefaultRoute($namespace, $params = array()) {
+        $params[self::CONTROLLER_NAMESPACE_KEY] = $namespace;
+        $route = $this->registerRoute(self::DEFAULT_ROUTE_NAME, '/:controller(/:action)(/:id)', $params);
         return $route;
     }
 
     /**
      * Set request parameters, remove with 5.4 and closure binding or set private
      *
-     * @param Object $params
+     * @param \lean\util\Object $params
      */
     public function setParams(util\Object $params) {
         $this->params = $params;
@@ -219,14 +262,14 @@ class Application {
     }
 
     /**
-     * @return \Slim
+     * @return Slim
      */
     public function slim() {
         return $this->slim;
     }
 
     /**
-     * Get default settings
+     * get default settings
      *
      * @return array default settings
      */
@@ -241,6 +284,7 @@ class Application {
         $settings['lean.template.layout.directory'] = APPLICATION_ROOT . '/template/layout';
         $settings['lean.template.view.directory'] = APPLICATION_ROOT . '/template/view';
         $settings['lean.template.partial.directory'] = APPLICATION_ROOT . '/template/partial';
+        $settings['lean.template.wrapper.directory'] = APPLICATION_ROOT . '/template/wrapper';
         return $settings;
     }
 
@@ -265,13 +309,12 @@ class Application {
     /**
      * Get the number of routes, Slim has dispatched.
      * Do not call unless you know about the implications
-     * TODO private with 5.4 and closure binding
      *
      * @param bool $increment
      *
      * @return int
      */
-    public function dispatchedRoute($increment = true) {
+    private function dispatchedRoute($increment = true) {
         return $increment
             ? $this->dispatched++
             : $this->dispatched;
@@ -289,5 +332,38 @@ class Application {
      */
     public function reload() {
         $this->slim()->redirect($_SERVER['REQUEST_URI']);
+    }
+
+    /**
+     * Create a URL and append a get query string
+     *
+     * @param $name
+     * @param $params
+     * @param $get
+     *
+     * @return string
+     */
+    public function urlFor($name, $params = [], $get = null) {
+        return $this->slim()->urlFor($name, $params)  . ($get ? '?' . http_build_query($get) : '');
+    }
+
+    /**
+     * Generate a URL from the default route
+     * @param $controller
+     * @param null|string $action
+     * @param null|int $id
+     * @param null|array $get
+     * @return string
+     */
+    public function urlForDefault($controller, $action = null, $id = null, $get = null) {
+        // create params array
+        $params = ['controller' => $controller];
+        if($action !== null) {
+            $params['action'] = $action;
+        }
+        if($id !== null) {
+            $params['id'] = $id;
+        }
+        return $this->urlFor(self::DEFAULT_ROUTE_NAME, $params, $get);
     }
 }

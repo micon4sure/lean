@@ -3,7 +3,9 @@ namespace lean\form\element;
 
 /**
  * input[type="text"] form element
- */ class Text extends \lean\form\Element {
+ */
+
+class Text extends \lean\form\Element {
 
     /**
      * @return Text

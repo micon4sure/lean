@@ -5,6 +5,11 @@ namespace lean;
 class Controller {
 
     /**
+     * @var array
+     */
+    private $origin = [];
+
+    /**
      * @var Application
      */
     private $application;
@@ -25,6 +30,16 @@ class Controller {
      * Called upon construction
      */
     public function init() {
+    }
+
+
+    /**
+     * forward to action
+     * @param $action
+     * @throws Exception_Forward
+     */
+    public function forward($action) {
+        throw new Exception_Forward($action);
     }
 
     /**
@@ -94,5 +109,44 @@ class Controller {
      */
     public function redirect($url, $status = 302) {
         $this->getSlim()->redirect($url, $status);
+    }
+
+    /**
+     * Create a URL and append a get query string
+     *
+     * @param $name
+     * @param $params
+     * @param $get
+     *
+     * @return string
+     */
+    public function urlFor($name, $params = array(), $get = null) {
+        return $this->getApplication()->urlFor($name, $params, $get);
+    }
+
+    /**
+     * Generate a URL from the default route
+     * @param $controller
+     * @param null|string $action
+     * @param null|int $id
+     * @param null|array $get
+     * @return string
+     */
+    public function urlForDefault($controller, $action = null, $id = null, $get = null) {
+        return $this->getApplication()->urlForDefault($controller, $action, $id, $get);
+    }
+
+    /**
+     * @param array $origin
+     */
+    public function setOrigin(array $origin) {
+        $this->origin = $origin;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrigin() {
+        return $this->origin;
     }
 }

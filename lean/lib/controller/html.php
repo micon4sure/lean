@@ -4,6 +4,10 @@ namespace lean\controller;
 /**
  * TODO DOCUMENTATION!
  */
+use lean\Template;
+use lean\Wrapper;
+use vitamin\util\Dump;
+
 abstract class HTML extends \lean\Controller {
 
     /**
@@ -20,6 +24,9 @@ abstract class HTML extends \lean\Controller {
      * @var \lean\Template
      */
     private $view;
+
+    /** @var Wrapper */
+    private $wrapper;
 
     /**
      * Holds template variables
@@ -45,6 +52,14 @@ abstract class HTML extends \lean\Controller {
         $this->document = $this->createDocument();
         $this->layout = $this->createLayout();
         $this->view = $this->createView();
+
+        // register urlFor callback to view, layout and document
+        $this->getDocument()->setCallback('urlFor', array($this, 'urlFor'));
+        $this->getDocument()->setCallback('urlForDefault', array($this, 'urlForDefault'));
+        $this->getLayout()->setCallback('urlFor', array($this, 'urlFor'));
+        $this->getLayout()->setCallback('urlForDefault', array($this, 'urlForDefault'));
+        $this->getView()->setCallback('urlFor', array($this, 'urlFor'));
+        $this->getView()->setCallback('urlForDefault', array($this, 'urlForDefault'));
     }
 
     /**
@@ -62,9 +77,18 @@ abstract class HTML extends \lean\Controller {
 
         // stack
         $document->set('layout', $layout);
-        $layout->set('view', $view);
+        $layout->set('view', $this->wrap($view));
 
         $document->display();
+    }
+
+    /**
+     * Display the view
+     */
+    protected function displayView() {
+        $view = $this->getView();
+        $view->setData($this->data->toArray());
+        $view->display();
     }
 
     /**
@@ -76,32 +100,62 @@ abstract class HTML extends \lean\Controller {
     }
 
     /**
-     * @return \lean\Template
+     * get layout directory
+     * @return string
      */
-    protected function createLayout() {
-        $file = $this->getApplication()->getSetting('lean.template.layout.directory') . '/default.php';
-        return new \lean\Template($file);
+    protected function getLayoutDirectory() {
+        return $this->getApplication()->getSetting('lean.template.layout.directory');
     }
 
     /**
      * @return \lean\Template
      */
+    protected function createLayout() {
+        $file = $this->getLayoutDirectory() . '/default.php';
+        return new \lean\Template($file);
+    }
+
+    /**
+     * get view directory
+     * @return string
+     */
+    protected function getViewDirectory() {
+        $path = $this->getApplication()->getSetting('lean.template.view.directory');
+        return $path . '/' . implode('/', $this->getOrigin());
+    }
+
+
+    /**
+     * @return \lean\Template
+     */
     protected function createView() {
-        $chunks = explode("\\", get_class($this));
-        $class = end($chunks);
-        $file = \strtolower($class);
-        $file = \str_replace('\\', '/', $file);
         $action = \lean\Text::splitCamelCase($this->getAction());
-        $file = $this->getApplication()->getSetting('lean.template.view.directory') . "/$file/$action.php";
+        $file = $this->getViewDirectory() . "/$action.php";
         $view = new \lean\Template($file);
+
         return $view;
     }
 
     /**
      * @param \lean\Partial $partial
      */
-    protected function addPartial(\lean\Partial $partial) {
-        $this->getView()->setCallback($partial->getName(), $partial);
+    protected function addPartial($name, \lean\Partial $partial) {
+        $this->getView()->setCallback($name, $partial);
+        $partial->init();
+    }
+
+    protected function wrap(Template $view) {
+        if(!$this->wrapper) {
+            return $view;
+        }
+        return $this->wrapper->wrap($view);
+    }
+
+    /**
+     * @param Wrapper $wrapper
+     */
+    public function setWrapper(Wrapper $wrapper) {
+        $this->wrapper = $wrapper;
     }
 
     /**

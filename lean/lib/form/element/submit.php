@@ -7,24 +7,19 @@ namespace lean\form\element;
 class Submit extends \lean\form\Element {
 
     /**
-     * @var the value attribute of the submit
-     */
-    private $label;
-
-    /**
      * @param $name  string
      * @param $label string
      */
-    public function __construct($name, $label) {
-        parent::__construct($name);
-        $this->label = $label;
+    public function __construct($name, $label = '', $title = '') {
+        parent::__construct($name, $label);
+        $this->setAttribute('title', $title);
     }
 
     /**
      * @return Submit
      */
     public function display() {
-        printf('<input %1$s type="submit" name="%2$s" id="%2$s" value="%3$s" title="%3$s"/>', $this->getAttributeString(), $this->getId(), $this->label);
+        printf('<input %1$s type="submit" name="%2$s" id="%2$s" value="%3$s"/>', $this->getAttributeString(), $this->getId(), $this->getLabel());
         return $this;
     }
 }

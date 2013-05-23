@@ -1,7 +1,9 @@
 <?php
 namespace lean;
 
-abstract class Partial {
+use lean\util\Object;
+
+class Partial {
 
     /**
      * @var Application
@@ -9,7 +11,7 @@ abstract class Partial {
     private $application;
 
     /**
-     * @var util\Object
+     * @var Object
      */
     protected $data;
 
@@ -19,14 +21,19 @@ abstract class Partial {
     private $name;
 
     /**
+     * @var Template
+     */
+    private $view;
+
+    /**
      * @param string      $name
      * @param Application $application
      */
-    public function __construct($name) {
+    public function __construct($name, Application $application) {
         $this->name = $name;
-        $this->data = new \ArrayObject([], \ArrayObject::ARRAY_AS_PROPS);
-
-        $this->init();
+        $this->application = $application;
+        $this->data = new Object();
+        $this->view = $this->createView();
     }
 
     /**
@@ -42,13 +49,49 @@ abstract class Partial {
      * @throws Exception
      */
     public function display() {
-        $this->createView()->display();
+        $this->view->setData($this->data->toArray());
+        $this->view->display();
+    }
+
+    /**
+     * get partial directory
+     * @return mixed
+     */
+    protected function getPartialDirectory() {
+        return $this->application->getSetting('lean.template.partial.directory');
     }
 
     /**
      * @return Template
      */
-    public abstract function createView();
+    public function createView() {
+        $file = $this->getTemplateFile();
+        $template = new Template($file);
+        $template->setCallback('urlFor', [$this->getApplication(), 'urlFor']);
+        $template->setCallback('urlForDefault', [$this->getApplication(), 'urlForDefault']);
+        return $template;
+    }
+
+    /**
+     * @return Template
+     */
+    public function getView() {
+        return $this->view;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTemplateFile() {
+        return $this->getPartialDirectory() . '/' . strtolower($this->name) . '.php';
+    }
+
+    /**
+     * @return Application
+     */
+    protected function getApplication() {
+        return $this->application;
+    }
 
     /**
      * Set up the partial
@@ -58,9 +101,17 @@ abstract class Partial {
     }
 
     /**
+     * overwrite this to set data from within view
+     * arguments optional!
+     */
+    public function data() {
+    }
+
+    /**
      * @magic
      */
     public function __invoke() {
+        call_user_func_array(array($this, 'data'), func_get_args());
         $this->display();
     }
 }
